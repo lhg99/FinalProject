@@ -1,5 +1,4 @@
 # application file selected
 spring:
   profiles:
-    activate:
-      on-profile: local
+    active: local
