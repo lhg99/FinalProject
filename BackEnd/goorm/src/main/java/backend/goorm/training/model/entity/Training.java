@@ -1,9 +1,11 @@
 package backend.goorm.training.model.entity;
 
-import backend.goorm.training.model.enums.TrainingStatus;
+import backend.goorm.record.TrainingRecord;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+
+import java.util.List;
 
 @Getter
 @Setter
@@ -23,9 +25,9 @@ public class Training {
     @Column(name = "training_name", nullable = false)
     private String trainingName;
 
-    @Column(name = "training_status", nullable = false)
-    @Enumerated(EnumType.STRING)
-    private TrainingStatus trainingStatus;
+
+    @Column(name = "user_register", nullable = false)
+    private Boolean user_custom = false;
 
     @Column(name = "description")
     private String description;
@@ -36,6 +38,6 @@ public class Training {
     @Column(name = "image_url")
     private String imageUrl;
 
-//    @OneToMany(mappedBy = "training")
-//    private List<TrainingRecord> trainingRecords;
+    @OneToMany(mappedBy = "training")
+    private List<TrainingRecord> trainingRecords;
 }
