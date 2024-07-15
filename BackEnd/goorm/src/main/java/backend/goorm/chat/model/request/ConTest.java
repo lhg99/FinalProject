@@ -3,8 +3,6 @@ package backend.goorm.chat.model.request;
 import lombok.Data;
 
 @Data
-public class ChatRequest {
+public class ConTest {
     private String sender;
-    private String message;
-
 }

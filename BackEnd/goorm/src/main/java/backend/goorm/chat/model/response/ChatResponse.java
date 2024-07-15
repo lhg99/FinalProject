@@ -16,7 +16,7 @@ public class ChatResponse {
 
     public static ChatResponse changeResponse(Chat chat) {
         return new ChatResponse(
-                chat.getId(),
+                chat.getChatId(),
                 chat.getSender(),
                 chat.getMessage(),
                 chat.getSendDate()
