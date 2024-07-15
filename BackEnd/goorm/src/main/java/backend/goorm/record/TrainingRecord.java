@@ -1,6 +1,5 @@
 package backend.goorm.record;
 
-import backend.goorm.training.model.entity.Training;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -20,7 +19,4 @@ public class TrainingRecord {
     @JoinColumn(name = "record_id")
     private Record record;
 
-    @ManyToOne
-    @JoinColumn(name = "training_id")
-    private Training training;
 }

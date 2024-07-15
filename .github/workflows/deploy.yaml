@@ -1,0 +1,54 @@
+name: Deploy FullStackApp
+on:
+  push:
+    branches:
+      - main 
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+          
+      - name: Verify Java version
+        run: java -version
+      
+      - name: Grant execute permission for gradlew
+        run: chmod +x ./BackEnd/goorm/gradlew
+      
+      - name: Build backend with Gradle
+        run: cd ./BackEnd/goorm && ./gradlew clean build -Dspring.profiles.active=test
+
+      - run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
+      # - run: docker build -t changkiyun/final-project-app -f ./FrontEnd/goorm/Dockerfile.dev ./FrontEnd/goorm
+      # - run: docker run -e CI=true changkiyun/final-project-app npm test
+
+      - run: docker build -t changkiyun/final-project-frontend ./FrontEnd/goorm
+      - run: docker build -t changkiyun/final-project-nginx ./nginx
+      - run: docker build -t changkiyun/final-project-backend ./BackEnd/goorm
+
+      - run: docker push changkiyun/final-project-frontend
+      - run: docker push changkiyun/final-project-nginx
+      - run: docker push changkiyun/final-project-backend
+
+      - name: Generate deployment package
+        run: zip -r deploy.zip . -x '*.git*'
+
+      - name: Deploy to EB
+        uses: einaregilsson/beanstalk-deploy@v18
+        with:
+          aws_access_key: ${{ secrets.AWS_ACCESS_KEY }}
+          aws_secret_key: ${{ secrets.AWS_SECRET_KEY }}
+          application_name: final-project-app
+          environment_name: Final-project-app-env 
+          existing_bucket_name: elasticbeanstalk-ap-northeast-2-533267120173
+          region: ap-northeast-2
+          version_label: ${{ github.sha }}
+          deployment_package: deploy.zip
+
