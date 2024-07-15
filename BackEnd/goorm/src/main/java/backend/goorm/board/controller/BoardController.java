@@ -13,14 +13,9 @@ import org.springframework.web.bind.annotation.RestController;
 @Slf4j
 public class BoardController {
 
-    @Value("${max.size}")
-    private int maxSize;
-
     @GetMapping
     public String testApi(){
 
-        log.info("testAPI {}", maxSize);
-
-        return maxSize + "입니다";
+        return "테스트 입니다";
     }
 }
