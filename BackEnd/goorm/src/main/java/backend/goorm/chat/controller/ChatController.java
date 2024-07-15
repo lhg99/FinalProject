@@ -1,10 +1,7 @@
 package backend.goorm.chat.controller;
 
-import backend.goorm.chat.model.entity.Chat;
-import backend.goorm.chat.model.entity.ChatRoom;
 import backend.goorm.chat.model.request.ChatRequest;
 import backend.goorm.chat.model.request.ChatRoomRequest;
-import backend.goorm.chat.model.request.ConTest;
 import backend.goorm.chat.model.response.ChatResponse;
 import backend.goorm.chat.model.response.ChatRoomResponse;
 import backend.goorm.chat.repository.ChatRepository;
@@ -20,7 +17,6 @@ import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 @RestController
@@ -57,23 +53,5 @@ public class ChatController {
         List<ChatResponse> chatResponses = chatService.chatHistory(chatRoomId);
 
         return new ResponseEntity<>(chatResponses, HttpStatus.OK);
-    }
-
-
-    @PostMapping("/api/con_test")
-    public ChatResponse conTest(@RequestBody ConTest conTest) {
-        ChatRoom chatRoom = new ChatRoom();
-        chatRoom.setChatRoomName("test chatroom");
-        ChatRoom saved = chatRoomRepository.save(chatRoom);
-
-        Chat chat = new Chat();
-        chat.setChatRoom(saved);
-        chat.setMessage("test message");
-        chat.setSender(conTest.getSender());
-        chat.setSendDate(LocalDateTime.now());
-        Chat savedChat = chatRepository.save(chat);
-
-        return ChatResponse.changeResponse(savedChat);
-
     }
 }
