@@ -24,3 +24,4 @@ logging:
       springframework:
         jdbc: DEBUG
         security: DEBUG
+
