@@ -11,18 +11,8 @@ import lombok.NoArgsConstructor;
 public class ChatRoom {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "chatRoom_id")
-    private Long id;
-    private String name;
+    @Column(name = "chat_room_id")
+    private Long chatRoomId;
+    private String chatRoomName;
 
-    @Builder
-    public ChatRoom(String name) {
-        this.name = name;
-    }
-
-    public static ChatRoom createRoom(String name) {
-        return ChatRoom.builder()
-                .name(name)
-                .build();
-    }
 }
