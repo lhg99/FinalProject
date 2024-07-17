@@ -27,7 +27,7 @@ public class CustomTrainingService {
     }
 
     public TrainingDto editCustomTraining(EditTrainingInput input) {
-        Training training = trainingRepository.findById(input.getId()).orElseThrow();
+        Training training = trainingRepository.findById(input.getId()).orElseThrow(() -> new IllegalArgumentException("Training not found with id: " + input.getId()));
         // For simplicity, assuming the user is always authorized
         training.setTrainingName(input.getTrainingName());
         training.setCategory(input.getCategory());
@@ -35,11 +35,16 @@ public class CustomTrainingService {
         return TrainingDto.fromEntity(saved);
     }
 
+
     public TrainingDto deleteCustomTraining(Long trainingId) {
         Training training = trainingRepository.findById(trainingId).orElseThrow();
-        // For simplicity, assuming the user is always authorized
-        trainingRepository.delete(training);
-        return TrainingDto.fromEntity(training);
+        // 기본 운동은 삭제 불가, 유저 커스텀 운동만 삭제 가능
+        if (Boolean.TRUE.equals(training.getUserCustom())) {
+            trainingRepository.delete(training);
+            return TrainingDto.fromEntity(training);
+        } else {
+            throw new IllegalArgumentException("기본 운동은 삭제할 수 없습니다.");
+        }
     }
 
     public List<TrainingDto> customTrainingList() {
