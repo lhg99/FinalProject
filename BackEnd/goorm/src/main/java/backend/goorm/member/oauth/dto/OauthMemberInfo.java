@@ -2,10 +2,10 @@ package backend.goorm.member.oauth.dto;
 
 import java.util.Map;
 
-public abstract class OauthUserInfo {
+public abstract class OauthMemberInfo {
     protected Map<String, Object> attributes;
 
-    public OauthUserInfo(Map<String, Object> attributes) {
+    public OauthMemberInfo(Map<String, Object> attributes) {
         this.attributes = attributes;
     }
 

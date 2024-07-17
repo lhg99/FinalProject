@@ -47,8 +47,7 @@ public class Member {
     private String memberPhone;
 
     @Enumerated(EnumType.STRING)
-    @NotBlank
-    private MemberRole memberRole;
+    private MemberRole role;
 
     private LocalDateTime memberRegDate;
 
@@ -61,4 +60,11 @@ public class Member {
             inverseJoinColumns = @JoinColumn(name = "chat_room_id")
     )
     private List<ChatRoom> chatRooms;
+
+    // 회원가입 진행 여부
+    private boolean memberRegistered = false;
+
+    @Size(max = 50)
+    private String socialId;
+
 }
