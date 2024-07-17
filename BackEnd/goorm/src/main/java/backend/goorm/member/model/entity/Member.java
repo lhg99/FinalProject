@@ -1,5 +1,6 @@
 package backend.goorm.member.model.entity;
 
+import backend.goorm.chat.model.entity.ChatRoom;
 import backend.goorm.member.model.enums.MemberRole;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
@@ -8,6 +9,7 @@ import lombok.*;
 import org.springframework.cglib.core.Local;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Getter
 @Setter
@@ -51,9 +53,18 @@ public class Member {
 
     private boolean memberInactive = false;
 
+    @ManyToMany
+    @JoinTable(
+            name = "member_chat_room",
+            joinColumns = @JoinColumn(name = "member_id"),
+            inverseJoinColumns = @JoinColumn(name = "chat_room_id")
+    )
+    private List<ChatRoom> chatRooms;
+
     // 회원가입 진행 여부
     private boolean memberRegistered = false;
 
     @Size(max = 50)
     private String socialId;
+
 }

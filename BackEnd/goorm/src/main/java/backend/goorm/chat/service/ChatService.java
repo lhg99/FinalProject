@@ -6,6 +6,7 @@ import backend.goorm.chat.model.request.ChatRequest;
 import backend.goorm.chat.model.response.ChatResponse;
 import backend.goorm.chat.repository.ChatRepository;
 import backend.goorm.chat.repository.ChatRoomRepository;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -15,6 +16,7 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
+@Transactional
 public class ChatService {
 
     private final ChatRepository chatRepository;
@@ -37,7 +39,7 @@ public class ChatService {
     }
 
     public List<ChatResponse> chatHistory(Long chatRoomId) {
-        return chatRepository.findByChatRoomId(chatRoomId)
+        return chatRepository.findByChatRoom_ChatRoomId(chatRoomId)
                 .stream()
                 .map(ChatResponse::changeResponse)
                 .collect(Collectors.toList());

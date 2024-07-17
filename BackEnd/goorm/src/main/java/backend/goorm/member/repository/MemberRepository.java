@@ -11,6 +11,8 @@ import java.util.Optional;
 @Repository
 public interface MemberRepository extends JpaRepository<Member, Long> {
 
+    Member findByLoginId(String loginId);
+
     Optional<Member> findBySocialId(String socialId);
 
     Optional<Member> findByLoginId(String loginId);
@@ -27,4 +29,5 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
     Optional<Member> findDuplicate(@Param("loginId") String loginId,
                                                                 @Param("memberEmail") String memberEmail,
                                                                 @Param("memberNickname") String memberNickname);
+
 }
