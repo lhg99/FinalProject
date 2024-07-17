@@ -19,7 +19,7 @@ public class BasicTrainingController {
 
     private final BasicTrainingService basicTrainingService;
 
-    @PreAuthorize("hasRole('ADMIN')")
+
     @PostMapping
     public ResponseEntity<TrainingDto> addBasicTraining(@RequestBody AddTrainingInput input) {
         TrainingDto result = basicTrainingService.addBasicTraining(input);

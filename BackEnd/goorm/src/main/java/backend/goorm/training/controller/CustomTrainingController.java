@@ -32,7 +32,7 @@ public class CustomTrainingController {
     }
 
     @DeleteMapping
-    public ResponseEntity<TrainingDto> deleteCustomTraining(@RequestParam Long id) {
+    public ResponseEntity<TrainingDto> deleteCustomTraining(@RequestParam(name = "id") Long id) {
         TrainingDto result = customTrainingService.deleteCustomTraining(id);
         return ResponseEntity.ok(result);
     }

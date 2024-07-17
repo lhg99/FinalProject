@@ -1,4 +1,4 @@
-package backend.goorm.record;
+package backend.goorm.record.entity;
 
 import backend.goorm.training.model.entity.Training;
 
