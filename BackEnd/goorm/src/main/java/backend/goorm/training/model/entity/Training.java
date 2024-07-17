@@ -27,7 +27,7 @@ public class Training {
 
 
     @Column(name = "user_register", nullable = false)
-    private Boolean user_custom = false;
+    private Boolean userCustom = false;
 
     @Column(name = "description")
     private String description;

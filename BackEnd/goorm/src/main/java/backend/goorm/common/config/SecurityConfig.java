@@ -4,7 +4,6 @@ package backend.goorm.common.config;
 import backend.goorm.member.auth.CustomLoginFailHandler;
 import backend.goorm.member.auth.CustomLoginSuccessHandler;
 import backend.goorm.member.auth.CustomMemberDetailsService;
-import backend.goorm.member.model.enums.MemberRole;
 import backend.goorm.member.oauth.CustomOAuth2MemberService;
 import backend.goorm.member.oauth.handler.OAuth2SuccessHandler;
 import backend.goorm.member.oauth.util.HttpCookieOAuth2AuthorizationRequestRepository;
@@ -25,7 +24,6 @@ import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import java.util.Arrays;
-
 @RequiredArgsConstructor
 @Configuration
 @EnableWebSecurity
@@ -40,7 +38,6 @@ public class SecurityConfig {
 
     private final OAuth2SuccessHandler oAuth2SuccessHandler;
     private final HttpCookieOAuth2AuthorizationRequestRepository auth2AuthorizationRequestRepository;
-
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity httpSecurity)throws Exception{
@@ -116,3 +113,4 @@ public class SecurityConfig {
 
 
 }
+
