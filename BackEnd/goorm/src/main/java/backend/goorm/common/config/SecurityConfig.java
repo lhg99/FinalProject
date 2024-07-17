@@ -24,7 +24,6 @@ import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import java.util.Arrays;
-
 @RequiredArgsConstructor
 @Configuration
 @EnableWebSecurity
@@ -39,7 +38,6 @@ public class SecurityConfig {
 
     private final OAuth2SuccessHandler oAuth2SuccessHandler;
     private final HttpCookieOAuth2AuthorizationRequestRepository auth2AuthorizationRequestRepository;
-
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity httpSecurity)throws Exception{
@@ -115,3 +113,4 @@ public class SecurityConfig {
 
 
 }
+
