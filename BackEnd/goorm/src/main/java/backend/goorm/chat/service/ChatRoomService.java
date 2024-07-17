@@ -10,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -28,8 +29,8 @@ public class ChatRoomService {
     }
 
     public List<ChatRoomResponse> getChatRoomsByMember(String loginId) {
-        Member member = memberRepository.findByLoginId(loginId);
-        return member.getChatRooms()
+        Optional<Member> member = memberRepository.findByLoginId(loginId);
+        return member.get().getChatRooms()
                 .stream()
                 .map(ChatRoomResponse::changeResponse)
                 .collect(Collectors.toList());
