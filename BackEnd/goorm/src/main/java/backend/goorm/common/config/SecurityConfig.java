@@ -4,7 +4,6 @@ package backend.goorm.common.config;
 import backend.goorm.member.auth.CustomLoginFailHandler;
 import backend.goorm.member.auth.CustomLoginSuccessHandler;
 import backend.goorm.member.auth.CustomMemberDetailsService;
-import backend.goorm.member.model.enums.MemberRole;
 import backend.goorm.member.oauth.CustomOAuth2MemberService;
 import backend.goorm.member.oauth.handler.OAuth2SuccessHandler;
 import backend.goorm.member.oauth.util.HttpCookieOAuth2AuthorizationRequestRepository;
