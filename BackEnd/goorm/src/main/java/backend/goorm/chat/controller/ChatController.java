@@ -21,16 +21,10 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@Transactional
 public class ChatController {
     private final ChatService chatService;
-    private final ChatRepository chatRepository;
 
-    private final ChatRoomService chatRoomService;
-    private final ChatRoomRepository chatRoomRepository;
-
-    // 발행주소 : /api/pub
-    // 구독주소 : /api/sub
+    //채팅입력
     @MessageMapping("/chat/{roomId}")
     @SendTo("/api/sub/chat/{roomId}")
     public ResponseEntity<ChatResponse> chat(@DestinationVariable Long roomId, @RequestBody ChatRequest chatRequest) {
@@ -39,12 +33,11 @@ public class ChatController {
         return new ResponseEntity<>(chatResponse, HttpStatus.OK);
     }
 
-    //채팅방 생성
-    @PostMapping("/api/chat_room")
-    public ResponseEntity<ChatRoomResponse> createChatRoom(@RequestBody ChatRoomRequest chatRoomRequest) {
-        ChatRoomResponse chatRoom = chatRoomService.createChatRoom(chatRoomRequest);
-
-        return new ResponseEntity<>(chatRoom, HttpStatus.OK);
+    //입장 메시지
+    @MessageMapping("/join/{roomId}")
+    @SendTo("/api/sub/join/{roodId}")
+    public ResponseEntity<String> join(@DestinationVariable Long roomId) {
+        return new ResponseEntity<>("님이 입장하셨습니다.", HttpStatus.OK);
     }
 
     //채팅 히스토리
