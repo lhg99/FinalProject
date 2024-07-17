@@ -7,11 +7,13 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Map;
 
 public record PrincipalDetails(
         Member member,
-        Map<String, Object> attributes) implements OAuth2User, UserDetails {
+        Map<String, Object> attributes,
+        boolean isRegistered ) implements OAuth2User, UserDetails {
 
     @Override
     public String getName() {
@@ -25,12 +27,12 @@ public record PrincipalDetails(
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return null;
+        return Collections.singletonList(new SimpleGrantedAuthority("ROLE_" + member.getRole().toString()));
     }
 
     @Override
     public String getPassword() {
-        return null;
+        return member.getLoginPw();
     }
 
     @Override

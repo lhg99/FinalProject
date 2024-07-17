@@ -45,10 +45,15 @@ public class Member {
     private String memberPhone;
 
     @Enumerated(EnumType.STRING)
-    @NotBlank
-    private MemberRole memberRole;
+    private MemberRole role;
 
     private LocalDateTime memberRegDate;
 
     private boolean memberInactive = false;
+
+    // 회원가입 진행 여부
+    private boolean memberRegistered = false;
+
+    @Size(max = 50)
+    private String socialId;
 }

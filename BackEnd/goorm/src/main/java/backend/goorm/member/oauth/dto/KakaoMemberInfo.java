@@ -2,7 +2,7 @@ package backend.goorm.member.oauth.dto;
 
 import java.util.Map;
 
-public class KakaoUserInfo extends OauthUserInfo {
+public class KakaoMemberInfo extends OauthMemberInfo {
 
     private Map<String, Object> attributes;
 
@@ -10,7 +10,7 @@ public class KakaoUserInfo extends OauthUserInfo {
 
     private String id;
 
-    public KakaoUserInfo(Map<String, Object> attributes) {
+    public KakaoMemberInfo(Map<String, Object> attributes) {
         super(attributes);
         this.attributes = (Map<String, Object>) attributes.get("properties");
         this.profile_item = (Map<String, Object>) attributes.get("kakao_account");
