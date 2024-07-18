@@ -1,14 +1,15 @@
 import React, { useState, useEffect, useRef } from 'react';
 import './FloatingButtonWithChat.scss'; // 스타일 파일을 추가
-import { getChatRoomsByMember } from './api/chatApi';
+import { getChatRoomsByMember, getChatHistory } from './api/chatApi';
 
 const FloatingButtonWithChat: React.FC = () => {
   const [isChatOpen, setIsChatOpen] = useState<boolean>(false);
   const [activeTab, setActiveTab] = useState<string>('home');
   const [inChatRoom, setInChatRoom] = useState<boolean>(false);
   const [currentChatRoomName, setCurrentChatRoomName] = useState<string>('');
+  const [currentChatRoomId, setCurrentChatRoomId] = useState<number>(1);
   const [messages, setMessages] = useState<any[]>([]);
-  const [chatRooms, setChatRooms] = useState<any[]>([]);  // 추가: 채팅방 목록 상태
+  const [chatRooms, setChatRooms] = useState<any[]>([]);  // 채팅방 목록 상태
   const messagesEndRef = useRef<HTMLDivElement | null>(null);
 
   const toggleChat = () => {
@@ -19,8 +20,9 @@ const FloatingButtonWithChat: React.FC = () => {
     }
   };
 
-  const enterChatRoom = (chatRoomName: string) => {
+  const enterChatRoom = (chatRoomName: string, chatRoomId: number) => {
     setCurrentChatRoomName(chatRoomName);
+    setCurrentChatRoomId(chatRoomId)
     setInChatRoom(true);
     setMessages(prevMessages => [
       ...prevMessages,
@@ -47,20 +49,40 @@ const FloatingButtonWithChat: React.FC = () => {
         try {
           const data = await getChatRoomsByMember('user1'); // user1 임시데이터
           setChatRooms(data);
-          console.log(data)
+          // console.log(data) //채팅방 리스트 콘솔에 출력
         } catch (error) {
           console.error('참여한 채팅방 불러오기 오류');
         }
       };
 
       fetchChatRooms();
+      // console.log(activeTab) //현재 탭 출력
     }
   }, [activeTab]);
+
+  //채팅 히스토리 가져오는 useEffect()
+  useEffect(() => {
+    if (inChatRoom === true) {
+      const fetchChatHistory = async () => {
+      try {
+          const data = await getChatHistory(currentChatRoomId);
+          setMessages(data)
+          console.log(messages) //채팅 히스토리 목록 출력
+        }catch (error){
+          console.error("채팅 히스토리 불러오기 오류")
+        }
+      }
+
+      fetchChatHistory();
+      console.log(inChatRoom) //채팅방 입장여부 출력
+      console.log("현재 입장한 채팅방", currentChatRoomId) //채팅방 입장여부 출력
+    }
+  }, [inChatRoom])
 
   const renderChatRoomList = () => (
     <ul className="chat-room-list">
       {chatRooms.map((chatRoom) => (
-        <li key={chatRoom.chatRoomId} onClick={() => enterChatRoom(chatRoom.chatRoomName)}>
+        <li key={chatRoom.chatRoomId} onClick={() => enterChatRoom(chatRoom.chatRoomName, chatRoom.chatRoomId)}>
           <img src="https://via.placeholder.com/40" alt="Chat Room" className="chat-room-image" />
           <div className="chat-room-info">
             <div className="chat-room-name">{chatRoom.chatRoomName}</div>
@@ -73,13 +95,13 @@ const FloatingButtonWithChat: React.FC = () => {
 
   const renderOpenChatRoomList = () => (
     <ul className="chat-room-list">
-      <li onClick={() => enterChatRoom('오픈채팅방 1')}>
+      {/* <li onClick={() => enterChatRoom('오픈채팅방 1')}>
         <img src="https://via.placeholder.com/40" alt="Open Chat Room" className="chat-room-image" />
         <div className="chat-room-info">
           <div className="chat-room-name">오픈채팅방 1</div>
           <div className="chat-room-last-message">마지막 메시지 내용</div>
         </div>
-      </li>
+      </li> */}
     </ul>
   );
 
@@ -123,6 +145,12 @@ const FloatingButtonWithChat: React.FC = () => {
     }
     return messages;
   };
+
+  const generateMessages = () => {
+    messages.map((messages) => {
+
+    })
+  }
   
   const renderChatMessages = () => (
     <div className="chat-messages">
