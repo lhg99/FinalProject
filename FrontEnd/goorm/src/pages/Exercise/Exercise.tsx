@@ -3,7 +3,7 @@ import MyCalendar from './components/Calendar/Calender';
 import ExerciseMemo from './ExerciseMemo';
 import ExerciseSearch from './ExerciseSearch';
 import ExerciseList from './components/Records/ExerciseList';
-import { ExerciseData } from '../../api/ExerciseApi';
+import { ExerciseData } from '../../api/exerciseApi';
 import './Exercise.scss';
 import { ExerciseStore } from '../../store/store';
 import ExerciseCategoryTable from './ExerciseCategoryTable';

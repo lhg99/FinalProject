@@ -1,5 +1,5 @@
 import React from 'react'
-import { Category, ExerciseData } from '../../api/ExerciseApi'
+import { Category, ExerciseData } from '../../api/exerciseApi'
 import styled from 'styled-components';
 
 interface ExerciseCategoryTableProps {

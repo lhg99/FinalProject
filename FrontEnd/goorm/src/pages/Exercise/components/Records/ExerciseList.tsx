@@ -1,5 +1,5 @@
 import React from 'react'
-import { ExerciseData } from '../../../../api/ExerciseApi';
+import { ExerciseData } from '../../../../api/exerciseApi';
 import ExerciseDetails from './ExerciseDetails';
 import styled from 'styled-components';
 

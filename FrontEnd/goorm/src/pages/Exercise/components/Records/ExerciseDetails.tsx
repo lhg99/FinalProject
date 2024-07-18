@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { ExerciseData, SetDetails } from "../../../../api/ExerciseApi";
+import { ExerciseData, SetDetails } from "../../../../api/exerciseApi";
 import { ExerciseStore } from "../../../../store/store";
 import styled from "styled-components";
 

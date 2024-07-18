@@ -1,5 +1,5 @@
 import { create } from "zustand";
-import { Category, ExerciseData, ExerciseDetails } from "../api/ExerciseApi";
+import { Category, ExerciseData, ExerciseDetails } from "../api/exerciseApi";
 
 interface ExerciseState {
     exercises: ExerciseData[];
