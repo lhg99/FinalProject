@@ -2,10 +2,10 @@ import React from 'react'
 
 type Props = {}
 
-function index({}: Props) {
+function chat({}: Props) {
   return (
     <div>index</div>
   )
 }
 
-export default index
+export default chat

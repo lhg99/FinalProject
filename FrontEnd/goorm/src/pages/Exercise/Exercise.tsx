@@ -12,7 +12,7 @@ const Exercise: React.FC = () => {
 
     const [dateInfo, setDateInfo] = useState<{ year: number, month: number, day: number, weekday: string } | null>(null);
     
-    const { exercises, categories, selectedExercises, addExercise, addCustomExercises } = ExerciseStore();
+    const { categories, selectedExercises, addExercise, addCustomExercises } = ExerciseStore();
 
     const handleAddExercise = useCallback((exercise: ExerciseData) => {
         addExercise(exercise);
