@@ -122,28 +122,28 @@ const ExerciseDetails: React.FC<ExerciseDetailProps> = ({exercise, isNew}) => {
                             }}
                         />
                     </ExerciseLabel>
+                    <SetContainer>
                     {sets.map((set, index) => (
                         <SetDetailsContainer key={index}>
-                            <SetContainer>
-                                <ExerciseLabel>
-                                    <ExerciseInput
-                                        type="text"
-                                        placeholder={`세트 ${index + 1} 중량 (kg)`}
-                                        value={set.weight}
-                                        onChange={(e) => handleDetailChange(index, "weight", e.target.value)}
-                                    />
-                                </ExerciseLabel>
-                                <ExerciseLabel>
-                                    <ExerciseInput
-                                        type="text"
-                                        placeholder={`세트 ${index + 1} 횟수`}
-                                        value={set.count}
-                                        onChange={(e) => handleDetailChange(index, "count", e.target.value)}
-                                    />
-                                </ExerciseLabel>
-                            </SetContainer>
+                            <ExerciseLabel>
+                                <ExerciseInput
+                                    type="text"
+                                    placeholder={`세트 ${index + 1} 중량 (kg)`}
+                                    value={set.weight}
+                                    onChange={(e) => handleDetailChange(index, "weight", e.target.value)}
+                                />
+                            </ExerciseLabel>
+                            <ExerciseLabel>
+                                <ExerciseInput
+                                    type="text"
+                                    placeholder={`세트 ${index + 1} 횟수`}
+                                    value={set.count}
+                                    onChange={(e) => handleDetailChange(index, "count", e.target.value)}
+                                />
+                            </ExerciseLabel>
                         </SetDetailsContainer>
                     ))}
+                    </SetContainer>
                 </>
             )}
             <DeleteButton onClick={() => removeExercise(exercise.training_name)}>삭제하기</DeleteButton>
@@ -216,7 +216,7 @@ const SetContainer = styled.div`
 
 const SetDetailsContainer = styled.div`
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
     align-items: flex-start;
     margin-bottom: 0.5rem;
     gap: 0.625rem;
@@ -225,7 +225,7 @@ const SetDetailsContainer = styled.div`
 const AddButton = styled.button`
     margin-left: 1.5625rem;
     margin-right: .625rem;
-    margin-top: 1.25rem;
+    margin-top: 0.625rem;
     height: 50%;
     background-color: gray;
     color: white;
@@ -243,7 +243,7 @@ const AddButton = styled.button`
 const DeleteButton = styled.button`
     margin-left: 1.5625rem;
     margin-right: .625rem;
-    margin-top: 1.25rem;
+    margin-top: 0.625rem;
     height: 50%;
     background-color: #ff4d4d;
     color: white;

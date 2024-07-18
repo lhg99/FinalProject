@@ -31,7 +31,9 @@ export const ExerciseStore = create<ExerciseState>((set) => ({
         customExercises: [...state.customExercises, exercise]
     })),
     addSelectedExercises: (exercise) => set((state) => ({
-        selectedExercises: [...state.selectedExercises, exercise]
+        selectedExercises: state.selectedExercises.find(ex => ex.training_name === exercise.training_name)
+            ? state.selectedExercises
+            : [...state.selectedExercises, exercise]
     })),
     removeExercise: (exerciseName) => set((state) => ({
         selectedExercises: state.selectedExercises.filter((ex) => ex.training_name !== exerciseName)
