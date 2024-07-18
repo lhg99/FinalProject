@@ -1,5 +1,5 @@
 import React, { useCallback, useState } from 'react'
-import MyCalendar from './components/Calendar/Calender';
+import MyCalendar from './components/Calendar/Calendar';
 import ExerciseMemo from './ExerciseMemo';
 import ExerciseSearch from './ExerciseSearch';
 import ExerciseList from './components/Records/ExerciseList';
@@ -26,6 +26,10 @@ const Exercise: React.FC = () => {
         setDateInfo(info);
     }, []);
 
+    const handleFileUpload = (file: File) => {
+        console.log('업로드 파일', file);
+    }
+
     return(
         <div className='exercise'>
             <div className='exercise-container'>
@@ -50,7 +54,7 @@ const Exercise: React.FC = () => {
                     />
                 </div>
             </div>
-            <ExerciseMemo />
+            <ExerciseMemo onFileUpload={handleFileUpload}/>
         </div>
     );
 }
