@@ -23,6 +23,13 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
 
     Optional<Member> findByMemberNickname(String nickname);
 
+    @Query("SELECT m FROM Member m WHERE m.loginId = :loginId AND m.memberInactive = false")
+    Optional<Member> findByLoginIdAndActive(@Param("loginId") String loginId);
+
+    @Query("SELECT m FROM Member m WHERE m.socialId = :socialId AND m.memberInactive = false")
+    Optional<Member> findBySocialIdAndActive(@Param("socialId") String socialId);
+
+
     @Query("SELECT m FROM Member m WHERE m.loginId = :loginId OR m.memberEmail = :memberEmail OR m.memberNickname = :memberNickname")
     Optional<Member> findDuplicate(@Param("loginId") String loginId,
                                                                 @Param("memberEmail") String memberEmail,

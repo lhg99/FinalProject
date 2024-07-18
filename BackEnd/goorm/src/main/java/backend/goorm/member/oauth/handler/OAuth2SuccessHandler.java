@@ -1,7 +1,10 @@
 package backend.goorm.member.oauth.handler;
 
 import backend.goorm.member.model.entity.Member;
+import backend.goorm.member.model.entity.MemberInfo;
 import backend.goorm.member.oauth.PrincipalDetails;
+import backend.goorm.member.repository.MemberInfoRepository;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -16,6 +19,9 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Optional;
 
 @RequiredArgsConstructor
 @Component
@@ -27,6 +33,8 @@ public class OAuth2SuccessHandler implements AuthenticationSuccessHandler{
 
     @Value("${login.loginSuccess-url}")
     private String loginSuccessUrl;
+
+    private final MemberInfoRepository memberInfoRepository;
 
     /**
      * OAuth2 Login 이 정상적으로 수행되었으면 해당 핸들러 클래스로 도착하게됨
@@ -53,9 +61,13 @@ public class OAuth2SuccessHandler implements AuthenticationSuccessHandler{
          * redirect 할 때 queryParam 으로 memberId ( PK ) 반환
          */
         if(member.isMemberRegistered()){
+
+            Optional<MemberInfo> memberInfo = memberInfoRepository.findByMemberId(member);
+
             response.sendRedirect(UriComponentsBuilder
                     .fromUriString(loginSuccessUrl)
                     .queryParam("memberId", member.getMemberId())
+                    .queryParam("info", memberInfo.isPresent())
                     .build()
                     .encode(StandardCharsets.UTF_8)
                     .toUriString());
@@ -65,6 +77,7 @@ public class OAuth2SuccessHandler implements AuthenticationSuccessHandler{
          * redirect 할 때 queryParam 으로 memberId, email, nickname 반환 [ email, nickname 은 카카오에서 가져옴 ]
          */
         else{
+
             response.sendRedirect(UriComponentsBuilder
                     .fromUriString(registerUrl)
                     .queryParam("memberId", member.getMemberId())

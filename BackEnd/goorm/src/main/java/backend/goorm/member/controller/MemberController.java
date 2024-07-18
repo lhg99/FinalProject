@@ -1,16 +1,20 @@
 package backend.goorm.member.controller;
 
-import backend.goorm.member.model.dto.request.DuplicateCheckRequest;
+import backend.goorm.member.model.dto.request.*;
+import backend.goorm.member.model.dto.response.DuplicateCheckResponse;
+import backend.goorm.member.model.dto.response.MemberInfoResponse;
 import backend.goorm.member.service.MemberServiceImpl;
-import backend.goorm.member.model.dto.request.OauthSignupRequest;
-import backend.goorm.member.model.dto.request.SignupRequest;
 import backend.goorm.member.model.entity.Member;
 import backend.goorm.member.oauth.PrincipalDetails;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.coyote.Response;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
+
+import java.io.IOException;
 
 @Slf4j
 @RestController
@@ -46,13 +50,82 @@ public class MemberController {
         return ResponseEntity.ok("회원가입 성공");
     }
 
-    @PostMapping("duplicate/check")
+    /**
+     * 중복체크를 위한 API
+     * @param duplicateCheckRequest
+     * @return
+     */
+    @PostMapping("/duplicate/check")
     public ResponseEntity duplicateCheck(@RequestBody DuplicateCheckRequest duplicateCheckRequest){
 
-        memberService.duplicateCheck(duplicateCheckRequest);
+        DuplicateCheckResponse duplicateCheckResponse = memberService.duplicateCheck(duplicateCheckRequest);
 
-        return ResponseEntity.ok("사용 가능합니다");
+        return ResponseEntity.ok(duplicateCheckResponse);
     }
+
+    @PostMapping("/reg/info")
+    public ResponseEntity regMemberInfo(@RequestBody regMemberInfoRequest regMemberInfoRequest, Authentication authentication){
+
+        PrincipalDetails principalDetails = (PrincipalDetails) authentication.getPrincipal();
+
+        memberService.regMemberInfo(regMemberInfoRequest, principalDetails.member());
+
+        return ResponseEntity.ok("등록 완료");
+    }
+
+    @GetMapping("/get/info")
+    public ResponseEntity getMemberInfo(Authentication authentication){
+
+        PrincipalDetails principalDetails = (PrincipalDetails) authentication.getPrincipal();
+
+        MemberInfoResponse memberInfoResponse = memberService.getMemberInfo(principalDetails.member());
+
+        return ResponseEntity.ok(memberInfoResponse);
+    }
+
+    /**
+     * 비밀 번호 변경 API
+     * @param changePwRequest
+     * @param authentication
+     * @return
+     */
+    @PostMapping("/change/pw")
+    public ResponseEntity changePassWord(@RequestBody ChangePwRequest changePwRequest, Authentication authentication){
+
+        PrincipalDetails principalDetails = (PrincipalDetails) authentication.getPrincipal();
+
+        memberService.changePw(principalDetails.member(), changePwRequest);
+
+        return ResponseEntity.ok("변경 완료");
+    }
+
+    @PostMapping("/change/info")
+    public ResponseEntity changeInfo(@RequestBody ChangeInfoRequest changeInfoRequest, Authentication authentication){
+
+        PrincipalDetails principalDetails = (PrincipalDetails) authentication.getPrincipal();
+
+        memberService.changeInfo(principalDetails.member(), changeInfoRequest);
+
+        return ResponseEntity.ok("변경 완료");
+    }
+
+    @PostMapping("/withdrawal")
+    public ResponseEntity memberWithdrawal(Authentication authentication, HttpServletResponse response) throws IOException {
+
+        PrincipalDetails principalDetails = (PrincipalDetails) authentication.getPrincipal();
+
+        memberService.memberWithdrawal(principalDetails.member());
+
+        /**
+         * 추후 프론트랑 해봐야함
+         * 1. 프론트에서 logout 재요청
+         * 2. redirect 여기서 문제없이 되면 그냥 진행s
+         */
+        response.sendRedirect("/api/auth/logout");
+
+        return ResponseEntity.ok("회원탈퇴 완료");
+    }
+
 
     /**
      * 테스트 API

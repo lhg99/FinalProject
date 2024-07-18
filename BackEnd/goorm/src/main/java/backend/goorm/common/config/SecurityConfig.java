@@ -3,6 +3,7 @@ package backend.goorm.common.config;
 
 import backend.goorm.member.auth.CustomLoginFailHandler;
 import backend.goorm.member.auth.CustomLoginSuccessHandler;
+import backend.goorm.member.auth.CustomLogoutSuccessHandler;
 import backend.goorm.member.auth.CustomMemberDetailsService;
 import backend.goorm.member.oauth.CustomOAuth2MemberService;
 import backend.goorm.member.oauth.handler.OAuth2SuccessHandler;
@@ -39,6 +40,8 @@ public class SecurityConfig {
     private final OAuth2SuccessHandler oAuth2SuccessHandler;
     private final HttpCookieOAuth2AuthorizationRequestRepository auth2AuthorizationRequestRepository;
 
+    private final CustomLogoutSuccessHandler logoutSuccessHandler;
+
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity httpSecurity)throws Exception{
 
@@ -61,7 +64,9 @@ public class SecurityConfig {
                 )
                 .logout(logout -> logout
                         .logoutUrl("/api/auth/logout")
+                        .logoutSuccessHandler(logoutSuccessHandler)
                         .invalidateHttpSession(true)
+                        .clearAuthentication(true)
                         .deleteCookies("JSESSIONID")
                         .permitAll()
                 )
