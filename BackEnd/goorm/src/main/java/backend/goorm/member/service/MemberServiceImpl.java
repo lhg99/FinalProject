@@ -1,5 +1,7 @@
 package backend.goorm.member.service;
 
+import backend.goorm.common.exception.CustomException;
+import backend.goorm.common.exception.CustomExceptionType;
 import backend.goorm.member.model.dto.request.*;
 import backend.goorm.member.model.dto.response.DuplicateCheckResponse;
 import backend.goorm.member.model.dto.response.MemberInfoResponse;
@@ -15,7 +17,6 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.swing.text.DateFormatter;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Optional;
@@ -42,8 +43,7 @@ public class MemberServiceImpl implements  MemberService{
                 .findDuplicate(signupRequest.getLoginId(), signupRequest.getEmail(), signupRequest.getNickname());
 
         if (duplicate.isPresent()) {
-            // TODO: ADD DUPLICATE EXCEPTION
-            throw new RuntimeException("중복된 사용자가 존재");
+            throw new CustomException(CustomExceptionType.DUPLICATE_INFORMATION);
         }
 
         Member saveMember = Member.builder()
@@ -74,7 +74,7 @@ public class MemberServiceImpl implements  MemberService{
         Optional<Member> findUser = memberRepository.findByMemberId(oauthSignupRequest.getMemberId());
 
         if (!findUser.isPresent()) {
-            throw new RuntimeException("잘못된 요청");
+            throw new CustomException(CustomExceptionType.RUNTIME_EXCEPTION);
         }
 
         Member member = findUser.get();
@@ -108,7 +108,6 @@ public class MemberServiceImpl implements  MemberService{
         DuplicateCheckResponse duplicateCheckResponse = new DuplicateCheckResponse();
 
         if(member.isPresent()){
-            // TODO : ADD NEW DUPLICATION EXCEPTION
             duplicateCheckResponse.setMessage("중복된 값입니다");
             duplicateCheckResponse.setUsable(false);
         }else{
@@ -130,8 +129,7 @@ public class MemberServiceImpl implements  MemberService{
                 = memberInfoRepository.findByMemberId(member);
 
         if(findMemberInfo.isPresent()){
-            // TODO : 새로운 예외처리 필요
-            throw new RuntimeException("이미 회원정보가 등록된 회원입니다");
+            throw new CustomException(CustomExceptionType.ALREADY_REG_INFO);
         }
 
         MemberInfo memberInfo = MemberInfo.builder()
@@ -150,8 +148,7 @@ public class MemberServiceImpl implements  MemberService{
         Optional<MemberInfo> findInfo = memberInfoRepository.findByIdWithMember(member);
 
         if(!findInfo.isPresent()){
-            // TODO : 적절한 예외처리 필요
-            throw new RuntimeException("회원정보가 존재하지 않음");
+            throw new CustomException(CustomExceptionType.USER_NOT_FOUND);
         }
 
         Member findMember  = findInfo.get().getMemberId();
@@ -179,8 +176,7 @@ public class MemberServiceImpl implements  MemberService{
         Optional<Member> findMember = memberRepository.findByMemberId(member.getMemberId());
 
         if(!encoder.matches(changePwRequest.getOldPassword(), findMember.get().getLoginPw())){
-            // TODO : 적절한 예외상황 던저야함
-            throw new RuntimeException("비밀번호가 일치하지 않음");
+            throw new CustomException(CustomExceptionType.PASSWORD_MISMATCH);
         }
 
         findMember.get().setLoginPw(encoder.encode(changePwRequest.getNewPassword()));
@@ -192,14 +188,14 @@ public class MemberServiceImpl implements  MemberService{
         Optional<MemberInfo> findInfo = memberInfoRepository.findByIdWithMember(member);
 
         if(findInfo.get().getMemberId().getMemberType() == MemberType.SOCIAL){
-            throw new RuntimeException("소셜 회원은 비밀번호 변경을 진행할 수 없습니다");
+            // 소셜 회원은 비밀번호 변경을 할 수 없음
+            throw new CustomException(CustomExceptionType.RUNTIME_EXCEPTION);
         }
 
         Optional<Member> findByNickname = memberRepository.findByMemberNickname(changeInfoRequest.getNickname());
 
         if(findByNickname.isPresent()){
-            // TODO : 적절한 예외처리 필요
-            throw new RuntimeException("이미 존재하는 닉네임, 잘못된 요청입니다");
+            throw new CustomException(CustomExceptionType.DUPLICATE_INFORMATION);
         }
 
         findInfo.get().setComment(changeInfoRequest.getComment());
@@ -212,9 +208,8 @@ public class MemberServiceImpl implements  MemberService{
     public void memberWithdrawal(Member member) {
         Optional<Member> findMember = memberRepository.findByMemberId(member.getMemberId());
 
-        if(!findMember.isPresent()){
-            // TODO : 적절한 예외처리 필요
-            throw new RuntimeException("잘못된 접급");
+        if(!findMember.isPresent()) {
+            throw new CustomException(CustomExceptionType.RUNTIME_EXCEPTION);
         }
 
         findMember.get().setMemberInactive(true);

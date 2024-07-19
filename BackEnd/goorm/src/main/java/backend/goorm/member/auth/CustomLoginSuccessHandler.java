@@ -38,7 +38,7 @@ public class CustomLoginSuccessHandler implements AuthenticationSuccessHandler {
         response.setStatus(HttpServletResponse.SC_OK);
         Map<String, String> result = new HashMap<>();
         result.put("message", "로그인이 정상적으로 완료되었습니다");
-        result.put("userId", String.valueOf(member.getMemberId()));
+        result.put("memberId", String.valueOf(member.getMemberId()));
         result.put("info", String.valueOf(memberInfo.isPresent()));
 
         response.setContentType("application/json");
