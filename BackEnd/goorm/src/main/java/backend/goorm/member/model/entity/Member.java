@@ -2,6 +2,7 @@ package backend.goorm.member.model.entity;
 
 import backend.goorm.chat.model.entity.ChatRoom;
 import backend.goorm.member.model.enums.MemberRole;
+import backend.goorm.member.model.enums.MemberType;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
@@ -66,5 +67,8 @@ public class Member {
 
     @Size(max = 50)
     private String socialId;
+
+    @Enumerated(EnumType.STRING)
+    private MemberType memberType;
 
 }
