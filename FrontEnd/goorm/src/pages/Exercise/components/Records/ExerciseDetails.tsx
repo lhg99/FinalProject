@@ -11,10 +11,11 @@ interface ExerciseDetailProps {
   // 운동 세부정보 입력하는 컴포넌트
 const ExerciseDetails: React.FC<ExerciseDetailProps> = ({exercise, isNew}) => {
     const [exerciseName, setExerciseName] = useState<string>(exercise.training_name || "");
+    const [distance, setDistance] = useState<string>("");
     const [duration, setDuration] = useState<string>("");
     const [slope, setSlope] = useState<string>("");
     const [pressure, setPressure] = useState<string>("");
-    const [sets, setSets] = useState<SetDetails[]>([{weight:"", count:""}]);
+    const [sets, setSets] = useState<SetDetails[]>([{ numSets: "", weight: "", count: "" }]);
 
     const {updateExerciseDetails, removeExercise, categories} = ExerciseStore();
 
@@ -24,23 +25,19 @@ const ExerciseDetails: React.FC<ExerciseDetailProps> = ({exercise, isNew}) => {
 
     useEffect(() => {
         if(exercise.category_id === 1) {
-            updateExerciseDetails({ training_name: exercise.training_name, duration, slope, pressure });
+            updateExerciseDetails({ training_name: exercise.training_name, distance, duration, slope, pressure });
         } else {
             updateExerciseDetails({ training_name: exercise.training_name, duration, sets });
         }
-    }, [updateExerciseDetails, exercise.category_id, exercise.training_name, duration, slope, pressure, sets ])
+    }, [updateExerciseDetails, exercise.category_id, exercise.training_name, distance, duration, slope, pressure, sets ])
     
     const handleDetailChange = (index: number, field: keyof SetDetails, value: string) => {
-        const newSets = sets.map((set, i) => (i === index ? {...set, [field]: value } : set));
+        const newSets = sets.map((set, i) => (i === index ? { ...set, [field]: value } : set));
         setSets(newSets);
-        if(exercise.category_id !== 1) {
+        if (exercise.category_id !== 1) {
             updateExerciseDetails({ training_name: exercise.training_name, duration, sets: newSets });
         }
-    }
-
-    const addSet = () => {
-        setSets([...sets, {weight:"", count:""}]);
-    }
+    };
 
     return (
     <ExerciseDetailsContainer>
@@ -69,7 +66,22 @@ const ExerciseDetails: React.FC<ExerciseDetailProps> = ({exercise, isNew}) => {
                     <ExerciseLabel>
                         <ExerciseInput 
                             type='text' 
-                            placeholder="시간 (분)"
+                            placeholder="거리"
+                            value={distance} 
+                            onChange={(e) => {
+                                setDistance(e.target.value);
+                                if (exercise.category_id === 1) {
+                                    updateExerciseDetails({ training_name: exerciseName, duration, slope, pressure });
+                                } else {
+                                    updateExerciseDetails({ training_name: exerciseName, duration, sets });
+                                }
+                            }}
+                        />
+                    </ExerciseLabel>
+                    <ExerciseLabel>
+                        <ExerciseInput 
+                            type='text' 
+                            placeholder=" 시간"
                             value={duration} 
                             onChange={(e) => {
                                 setDuration(e.target.value);
@@ -106,47 +118,54 @@ const ExerciseDetails: React.FC<ExerciseDetailProps> = ({exercise, isNew}) => {
                 </>
             ) : (
                 <>
-                    <AddButton onClick={addSet}>+</AddButton>
-                    <ExerciseLabel>
-                        <ExerciseInput 
-                            type='text' 
-                            placeholder="시간 (분)"
-                            value={duration} 
-                            onChange={(e) => {
-                                setDuration(e.target.value);
-                                if (exercise.category_id === 1) {
-                                    updateExerciseDetails({ training_name: exerciseName, duration, slope, pressure });
-                                } else {
-                                    updateExerciseDetails({ training_name: exerciseName, duration, sets });
-                                }
-                            }}
-                        />
-                    </ExerciseLabel>
-                    <SetContainer>
+                    {/* <AddButton onClick={addSet}>+</AddButton> */}
                     {sets.map((set, index) => (
-                        <SetDetailsContainer key={index}>
+                        <SetContainer key={index}>
+                            <ExerciseLabel>
+                                <ExerciseInput 
+                                    type='text' 
+                                    placeholder=" 시간"
+                                    value={duration} 
+                                    onChange={(e) => {
+                                        setDuration(e.target.value);
+                                        if (exercise.category_id === 1) {
+                                            updateExerciseDetails({ training_name: exerciseName, duration, slope, pressure });
+                                        } else {
+                                            updateExerciseDetails({ training_name: exerciseName, duration, sets });
+                                        }
+                                    }}
+                                />
+                            </ExerciseLabel>
                             <ExerciseLabel>
                                 <ExerciseInput
-                                    type="text"
-                                    placeholder={`세트 ${index + 1} 중량 (kg)`}
+                                type="number"
+                                placeholder='세트'
+                                value={set.numSets}
+                                onChange={(e) => handleDetailChange(index, "numSets", e.target.value)}
+                                />
+                            </ExerciseLabel>
+                            <ExerciseLabel>
+                                <ExerciseInput
+                                    type="number"
+                                    placeholder='중량(kg)'
                                     value={set.weight}
+                                    step="5"
                                     onChange={(e) => handleDetailChange(index, "weight", e.target.value)}
                                 />
                             </ExerciseLabel>
                             <ExerciseLabel>
                                 <ExerciseInput
-                                    type="text"
-                                    placeholder={`세트 ${index + 1} 횟수`}
+                                    type="number"
+                                    placeholder='횟수'
                                     value={set.count}
                                     onChange={(e) => handleDetailChange(index, "count", e.target.value)}
                                 />
                             </ExerciseLabel>
-                        </SetDetailsContainer>
+                        </SetContainer>
                     ))}
-                    </SetContainer>
                 </>
             )}
-            <DeleteButton onClick={() => removeExercise(exercise.training_name)}>삭제하기</DeleteButton>
+            <DeleteButton onClick={() => removeExercise(exercise.training_name)}>삭제</DeleteButton>
         </InputContainer>
     </ExerciseDetailsContainer>
     )
@@ -206,39 +225,49 @@ const ExerciseInput = styled.input`
     margin-top: 1.25rem;
     border: 1px solid black;
     border-radius: 0.625rem;
+
+    // 스핀버튼 항상 보이게 설정하는 CSS
+    -webkit-appearance: none;
+    -moz-appearance: textfield;
+
+    &::-webkit-inner-spin-button, 
+    &::-webkit-outer-spin-button { 
+    -webkit-appearance: inner-spin-button;
+    opacity: 1;
+    }
 `;
 
 const SetContainer = styled.div`
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
     gap: 1rem;
 `;
 
-const SetDetailsContainer = styled.div`
-    display: flex;
-    flex-direction: row;
-    align-items: flex-start;
-    margin-bottom: 0.5rem;
-    gap: 0.625rem;
-`;
+// const SetDetailsContainer = styled.div`
+//     display: flex;
+//     flex-direction: row;
+//     align-items: flex-start;
+//     margin-bottom: 0.5rem;
+//     gap: 0.625rem;
+// `;
 
-const AddButton = styled.button`
-    margin-left: 1.5625rem;
-    margin-right: .625rem;
-    margin-top: 0.625rem;
-    height: 50%;
-    background-color: gray;
-    color: white;
-    padding: 0.5rem 1rem;
-    border: none;
-    border-radius: .125rem;
-    cursor: pointer;
-    transition: background-color 0.3s;
+// const AddButton = styled.button`
+//     margin-left: 1.5625rem;
+//     margin-right: .625rem;
+//     margin-top: 0.625rem;
+//     height: 50%;
+//     background-color: gray;
+//     color: white;
+//     padding: 0.5rem 1rem;
+//     border: none;
+//     border-radius: .125rem;
+//     cursor: pointer;
+//     transition: background-color 0.3s;
 
-    &:hover {
-        background-color: lightgray;
-    }
-`;
+//     &:hover {
+//         background-color: lightgray;
+//     }
+// `;
 
 const DeleteButton = styled.button`
     margin-left: 1.5625rem;

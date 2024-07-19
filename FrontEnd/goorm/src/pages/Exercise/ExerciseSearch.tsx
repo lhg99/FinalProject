@@ -2,6 +2,7 @@ import React, { useCallback, useEffect, useState } from 'react'
 import { Category, ExerciseData, ExerciseInfo, getCategories, getExerciseData, postCustomExerciseData } from '../../api/exerciseApi';
 import { ExerciseStore } from '../../store/store';
 import styled from 'styled-components';
+import { SearchIcon } from '../../image/SearchIcon';
 
 interface ExerciseSearchProps {
     onAddExercise: (exercise: ExerciseData) => void;
@@ -167,13 +168,15 @@ const ExerciseSearch: React.FC<ExerciseSearchProps> = ({ onAddExercise, onAddCus
                 }
             </CategoriesContainer>
             <SearchForm onSubmit={handleSearchClick}>
-                <input 
+                <SearchInput 
                     type="text" 
                     placeholder='운동 검색' 
                     value={searchQuery}
                     onChange={handleSearchChange} 
                 />
-                <button className="search-btn" type='submit'>검색</button>
+                <SearchButton type='submit'>
+                    <SearchIcon />
+                </SearchButton>
             </SearchForm>
             <ExerciseListContainer>
                 <ExerciseItemButton onClick={handleAddCustomExerciseClick}>직접 입력하기</ExerciseItemButton>
@@ -191,13 +194,39 @@ const ExerciseSearch: React.FC<ExerciseSearchProps> = ({ onAddExercise, onAddCus
 export default ExerciseSearch
 
 const ExerciseSearchContainer = styled.div`
-    margin-bottom: 10px;
+    margin-bottom: 1.25rem;
+    margin-right: 1.25rem;
     display: flex;
     flex-direction: column;
     padding: .625rem;
-    height: 30.625rem;
+    width: 100%;
+    height: 87%;
+    max-height: 100%;
+    overflow-y: auto;
     border: 1px solid black;
-    border-radius: 0.9375rem;
+    border-radius: 0.3125rem;
+    box-sizing: border-box;
+
+    /* 스크롤바 스타일링 */
+    &::-webkit-scrollbar {
+        width: 12px; /* 스크롤바의 너비 */
+    }
+
+    &::-webkit-scrollbar-track {
+        background: #f1f1f1; /* 스크롤바 트랙의 배경색 */
+        border-radius: 0.9375rem;
+        margin-right: 0.625rem; /* 스크롤바 트랙의 오른쪽 여백 */
+    }
+
+    &::-webkit-scrollbar-thumb {
+        background: #888; /* 스크롤바의 색상 */
+        border-radius: 0.9375rem; /* 스크롤바 모서리 둥글게 */
+        border: 2px solid #f1f1f1; /* 스크롤바의 테두리 */
+    }
+
+    &::-webkit-scrollbar-thumb:hover {
+        background: #555; /* 스크롤바의 색상 (hover 상태) */
+    }
 `;
 
 const CategoriesContainer = styled.div`
@@ -206,24 +235,41 @@ const CategoriesContainer = styled.div`
 
 const SearchForm = styled.form`
     margin-top: .625rem;
-
+    width: 100%;
     .search-btn {
         margin-left: .5rem;
     }
 `;
+
+const SearchInput = styled.input`
+    width: 80%;
+    padding:.625rem;
+`;
+
+const SearchButton = styled.button`
+    margin-left: .5rem;
+    height: 98%;
+`
 
 const ExerciseListContainer = styled.div`
     display: flex;
     flex-direction: column;
     height: 1.875rem;
     margin-top: 1.25rem;
+    margin-bottom: 1.25rem;
     gap: .625rem;
 `;
 
 const ExerciseItemButton = styled.button`
     width: 100%;
+    height: 100%;
     justify-content: center;
+    align-items: center;
     border-radius: 0.9375rem;
+    font-size: 18px;
+    border: 1px solid black;
+    border-radius: 0;
+    background-color: white;
 
     &:hover {
         background-color: #f0f0f0;
