@@ -37,7 +37,7 @@ public class ChatService {
     }
 
     public List<ChatResponse> chatHistory(Long chatRoomId) {
-        return chatRepository.findByChatRoomId(chatRoomId)
+        return chatRepository.findByChatRoom_ChatRoomId(chatRoomId)
                 .stream()
                 .map(ChatResponse::changeResponse)
                 .collect(Collectors.toList());
