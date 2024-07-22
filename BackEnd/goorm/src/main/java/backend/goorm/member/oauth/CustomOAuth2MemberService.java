@@ -2,6 +2,7 @@ package backend.goorm.member.oauth;
 
 import backend.goorm.member.model.entity.Member;
 import backend.goorm.member.model.enums.MemberRole;
+import backend.goorm.member.model.enums.MemberType;
 import backend.goorm.member.oauth.dto.OAuth2MemberInfoFactory;
 import backend.goorm.member.oauth.dto.OauthMemberInfo;
 import backend.goorm.member.repository.MemberRepository;
@@ -35,7 +36,7 @@ public class CustomOAuth2MemberService extends DefaultOAuth2UserService {
         log.info(oAuth2MemberInfo.getProviderId());
 
         // 기존에 회원가입을 진행한 유저인지 아닌지 확인하는 과정
-        Optional<Member> socialMember = memberRepository.findBySocialId(oAuth2MemberInfo.getProviderId());
+        Optional<Member> socialMember = memberRepository.findBySocialIdAndActive(oAuth2MemberInfo.getProviderId());
 
         /**
          * CASE 1. 회원 등록 자체가 안되어 있을 경우
@@ -50,6 +51,7 @@ public class CustomOAuth2MemberService extends DefaultOAuth2UserService {
                     .memberPhone("temp")
                     .role(MemberRole.MEMBER)
                     .socialId(oAuth2MemberInfo.getProviderId())
+                    .memberType(MemberType.SOCIAL)
                     .build();
 
             Member saveMember = memberRepository.save(tempMember);

@@ -20,7 +20,7 @@ public class CustomMemberDetailsService implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         log.info("userName == {}" , username);
-        Member member = memberRepository.findByLoginId(username).orElseThrow(() -> {
+        Member member = memberRepository.findByLoginIdAndActive(username).orElseThrow(() -> {
             return new UsernameNotFoundException("회원 정보를 찾을 수 없습니다.");
         });
         return new PrincipalDetails(member, null, true);
