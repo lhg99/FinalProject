@@ -1,6 +1,7 @@
 package backend.goorm.training.model.enums;
 
 public enum TrainingCategoryType {
+    유산소,
     가슴,
     등,
     하체,

@@ -1,6 +1,6 @@
 package backend.goorm.training.model.entity;
 
-import backend.goorm.record.TrainingRecord;
+import backend.goorm.record.entity.TrainingRecord;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
