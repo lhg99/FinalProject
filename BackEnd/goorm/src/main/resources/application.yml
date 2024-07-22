@@ -1,0 +1,4 @@
+# application file selected
+spring:
+  profiles:
+    active: prod
