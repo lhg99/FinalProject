@@ -28,7 +28,8 @@ public class ChatRoomService {
     }
 
     public List<ChatRoomResponse> getChatRoomsByMember(String loginId) {
-        Member member = memberRepository.findByLoginId(loginId);
+        Member member = memberRepository.findByLoginId(loginId)
+                .orElseThrow(() -> new RuntimeException("해당하는 ID가 없습니다."));
         return member.getChatRooms()
                 .stream()
                 .map(ChatRoomResponse::changeResponse)
