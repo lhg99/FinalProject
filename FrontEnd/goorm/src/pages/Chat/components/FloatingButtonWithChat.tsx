@@ -1,6 +1,8 @@
 import React, { useState, useEffect, useRef } from 'react';
 import './FloatingButtonWithChat.scss'; // 스타일 파일을 추가
 import { getChatRoomsByMember, getChatHistory } from '../api/chatApi';
+import { Stomp } from '@stomp/stompjs';
+import SockJS from 'sockjs-client'
 
 const FloatingButtonWithChat: React.FC = () => {
   const [isChatOpen, setIsChatOpen] = useState<boolean>(false);
@@ -8,9 +10,17 @@ const FloatingButtonWithChat: React.FC = () => {
   const [inChatRoom, setInChatRoom] = useState<boolean>(false);
   const [currentChatRoomName, setCurrentChatRoomName] = useState<string>('');
   const [currentChatRoomId, setCurrentChatRoomId] = useState<number>(1);
-  const [messages, setMessages] = useState<any[]>([]);
+  const [messages, setMessages] = useState<any[]>([]); //가져온 채팅 히스토리가 저장되는 messages 
   const [chatRooms, setChatRooms] = useState<any[]>([]);  // 채팅방 목록 상태
+  const [inputMessage, setInputMessage] = useState<string>(''); // 입력된 메시지를 저장하는 상태
   const messagesEndRef = useRef<HTMLDivElement | null>(null);
+  const clientRef = useRef<any>(null);
+
+  const config = {
+    apiRequestUrl: process.env.REACT_APP_API_REQUEST_URL,
+    subUrl: process.env.REACT_APP_WEBSOCKET_SUB_URL,
+    pubUrl: process.env.REACT_APP_WEBSOCKET_PUB_URL
+  }
 
   const toggleChat = () => {
     setIsChatOpen(!isChatOpen);
@@ -24,6 +34,10 @@ const FloatingButtonWithChat: React.FC = () => {
     setCurrentChatRoomName(chatRoomName);
     setCurrentChatRoomId(chatRoomId)
     setInChatRoom(true);
+    if (inChatRoom) {
+
+    }
+
     setMessages(prevMessages => [
       ...prevMessages,
       { type: 'system', content: `${chatRoomName}에 입장했습니다.`, timestamp: new Date().toLocaleTimeString(), unreadCount: 0 }
@@ -40,7 +54,7 @@ const FloatingButtonWithChat: React.FC = () => {
     if (inChatRoom) {
       scrollToBottom();
     }
-  }, [inChatRoom]);
+  }, [inChatRoom, messages]);
 
   //채팅방 목록 가져오는 useEffect()
   useEffect(() => {
@@ -56,29 +70,69 @@ const FloatingButtonWithChat: React.FC = () => {
       };
 
       fetchChatRooms();
-      // console.log(activeTab) //현재 탭 출력
+      console.log(activeTab) //현재 탭 출력
     }
   }, [activeTab]);
 
-  //채팅 히스토리 가져오는 useEffect()
+  // 채팅 히스토리 가져오는 useEffect()
+  // inChatRoom 값이 true일때 웹소켓 연결 컴포넌트 언마운트 시 return문 실행
   useEffect(() => {
     if (inChatRoom === true) {
       const fetchChatHistory = async () => {
       try {
           const data = await getChatHistory(currentChatRoomId);
           setMessages(data)
-          console.log(messages) //채팅 히스토리 목록 출력
         }catch (error){
           console.error("채팅 히스토리 불러오기 오류")
         }
       }
-
+      
       fetchChatHistory();
       console.log(inChatRoom) //채팅방 입장여부 출력
       console.log("현재 입장한 채팅방", currentChatRoomId) //채팅방 입장여부 출력
-    }
-  }, [inChatRoom])
+      console.log(messages) //채팅 히스토리 목록 출력
 
+      //웹소켓 연결 설정
+      const socket = new SockJS(`${config.apiRequestUrl}/websocket`);
+      const client = Stomp.over(socket);
+    
+      client.connect({}, () => {
+
+        //채팅구독
+        client.subscribe(`${config.subUrl}/chat/${currentChatRoomId}`, (message) => {
+          console.log('message:',message)
+          const newMessage = JSON.parse(message.body);
+          console.log('newMessage:',newMessage.body);
+          setMessages((prevMessages) => [...prevMessages, newMessage.body]);
+        });
+      }, (error: any) => {
+        console.log('웹소켓 연결 오류', error)
+      });
+
+      // STOMP 클라이언트 참조 유지
+      clientRef.current = client;
+
+      return () => {
+        client.disconnect(() => {
+          console.log('웹소켓 연결 종료');
+        });
+      };
+
+    }
+  }, [inChatRoom]);
+
+  const sendMessage = () => {
+    if (clientRef.current && inputMessage.trim() !== '') {
+      const message = {
+        sender: '구름이', // 사용자 이름 또는 ID
+        message: inputMessage,
+      };
+      clientRef.current.send(`${config.pubUrl}/chat/${currentChatRoomId}`, {}, JSON.stringify(message));
+      setInputMessage('');
+    }
+  };
+
+  //채팅방 리스트 렌더링
   const renderChatRoomList = () => (
     <ul className="chat-room-list">
       {chatRooms.map((chatRoom) => (
@@ -105,63 +159,52 @@ const FloatingButtonWithChat: React.FC = () => {
     </ul>
   );
 
-  const generateSampleMessages = () => {
-    const messages = [];
-    for (let i = 1; i <= 30; i++) {
-      messages.push(
-        <div className={`chat-message ${i % 2 === 0 ? 'right' : 'left'}`} key={i}>
-          {i % 2 === 0 && (
+  //DB에서 가져온 messages 파싱해서 메시지박스로 변환 후 messagebox변수에 저장해서 반환
+  const generateMessages = () => {
+    const messagebox: any = [];
+    messages.forEach((message) => {
+      messagebox.push(
+        <div className={`chat-message ${message.sender === '구름이' ? 'right' : 'left'}`} key={message.id}>
+          {message.sender === '구름이' && (
             <div className="message-info">
               <span className="unread-count">1</span>
-              <span className="message-time">{new Date().toLocaleTimeString([], { minute: '2-digit', second: '2-digit' })}</span>
+              <span className="message-time">{new Date(message.sendTime).toLocaleTimeString([], { minute: '2-digit', second: '2-digit' })}</span>
             </div>
           )}
 
-          {i % 2 === 0 && (
+          {message.sender === '구름이' && (
             <div className='message-content'>
-              {`내가 보낸 메시지 내가보낸메시지ㄻㅇㄴㄻㅇㄴ${i}`}
+              {message.message}
             </div>
-          )}          
+          )}
           
-          {i % 2 !== 0 && (
-            <div>
+          {message.sender !== '구름이' && (
+            <div className='others-message'>
               <div className='message-username'>
-                <span className='sendername'>상대방 닉네임</span>
-              </div>              
+                <span className='sendername'>{message.sender}</span>
+              </div>
               <div className='message-content'>
-                {`내가 보낸 메시지 내가보낸메시지${i}`}
+                {message.message}
               </div>
             </div>
           )}
 
-          {i % 2 !== 0 && (
+          {message.sender !== '구름이' && (
             <div className="message-info">
               <span className="unread-count">0</span>
-              <span className="message-time">{new Date().toLocaleTimeString([], { minute: '2-digit', second: '2-digit' })}</span>
+              <span className="message-time">{new Date(message.sendTime).toLocaleTimeString([], { minute: '2-digit', second: '2-digit' })}</span>
             </div>
           )}
         </div>
       );
-    }
-    return messages;
-  };
-
-  const generateMessages = () => {
-    messages.map((messages) => {
-
     })
+    return messagebox;
   }
   
+  //채팅 메시지 렌더링 -> renderConent() 에서 호출
   const renderChatMessages = () => (
     <div className="chat-messages">
-      {generateSampleMessages()}
-      {messages.map((message, index) => (
-        <div key={index} className={`chat-message ${message.type === 'system' ? 'system' : null}`}>
-          <div className="message-content">
-            {message.content}
-          </div>
-        </div>
-      ))}
+      {generateMessages()}
       <div ref={messagesEndRef} />
     </div>
   );
@@ -181,14 +224,25 @@ const FloatingButtonWithChat: React.FC = () => {
     </div>
   );
 
+  
   const renderContent = () => {
     if (inChatRoom) {
       return (
         <div className="chat-room">
           {renderChatMessages()}
           <div className="chat-footer">
-            <input type="text" placeholder="메시지를 입력하세요" />
-            <button>전송</button>
+            <input 
+              type="text" 
+              placeholder="메시지를 입력하세요"
+              value={inputMessage}
+              onChange={(e) => setInputMessage(e.target.value)}
+              onKeyPress={(e) => {
+                if (e.key === 'Enter') {
+                  sendMessage();
+                }
+              }}
+            />
+            <button onClick={sendMessage}>전송</button>
           </div>
         </div>
       );
