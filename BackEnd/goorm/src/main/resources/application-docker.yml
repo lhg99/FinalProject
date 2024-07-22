@@ -2,12 +2,12 @@
 spring:
   profiles:
     activate:
-      on-profile: prod
+      on-profile: docker
   datasource:
     driverClassName: org.mariadb.jdbc.Driver
-    url: jdbc:mariadb://${MYSQL_HOST}:${MYSQL_PORT}/${MYSQL_DATABASE}
-    username: ${MYSQL_USER}
-    password: ${MYSQL_ROOT_PASSWORD}
+    url: jdbc:mariadb://maria-test:3306/myapp
+    username: root
+    password: root
   jpa:
     properties:
       hibernate:
@@ -15,8 +15,7 @@ spring:
         show_sql: true
         format_sql: true
     hibernate:
-      ddl-auto: create
-
+      ddl-auto: update
 
 logging:
   level:
@@ -24,3 +23,4 @@ logging:
       springframework:
         jdbc: DEBUG
         security: DEBUG
+
