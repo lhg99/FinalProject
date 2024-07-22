@@ -1,18 +1,52 @@
 .exercise {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start; // 상단 정렬
+  padding: 20px;
+
+  .exercise-container {
     display: flex;
-    flex-direction: row;
-    align-items: flex-start; // 상단 정렬
-    padding: 20px;
-  
-    .calendar {
-      flex: 1;
-    }
-  
-    .date-info {
-      flex: 1;
-      padding: 20px;
-      background-color: #f0f0f0;
-      margin-left: 20px;
-      border-radius: 8px;
+    width: 100%;
+    margin-bottom: .625rem;
+
+    .left-column {
+      display: flex;
+      flex-direction: row;
+      
+      .calendar {
+        margin-right: .625rem;
+      }
+
+      .calender-right {
+        display: flex;
+        flex-direction: column;
+      }
+
+      .date-info {
+        margin-bottom: 1.25rem;
+
+        .date-text {
+          font-size: 1.25rem;
+          font-weight: bold;
+        }
+      }
     }
   }
+
+  .right-column {
+    flex: 1;
+    margin-left: 1.25rem;
+  }
+
+  .exercise-memo {
+    display: flex;
+    margin-top: 1.25rem;
+    border: 1px solid black;
+    border-radius: 0.9375rem;
+
+    .memo-input {
+      display: flex;
+      margin-bottom: 1.25rem;
+    }
+  }
+}
