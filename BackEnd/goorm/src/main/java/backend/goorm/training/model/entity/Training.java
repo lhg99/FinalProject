@@ -1,6 +1,6 @@
 package backend.goorm.training.model.entity;
 
-import backend.goorm.record.TrainingRecord;
+import backend.goorm.record.entity.TrainingRecord;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -27,7 +27,7 @@ public class Training {
 
 
     @Column(name = "user_register", nullable = false)
-    private Boolean user_custom = false;
+    private Boolean userCustom = false;
 
     @Column(name = "description")
     private String description;

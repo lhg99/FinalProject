@@ -24,5 +24,6 @@ public class MemberInfo {
 
     private Float memberWeight;
 
+    private String comment;
 
 }

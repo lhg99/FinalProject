@@ -1,8 +1,22 @@
 import React from 'react';
 import logo from './logo.svg';
 import './App.css';
+import axios from 'axios';
+
+
 
 function App() {
+  const handleClick = async () => {
+    try {
+      const response = await axios.post('http://final-project-app-env.eba-xdjqmujd.ap-northeast-2.elasticbeanstalk.com/api/con_test', {
+        sender: 'sender'
+      });
+      console.log('Response:', response.data);
+    } catch (error) {
+      console.error('Error posting data:', error);
+    }
+  };
+
   return (
     <div className="App">
       <header className="App-header">
@@ -18,6 +32,7 @@ function App() {
         >
           Learn React
         </a>
+        <button onClick={handleClick}>Send POST Request</button>
       </header>
     </div>
   );

@@ -1,9 +1,12 @@
 package backend.goorm.chat.model.entity;
 
+import backend.goorm.member.model.entity.Member;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import java.util.List;
 
 @Entity
 @Data
@@ -11,18 +14,11 @@ import lombok.NoArgsConstructor;
 public class ChatRoom {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "chatRoom_id")
-    private Long id;
-    private String name;
+    @Column(name = "chat_room_id")
+    private Long chatRoomId;
+    private String chatRoomName;
 
-    @Builder
-    public ChatRoom(String name) {
-        this.name = name;
-    }
+    @ManyToMany(mappedBy = "chatRooms")
+    private List<Member> members;
 
-    public static ChatRoom createRoom(String name) {
-        return ChatRoom.builder()
-                .name(name)
-                .build();
-    }
 }
