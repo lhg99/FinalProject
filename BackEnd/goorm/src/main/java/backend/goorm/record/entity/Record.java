@@ -1,14 +1,16 @@
-package backend.goorm.record;
+package backend.goorm.record.entity;
 
-import backend.goorm.member.model.entity.Member;
+import backend.goorm.training.model.entity.Training;
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import java.time.LocalDateTime;
 
 @Getter
 @Setter
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 @Entity
 @Table(name = "record")
 public class Record {
