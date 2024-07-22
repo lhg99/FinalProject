@@ -24,3 +24,6 @@ logging:
       springframework:
         jdbc: DEBUG
         security: DEBUG
+
+login:
+  register-url: ${LOGIN_REGISTER_URL:defaultRegisterUrl}  # 환경 변수가 없을 때 기본값 제공
