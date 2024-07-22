@@ -16,9 +16,11 @@ const FloatingButtonWithChat: React.FC = () => {
   const messagesEndRef = useRef<HTMLDivElement | null>(null);
   const clientRef = useRef<any>(null);
 
-  const apiRequestUrl = process.env.REACT_APP_API_REQUEST_URL;
-  const subUrl = process.env.REACT_APP_WEBSOCKET_SUB_URL;
-  const pubUrl = process.env.REACT_APP_WEBSOCKET_PUB_URL;
+  const config = {
+    apiRequestUrl: process.env.REACT_APP_API_REQUEST_URL,
+    subUrl: process.env.REACT_APP_WEBSOCKET_SUB_URL,
+    pubUrl: process.env.REACT_APP_WEBSOCKET_PUB_URL
+  }
 
   const toggleChat = () => {
     setIsChatOpen(!isChatOpen);
@@ -91,13 +93,13 @@ const FloatingButtonWithChat: React.FC = () => {
       console.log(messages) //채팅 히스토리 목록 출력
 
       //웹소켓 연결 설정
-      const socket = new SockJS(`http://localhost:8080/api/websocket`);
+      const socket = new SockJS(`${config.apiRequestUrl}/websocket`);
       const client = Stomp.over(socket);
     
       client.connect({}, () => {
 
         //채팅구독
-        client.subscribe(`${subUrl}/chat/${currentChatRoomId}`, (message) => {
+        client.subscribe(`${config.subUrl}/chat/${currentChatRoomId}`, (message) => {
           console.log('message:',message)
           const newMessage = JSON.parse(message.body);
           console.log('newMessage:',newMessage.body);
@@ -125,7 +127,7 @@ const FloatingButtonWithChat: React.FC = () => {
         sender: '구름이', // 사용자 이름 또는 ID
         message: inputMessage,
       };
-      clientRef.current.send(`${pubUrl}/chat/${currentChatRoomId}`, {}, JSON.stringify(message));
+      clientRef.current.send(`${config.pubUrl}/chat/${currentChatRoomId}`, {}, JSON.stringify(message));
       setInputMessage('');
     }
   };
