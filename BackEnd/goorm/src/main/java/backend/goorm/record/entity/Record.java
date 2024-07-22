@@ -24,6 +24,10 @@ public class Record {
 //    @JoinColumn(name = "member_id")
 //    private Member member;
 
+    @ManyToOne
+    @JoinColumn(name = "training_id")
+    private Training training;
+
     @Column(name = "record_date", nullable = false)
     private LocalDateTime recordDate;
 

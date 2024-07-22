@@ -21,4 +21,7 @@ public class TrainingRecord {
     @JoinColumn(name = "record_id")
     private Record record;
 
+    @ManyToOne
+    @JoinColumn(name = "training_id")
+    private Training training;
 }
