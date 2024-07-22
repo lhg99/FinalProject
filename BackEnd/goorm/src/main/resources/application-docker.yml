@@ -1,0 +1,26 @@
+# prod setting
+spring:
+  profiles:
+    activate:
+      on-profile: docker
+  datasource:
+    driverClassName: org.mariadb.jdbc.Driver
+    url: jdbc:mariadb://maria-test:3306/myapp
+    username: root
+    password: root
+  jpa:
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MariaDBDialect
+        show_sql: true
+        format_sql: true
+    hibernate:
+      ddl-auto: update
+
+logging:
+  level:
+    org:
+      springframework:
+        jdbc: DEBUG
+        security: DEBUG
+

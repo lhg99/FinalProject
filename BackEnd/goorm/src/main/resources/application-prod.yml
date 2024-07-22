@@ -1,0 +1,26 @@
+# prod setting
+spring:
+  profiles:
+    activate:
+      on-profile: prod
+  datasource:
+    driverClassName: org.mariadb.jdbc.Driver
+    url: jdbc:mariadb://${MYSQL_HOST}:${MYSQL_PORT}/${MYSQL_DATABASE}
+    username: ${MYSQL_USER}
+    password: ${MYSQL_ROOT_PASSWORD}
+  jpa:
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MariaDBDialect
+        show_sql: true
+        format_sql: true
+    hibernate:
+      ddl-auto: create
+
+
+logging:
+  level:
+    org:
+      springframework:
+        jdbc: DEBUG
+        security: DEBUG
