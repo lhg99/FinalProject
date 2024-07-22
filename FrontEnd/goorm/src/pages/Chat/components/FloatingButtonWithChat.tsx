@@ -93,7 +93,7 @@ const FloatingButtonWithChat: React.FC = () => {
       console.log(messages) //채팅 히스토리 목록 출력
 
       //웹소켓 연결 설정
-      const socket = new SockJS(`${config.apiRequestUrl}/websocket`);
+      const socket = new SockJS(`${config.apiRequestUrl}/websocket`, {withCredentials:true});
       const client = Stomp.over(socket);
     
       client.connect({}, () => {
