@@ -11,16 +11,16 @@ RUN npm install
 # Copy the rest of the application
 COPY . .
 
-# docker-compose 에서 environment 에 환경변수를 설정했기 때문에 Dockerfile에서는 설정이 필요하지 않음
-# # Set build-time environment variables
-# ARG REACT_APP_API_REQUEST_URL
-# ARG REACT_APP_WEBSOCKET_SUB_URL
-# ARG REACT_APP_WEBSOCKET_PUB_URL
+# docker-compose 에서 environment 에 환경변수를 설정했기 때문에 Dockerfile에서는 설정이 필요하지 않음 -> undefind로 출력됨 빌드타임에 환경변수 설정 필요할듯
+# Set build-time environment variables
+ARG REACT_APP_API_REQUEST_URL
+ARG REACT_APP_WEBSOCKET_SUB_URL
+ARG REACT_APP_WEBSOCKET_PUB_URL
 
-# # Ensure the environment variables are available during build
-# ENV REACT_APP_API_REQUEST_URL=${REACT_APP_API_REQUEST_URL}
-# ENV REACT_APP_WEBSOCKET_SUB_URL=${REACT_APP_WEBSOCKET_SUB_URL}
-# ENV REACT_APP_WEBSOCKET_PUB_URL=${REACT_APP_WEBSOCKET_PUB_URL}
+# Ensure the environment variables are available during build
+ENV REACT_APP_API_REQUEST_URL=${REACT_APP_API_REQUEST_URL}
+ENV REACT_APP_WEBSOCKET_SUB_URL=${REACT_APP_WEBSOCKET_SUB_URL}
+ENV REACT_APP_WEBSOCKET_PUB_URL=${REACT_APP_WEBSOCKET_PUB_URL}
 
 # Build the React application
 RUN npm run build
