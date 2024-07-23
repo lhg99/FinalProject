@@ -94,6 +94,7 @@ const FloatingButtonWithChat: React.FC = () => {
 
       //웹소켓 연결 설정
       const socket = new SockJS(`${config.apiRequestUrl}/websocket`, {withCredentials:true});
+      console.log("apiRequestUrl 출력: ",config.apiRequestUrl);
       const client = Stomp.over(socket);
     
       client.connect({}, () => {
