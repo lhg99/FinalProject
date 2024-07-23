@@ -4,6 +4,8 @@ import backend.goorm.board.model.enums.BoardCategory;
 import backend.goorm.board.model.enums.BoardType;
 import lombok.*;
 
+import java.util.List;
+
 @Getter
 @Setter
 @AllArgsConstructor
@@ -32,5 +34,7 @@ public class BoardDetailResponse {
     private BoardType boardType;
 
     private BoardCategory boardCategory;
+
+    List<String> imageUrls;
 
 }

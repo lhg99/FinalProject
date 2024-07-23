@@ -5,14 +5,12 @@ import backend.goorm.board.model.dto.request.BoardSaveRequest;
 import backend.goorm.board.model.dto.response.BoardDetailResponse;
 import backend.goorm.board.model.dto.response.BoardListResponse;
 import backend.goorm.board.model.entity.Board;
+import backend.goorm.board.model.entity.BoardImages;
 import backend.goorm.board.model.entity.BoardLikes;
 import backend.goorm.board.model.enums.BoardCategory;
 import backend.goorm.board.model.enums.BoardSortType;
 import backend.goorm.board.model.enums.BoardType;
-import backend.goorm.board.repository.BoardLikesRepository;
-import backend.goorm.board.repository.BoardRepository;
-import backend.goorm.board.repository.CommentRepository;
-import backend.goorm.board.repository.CustomBoardRepository;
+import backend.goorm.board.repository.*;
 import backend.goorm.common.exception.CustomException;
 import backend.goorm.common.exception.CustomExceptionType;
 import backend.goorm.common.util.DateConvertUtil;
@@ -24,6 +22,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -40,6 +39,7 @@ public class BoardServiceImpl implements BoardService {
     private final CustomBoardRepository customBoardRepository;
     private final CommentRepository commentRepository;
     private final BoardLikesRepository boardLikesRepository;
+    private final BoardImageRepository boardImageRepository;
 
     private final DateConvertUtil dateConvertUtil;
 
@@ -68,7 +68,16 @@ public class BoardServiceImpl implements BoardService {
                 .boardCategory(saveRequest.getBoardCategory())
                 .build();
 
-        boardRepository.save(board);
+        Board saveBoard = boardRepository.save(board);
+
+        for(String url : saveRequest.getImageUrls()){
+            BoardImages boardImage = BoardImages.builder()
+                    .boardId(saveBoard.getBoardId())
+                    .imageUrl(url)
+                    .build();
+            boardImageRepository.save(boardImage);
+        }
+
     }
 
     @Override
@@ -92,6 +101,7 @@ public class BoardServiceImpl implements BoardService {
     }
 
     @Override
+    @Transactional
     public BoardDetailResponse getBoardDetail(Long boardId, Member member) {
 
 
@@ -113,6 +123,9 @@ public class BoardServiceImpl implements BoardService {
         }
 
         Board board = findBoard.get();
+        board.increaseViewCnt();  // 조회수 증
+
+        List<String> imageUrls = boardImageRepository.findImageUrlsByBoardId(board.getBoardId());
 
         BoardDetailResponse detailResponse = BoardDetailResponse.builder()
                 .boardId(board.getBoardId())
@@ -126,6 +139,7 @@ public class BoardServiceImpl implements BoardService {
                 .isLikes(findLikes.isPresent())
                 .boardType(board.getBoardType())
                 .boardCategory(board.getBoardCategory())
+                .imageUrls(imageUrls)
                 .build();
 
 

@@ -53,4 +53,8 @@ public class Board {
     @Enumerated(EnumType.STRING)
     BoardCategory boardCategory;
 
+    public void increaseViewCnt() {
+        this.viewCnt++;
+    }
+
 }

@@ -9,6 +9,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.List;
+
 @Getter
 @Setter
 @AllArgsConstructor
@@ -23,8 +25,10 @@ public class BoardSaveRequest {
     private String boardContent;
 
     @NotBlank
-    BoardType boardType;
+    private BoardType boardType;
 
-    BoardCategory boardCategory;
+    private BoardCategory boardCategory;
+
+    private List<String> imageUrls;
 
 }
