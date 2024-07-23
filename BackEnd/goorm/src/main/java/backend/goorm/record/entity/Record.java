@@ -63,4 +63,27 @@ public class Record {
 
     @Column(name = "satisfaction")
     private Integer satisfaction;
+
+    private String imageUrl;
+
+    @Builder
+    public Record(Training training, LocalDateTime recordDate, LocalDateTime modifiedDate,
+                  Float caloriesBurned, Integer durationMinutes,
+                  String intensity, Integer sets, Integer weight, Float distance,
+                  Float incline, LocalDate exerciseDate, String memo, Integer satisfaction, String imageUrl) {
+        this.training = training;
+        this.recordDate = recordDate;
+        this.modifiedDate = modifiedDate;
+        this.caloriesBurned = caloriesBurned;
+        this.durationMinutes = durationMinutes;
+        this.intensity = intensity;
+        this.sets = sets;
+        this.weight = weight;
+        this.distance = distance;
+        this.incline = incline;
+        this.exerciseDate = exerciseDate;
+        this.memo = memo;
+        this.satisfaction = satisfaction;
+        this.imageUrl = imageUrl;
+    }
 }

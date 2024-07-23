@@ -22,6 +22,7 @@ public class RecordDto {
     private Integer satisfaction;
     private String trainingName; // 운동 이름 필드 추가
     private LocalDate exerciseDate; // 운동 날짜 필드 추가
+    private String imageUrl;
 
     public static RecordDto fromEntity(Record record) {
         RecordDto dto = new RecordDto();
@@ -38,6 +39,7 @@ public class RecordDto {
         dto.setSatisfaction(record.getSatisfaction());
         dto.setTrainingName(record.getTraining().getTrainingName()); // 운동 이름 필드 설정
         dto.setExerciseDate(record.getExerciseDate()); // 운동 날짜 필드 설정
+        dto.setImageUrl(record.getImageUrl());
         return dto;
     }
 }

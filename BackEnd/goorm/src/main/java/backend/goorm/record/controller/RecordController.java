@@ -11,6 +11,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import jakarta.validation.Valid;
+import org.springframework.web.multipart.MultipartFile;
+
 import java.util.List;
 
 @Slf4j
@@ -23,22 +25,26 @@ public class RecordController {
 
     @PostMapping("/training/{id}/add/cardio")
     public ResponseEntity<RecordDto> addCardioRecord(@PathVariable("id") Long trainingId,
-                                                     @Valid @RequestBody AddCardioRecordRequest request) {
-        RecordDto result = recordService.addCardioRecord(trainingId, request, null); // Member 정보를 null로 설정
+                                                     @Valid @ModelAttribute  AddCardioRecordRequest request,
+                                                     @RequestParam("image") MultipartFile image)
+    {
+        RecordDto result = recordService.addCardioRecord(trainingId, request, null, image); // Member 정보를 null로 설정
         return ResponseEntity.ok(result);
     }
 
     @PostMapping("/training/{id}/add/strength")
     public ResponseEntity<RecordDto> addStrengthRecord(@PathVariable("id") Long trainingId,
-                                                       @Valid @RequestBody AddStrengthRecordRequest request) {
-        RecordDto result = recordService.addStrengthRecord(trainingId, request, null); // Member 정보를 null로 설정
+                                                       @Valid @ModelAttribute  AddStrengthRecordRequest request,
+                                                       @RequestParam("image") MultipartFile image) {
+        RecordDto result = recordService.addStrengthRecord(trainingId, request, null, image); // Member 정보를 null로 설정
         return ResponseEntity.ok(result);
     }
 
     @PutMapping("/training/{id}/edit")
     public ResponseEntity<RecordDto> editRecord(@PathVariable("id") Long trainingId,
-                                                @Valid @RequestBody EditRecordRequest request) {
-        RecordDto result = recordService.editRecord(trainingId, request, null); // Member 정보를 null로 설정
+                                                @Valid @ModelAttribute  EditRecordRequest request,
+                                                @RequestParam("image") MultipartFile image) {
+        RecordDto result = recordService.editRecord(trainingId, request, null, image); // Member 정보를 null로 설정
         return ResponseEntity.ok(result);
     }
 

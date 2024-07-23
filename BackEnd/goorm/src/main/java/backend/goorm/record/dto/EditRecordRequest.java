@@ -20,20 +20,26 @@ public class EditRecordRequest {
     private String intensity;
     private Integer sets;
     private Integer weight;
+    private Integer reps;
     private Float distance;
     private String memo;
     private Integer satisfaction;
 
-    public static Record updateRecord(Record record, EditRecordRequest edit) {
+
+    public static Record updateRecord(Record record, EditRecordRequest edit, String imageUrl) {
 //        record.setModifiedDate(edit.getModifiedDate());
         record.setCaloriesBurned(edit.getCaloriesBurned());
         record.setDurationMinutes(edit.getDurationMinutes());
         record.setIntensity(edit.getIntensity());
         record.setSets(edit.getSets());
         record.setWeight(edit.getWeight());
+        record.setReps(edit.getReps());
         record.setDistance(edit.getDistance());
         record.setMemo(edit.getMemo());
         record.setSatisfaction(edit.getSatisfaction());
+        if (imageUrl != null) {
+            record.setImageUrl(imageUrl);
+        }
         return record;
     }
 }
