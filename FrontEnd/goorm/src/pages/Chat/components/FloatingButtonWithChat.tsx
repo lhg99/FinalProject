@@ -93,13 +93,16 @@ const FloatingButtonWithChat: React.FC = () => {
       console.log(messages) //채팅 히스토리 목록 출력
 
       //웹소켓 연결 설정
-      const socket = new SockJS(`${config.apiRequestUrl}/websocket`);
+      const socket = new SockJS("http://final-project-app-env.eba-xdjqmujd.ap-northeast-2.elasticbeanstalk.com/api/websocket", {withCredentials:true});
+      console.log("apiRequestUrl 출력: ",config.apiRequestUrl);
+      console.log("config 출력: ",config);
       const client = Stomp.over(socket);
     
       client.connect({}, () => {
+        console.log("config connect함수 안에서 출력: ",config);
 
         //채팅구독
-        client.subscribe(`${config.subUrl}/chat/${currentChatRoomId}`, (message) => {
+        client.subscribe(`/api/sub/chat/${currentChatRoomId}`, (message) => {
           console.log('message:',message)
           const newMessage = JSON.parse(message.body);
           console.log('newMessage:',newMessage.body);
@@ -121,13 +124,14 @@ const FloatingButtonWithChat: React.FC = () => {
     }
   }, [inChatRoom]);
 
+  //메시지 발송
   const sendMessage = () => {
     if (clientRef.current && inputMessage.trim() !== '') {
       const message = {
         sender: '구름이', // 사용자 이름 또는 ID
         message: inputMessage,
       };
-      clientRef.current.send(`${config.pubUrl}/chat/${currentChatRoomId}`, {}, JSON.stringify(message));
+      clientRef.current.send(`/api/pub/chat/${currentChatRoomId}`, {}, JSON.stringify(message));
       setInputMessage('');
     }
   };
