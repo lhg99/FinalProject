@@ -53,7 +53,7 @@ const Table = styled.table`
   text-align: left;
   border-collapse: collapse;
   border: 1px solid black;
-  margin-top: 0.625rem;
+  margin-top: 1.25rem;
   margin-left: 0.625rem;
   font-size: 1rem;
 

@@ -1,21 +1,30 @@
 import React, { useEffect, useState } from "react";
-import { ExerciseData, SetDetails } from "../../../../api/exerciseApi";
+import { ExerciseData, ExerciseDetailInfo } from "../../../../api/exerciseApi";
 import { ExerciseStore } from "../../../../store/store";
 import styled from "styled-components";
 
 interface ExerciseDetailProps {
     exercise: ExerciseData;
     isNew: boolean; // 새로운 운동 여부
+    details: ExerciseDetailInfo;
 }
 
+// 문자열을 Float32Array로 변환하는 함수
+const stringToFloat32Array = (input: string): Float32Array => {
+    const floatArray = input.split(',').map(str => parseFloat(str.trim()));
+    return new Float32Array(floatArray);
+};
+
   // 운동 세부정보 입력하는 컴포넌트
-const ExerciseDetails: React.FC<ExerciseDetailProps> = ({exercise, isNew}) => {
+const ExerciseDetails: React.FC<ExerciseDetailProps> = ({exercise, isNew, details}) => {
     const [exerciseName, setExerciseName] = useState<string>(exercise.training_name || "");
-    const [distance, setDistance] = useState<string>("");
-    const [duration, setDuration] = useState<string>("");
-    const [slope, setSlope] = useState<string>("");
-    const [pressure, setPressure] = useState<string>("");
-    const [sets, setSets] = useState<SetDetails[]>([{ numSets: "", weight: "", count: "" }]);
+    const [distance, setDistance] = useState<string>(details.distance?.toString() || "");
+    const [duration, setDuration] = useState<string>(details.duration || "");
+    const [slope, setSlope] = useState<string>(details.slope || "");
+    const [calorie, setCalorie] = useState<string>(details.calorie || "");
+    const [sets, setSets] = useState<string>(details.sets?.toString() || "");
+    const [weight, setWeight] = useState<string>(details.weight?.toString() || "");
+    const [count, setCount] = useState<string>(details.count?.toString() || "");
 
     const {updateExerciseDetails, removeExercise, categories} = ExerciseStore();
 
@@ -25,17 +34,36 @@ const ExerciseDetails: React.FC<ExerciseDetailProps> = ({exercise, isNew}) => {
 
     useEffect(() => {
         if(exercise.category_id === 1) {
-            updateExerciseDetails({ training_name: exercise.training_name, distance, duration, slope, pressure });
+            updateExerciseDetails({ 
+                training_name: exercise.training_name, 
+                distance: stringToFloat32Array(distance), 
+                duration, 
+                slope, 
+                calorie });
         } else {
-            updateExerciseDetails({ training_name: exercise.training_name, duration, sets });
+            updateExerciseDetails({ 
+                training_name: exercise.training_name, 
+                duration,
+                sets: sets ? parseInt(sets) : undefined,
+                weight: stringToFloat32Array(weight), 
+                count: count ? parseInt(count) : undefined
+            });
         }
-    }, [updateExerciseDetails, exercise.category_id, exercise.training_name, distance, duration, slope, pressure, sets ])
-    
-    const handleDetailChange = (index: number, field: keyof SetDetails, value: string) => {
-        const newSets = sets.map((set, i) => (i === index ? { ...set, [field]: value } : set));
-        setSets(newSets);
-        if (exercise.category_id !== 1) {
-            updateExerciseDetails({ training_name: exercise.training_name, duration, sets: newSets });
+    }, [updateExerciseDetails, exercise.category_id, exercise.training_name, distance, duration, slope, calorie, sets, weight, count])
+
+    const handleBlur = (field: string, value: string) => {
+        if (field === "distance") {
+            setDistance(value);
+            updateExerciseDetails({ training_name: exercise.training_name, distance: stringToFloat32Array(value), duration, slope, calorie });
+        } else if (field === "weight") {
+            setWeight(value);
+            updateExerciseDetails({ training_name: exercise.training_name, duration, sets: sets ? parseInt(sets) : undefined, weight: stringToFloat32Array(value), count: count ? parseInt(count) : undefined });
+        } else if (field === "count") {
+            setCount(value);
+            updateExerciseDetails({ training_name: exercise.training_name, duration, sets: sets ? parseInt(sets) : undefined, weight: stringToFloat32Array(weight), count: count ? parseInt(count) : undefined });
+        } else if (field === "sets") {
+            setSets(value);
+            updateExerciseDetails({ training_name: exercise.training_name, duration, sets: value ? parseInt(value) : undefined, weight: stringToFloat32Array(weight), count: count ? parseInt(count) : undefined });
         }
     };
 
@@ -55,7 +83,7 @@ const ExerciseDetails: React.FC<ExerciseDetailProps> = ({exercise, isNew}) => {
                         onChange={(e) => {
                             setExerciseName(e.target.value);
                             if (exercise.category_id !== 1) {
-                                updateExerciseDetails({ training_name: e.target.value, duration, sets });
+                                updateExerciseDetails({ training_name: e.target.value, duration, sets: sets ? parseInt(sets) : undefined, weight: stringToFloat32Array(weight), count: count ? parseInt(count) : undefined });
                             }
                         }}
                     />
@@ -68,16 +96,11 @@ const ExerciseDetails: React.FC<ExerciseDetailProps> = ({exercise, isNew}) => {
                             type='text' 
                             placeholder="거리"
                             value={distance} 
-                            onChange={(e) => {
-                                setDistance(e.target.value);
-                                if (exercise.category_id === 1) {
-                                    updateExerciseDetails({ training_name: exerciseName, duration, slope, pressure });
-                                } else {
-                                    updateExerciseDetails({ training_name: exerciseName, duration, sets });
-                                }
-                            }}
+                            onBlur={(e) => handleBlur("distance", e.target.value)}
+                            onChange={(e) => setDistance(e.target.value)}
                         />
                     </ExerciseLabel>
+                    <ExerciseText>km</ExerciseText>
                     <ExerciseLabel>
                         <ExerciseInput 
                             type='text' 
@@ -85,14 +108,11 @@ const ExerciseDetails: React.FC<ExerciseDetailProps> = ({exercise, isNew}) => {
                             value={duration} 
                             onChange={(e) => {
                                 setDuration(e.target.value);
-                                if (exercise.category_id === 1) {
-                                    updateExerciseDetails({ training_name: exerciseName, duration, slope, pressure });
-                                } else {
-                                    updateExerciseDetails({ training_name: exerciseName, duration, sets });
-                                }
+                                updateExerciseDetails({ training_name: exerciseName, distance: stringToFloat32Array(distance), duration: e.target.value, slope, calorie });
                             }}
                         />
                     </ExerciseLabel>
+                    <ExerciseText>분</ExerciseText>
                     <ExerciseLabel> 
                         <ExerciseInput 
                             type='text' 
@@ -100,69 +120,71 @@ const ExerciseDetails: React.FC<ExerciseDetailProps> = ({exercise, isNew}) => {
                             value={slope} 
                             onChange={(e) => {
                                 setSlope(e.target.value);
-                                updateExerciseDetails({ training_name: exerciseName, duration, slope, pressure });
+                                updateExerciseDetails({ training_name: exerciseName, distance: stringToFloat32Array(distance), duration, slope: e.target.value, calorie });
                             }}
                         />
                     </ExerciseLabel>
+                    <ExerciseText>도</ExerciseText>
                     <ExerciseLabel>
                         <ExerciseInput
                             type='text' 
-                            placeholder="압력"
-                            value={pressure} 
+                            placeholder="칼로리"
+                            value={calorie} 
                             onChange={(e) => {
-                                setPressure(e.target.value);
-                                updateExerciseDetails({ training_name: exerciseName, duration, slope, pressure });
+                                setCalorie(e.target.value);
+                                updateExerciseDetails({ training_name: exerciseName, duration, slope, calorie });
                             }}
                         />
                     </ExerciseLabel>
+                    <ExerciseText>kcal</ExerciseText>
                 </>
             ) : (
                 <>
-                    {/* <AddButton onClick={addSet}>+</AddButton> */}
-                    {sets.map((set, index) => (
-                        <SetContainer key={index}>
-                            <ExerciseLabel>
-                                <ExerciseInput 
-                                    type='text' 
-                                    placeholder=" 시간"
-                                    value={duration} 
-                                    onChange={(e) => {
-                                        setDuration(e.target.value);
-                                        if (exercise.category_id === 1) {
-                                            updateExerciseDetails({ training_name: exerciseName, duration, slope, pressure });
-                                        } else {
-                                            updateExerciseDetails({ training_name: exerciseName, duration, sets });
-                                        }
-                                    }}
+                    <SetContainer>
+                        <ExerciseLabel>
+                            <ExerciseInput 
+                                type='text' 
+                                placeholder=" 시간"
+                                value={duration} 
+                                onChange={(e) => {
+                                    setDuration(e.target.value);
+                                    updateExerciseDetails({ training_name: exerciseName, distance: stringToFloat32Array(distance), duration: e.target.value, slope, calorie });
+                                }}
                                 />
-                            </ExerciseLabel>
-                            <ExerciseLabel>
-                                <ExerciseInput
+                        </ExerciseLabel>
+                        <ExerciseText>분</ExerciseText>
+                        <ExerciseLabel>
+                            <ExerciseInput
                                 type="number"
                                 placeholder='세트'
-                                value={set.numSets}
-                                onChange={(e) => handleDetailChange(index, "numSets", e.target.value)}
-                                />
-                            </ExerciseLabel>
-                            <ExerciseLabel>
-                                <ExerciseInput
-                                    type="number"
-                                    placeholder='중량(kg)'
-                                    value={set.weight}
-                                    step="5"
-                                    onChange={(e) => handleDetailChange(index, "weight", e.target.value)}
-                                />
-                            </ExerciseLabel>
-                            <ExerciseLabel>
-                                <ExerciseInput
-                                    type="number"
-                                    placeholder='횟수'
-                                    value={set.count}
-                                    onChange={(e) => handleDetailChange(index, "count", e.target.value)}
-                                />
-                            </ExerciseLabel>
-                        </SetContainer>
-                    ))}
+                                value={sets}
+                                onBlur={(e) => handleBlur("sets", e.target.value)}
+                                onChange={(e) => setSets(e.target.value)}
+                            />
+                        </ExerciseLabel>
+                        <ExerciseText>세트</ExerciseText>
+                        <ExerciseLabel>
+                            <ExerciseInput
+                                type="number"
+                                placeholder='중량(kg)'
+                                value={weight}
+                                step="5"
+                                onBlur={(e) => handleBlur("weight", e.target.value)}
+                                onChange={(e) => setWeight(e.target.value)}
+                            />
+                        </ExerciseLabel>
+                        <ExerciseText>kg</ExerciseText>
+                        <ExerciseLabel>
+                            <ExerciseInput
+                                type="number"
+                                placeholder='횟수'
+                                value={count}
+                                onBlur={(e) => handleBlur("count", e.target.value)}
+                                onChange={(e) => setCount(e.target.value)}
+                            />
+                        </ExerciseLabel>
+                        <ExerciseText>회</ExerciseText>
+                    </SetContainer>
                 </>
             )}
             <DeleteButton onClick={() => removeExercise(exercise.training_name)}>삭제</DeleteButton>
@@ -175,11 +197,9 @@ export default ExerciseDetails;
 
 const ExerciseDetailsContainer = styled.div`
     margin-top: .625rem;
-    margin-bottom: .625rem;
     margin-left: 0.9375rem;
-    padding: .625rem;
     display: flex;
-    width: 97%;
+    width: 98%;
     border: 1px solid black;
     border-radius: 0.9375rem;
     justify-content: space-between;
@@ -210,6 +230,7 @@ const ExerciseLabel = styled.label`
     display: block;
     flex-direction: row;
     margin-bottom: 1rem;
+    align-items: center;
 `;
 
 const InputContainer = styled.div`
@@ -237,48 +258,27 @@ const ExerciseInput = styled.input`
     }
 `;
 
+const ExerciseText = styled.span`
+    margin-left: 0.3125rem;
+    font-size: 1.25;
+`;
+
 const SetContainer = styled.div`
     display: flex;
     flex-direction: row;
     gap: 1rem;
+    align-items: center;
 `;
 
-// const SetDetailsContainer = styled.div`
-//     display: flex;
-//     flex-direction: row;
-//     align-items: flex-start;
-//     margin-bottom: 0.5rem;
-//     gap: 0.625rem;
-// `;
-
-// const AddButton = styled.button`
-//     margin-left: 1.5625rem;
-//     margin-right: .625rem;
-//     margin-top: 0.625rem;
-//     height: 50%;
-//     background-color: gray;
-//     color: white;
-//     padding: 0.5rem 1rem;
-//     border: none;
-//     border-radius: .125rem;
-//     cursor: pointer;
-//     transition: background-color 0.3s;
-
-//     &:hover {
-//         background-color: lightgray;
-//     }
-// `;
-
 const DeleteButton = styled.button`
-    margin-left: 1.5625rem;
     margin-right: .625rem;
-    margin-top: 0.625rem;
+    margin-left: 0.625rem;
     height: 50%;
     background-color: #ff4d4d;
     color: white;
     padding: 0.5rem 1rem;
     border: none;
-    border-radius: .125rem;
+    border-radius: 5px;
     cursor: pointer;
     transition: background-color 0.3s;
 

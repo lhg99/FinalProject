@@ -39,12 +39,12 @@ const MemoContainer = styled.div`
   margin-top: 20px;
   width: 100%;
   height: 12.5rem;
-  margin-left: 23.75rem;
+  margin-left: 410px;
 `;
 
 const ImageContainer = styled.div`
   display: flex;
-  width: 50%;
+  width: 30%;
   height: 100%;
   border: 1.5px solid black;
   border-radius: 0.3125rem;
@@ -65,7 +65,7 @@ const ImagePreview = styled.img`
 
 const MemoDetails = styled.div`
   display: flex;
-  width: 80%;
+  width: 52%;
   margin-left: 1.25rem;
   margin-right: 1.875rem;
   border: 1px solid black;

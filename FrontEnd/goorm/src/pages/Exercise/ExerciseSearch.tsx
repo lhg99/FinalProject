@@ -130,6 +130,7 @@ const ExerciseSearch: React.FC<ExerciseSearchProps> = ({ onAddExercise, onAddCus
 
         const newCustomExercise: ExerciseData = { 
             training_name: customExerciseName,
+            training_id: 100,
             category_id: category.category_id,
         };
 
@@ -194,18 +195,16 @@ const ExerciseSearch: React.FC<ExerciseSearchProps> = ({ onAddExercise, onAddCus
 export default ExerciseSearch
 
 const ExerciseSearchContainer = styled.div`
-    margin-bottom: 1.25rem;
-    margin-right: 1.25rem;
     display: flex;
     flex-direction: column;
     padding: .625rem;
-    width: 100%;
-    height: 87%;
-    max-height: 100%;
+    width: 90%;
+    height: 500px;
+    max-height: 500px;
     overflow-y: auto;
     border: 1px solid black;
-    border-radius: 0.3125rem;
-    box-sizing: border-box;
+    border-radius: 5px;
+    // box-sizing: border-box;
 
     /* 스크롤바 스타일링 */
     &::-webkit-scrollbar {
@@ -243,12 +242,12 @@ const SearchForm = styled.form`
 
 const SearchInput = styled.input`
     width: 80%;
-    padding:.625rem;
+    padding: .625rem;
 `;
 
 const SearchButton = styled.button`
-    margin-left: .5rem;
-    height: 98%;
+    margin-left: 0.625rem;
+    height: 95%;
 `
 
 const ExerciseListContainer = styled.div`
@@ -266,7 +265,7 @@ const ExerciseItemButton = styled.button`
     justify-content: center;
     align-items: center;
     border-radius: 0.9375rem;
-    font-size: 18px;
+    font-size: 1.125rem;
     border: 1px solid black;
     border-radius: 0;
     background-color: white;

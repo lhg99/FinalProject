@@ -1,19 +1,23 @@
 import { create } from "zustand";
-import { Category, ExerciseData, ExerciseDetails } from "../api/exerciseApi";
+import { Category, ExerciseData, ExerciseDetailInfo } from "../api/exerciseApi";
+import { ExerciseRecords } from './../api/exerciseApi';
 
 interface ExerciseState {
     exercises: ExerciseData[];
-    exerciseDetails: ExerciseDetails[];
+    exerciseDetails: ExerciseDetailInfo[];
     customExercises: ExerciseData[];
     selectedExercises: ExerciseData[];
     categories: Category[];
-    setExercises: (exercises: ExerciseData[]) => void;
-    setCategories: (categories: Category[]) => void;
+    exerciseRecords: ExerciseRecords[];
     addExercise: (exercise: ExerciseData) => void;
     addCustomExercises: (exercise: ExerciseData) => void;
     addSelectedExercises: (exercise: ExerciseData) => void;
+    addExerciseRecord: (record: ExerciseRecords) => void;
+    setExercises: (exercises: ExerciseData[]) => void;
+    setCategories: (categories: Category[]) => void;
+    setExerciseRecords: (records: ExerciseRecords[]) => void;
     removeExercise: (exerciseName: string) => void;
-    updateExerciseDetails: (details: ExerciseDetails) => void;
+    updateExerciseDetails: (details: ExerciseDetailInfo) => void;
 }
 
 export const ExerciseStore = create<ExerciseState>((set) => ({
@@ -22,8 +26,7 @@ export const ExerciseStore = create<ExerciseState>((set) => ({
     customExercises: [],
     selectedExercises: [],
     categories: [],
-    setExercises: (exercises) => set({ exercises }),
-    setCategories: (categories) => set({ categories }),
+    exerciseRecords: [],
     addExercise: (exercise) => set((state) => ({
         exercises: [...state.exercises, exercise]
     })),
@@ -35,6 +38,12 @@ export const ExerciseStore = create<ExerciseState>((set) => ({
             ? state.selectedExercises
             : [...state.selectedExercises, exercise]
     })),
+    addExerciseRecord: (record) => set((state) => ({
+        exerciseRecords: [...state.exerciseRecords, record]
+    })),
+    setExercises: (exercises) => set({ exercises }),
+    setCategories: (categories) => set({ categories }),
+    setExerciseRecords: (records) => set({ exerciseRecords: records }),
     removeExercise: (exerciseName) => set((state) => ({
         selectedExercises: state.selectedExercises.filter((ex) => ex.training_name !== exerciseName)
     })),
