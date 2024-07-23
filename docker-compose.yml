@@ -2,12 +2,6 @@ version: "3"
 services:
   frontend:
     image: changkiyun/final-project-frontend
-    build:
-      context: .
-      args:
-        - REACT_APP_API_REQUEST_URL=${REACT_APP_API_REQUEST_URL}
-        - REACT_APP_WEBSOCKET_SUB_URL=${REACT_APP_WEBSOCKET_SUB_URL}
-        - REACT_APP_WEBSOCKET_PUB_URL=${REACT_APP_WEBSOCKET_PUB_URL}  # 빌드타임에 환경변수를 리엑트로 전달
     volumes:
       - /app/node_modules
       - ./frontend:/app
