@@ -102,7 +102,7 @@ const FloatingButtonWithChat: React.FC = () => {
         console.log("config connect함수 안에서 출력: ",config);
 
         //채팅구독
-        client.subscribe(`${config.subUrl}/chat/${currentChatRoomId}`, (message) => {
+        client.subscribe(`/api/sub/chat/${currentChatRoomId}`, (message) => {
           console.log('message:',message)
           const newMessage = JSON.parse(message.body);
           console.log('newMessage:',newMessage.body);
@@ -124,13 +124,14 @@ const FloatingButtonWithChat: React.FC = () => {
     }
   }, [inChatRoom]);
 
+  //메시지 발송
   const sendMessage = () => {
     if (clientRef.current && inputMessage.trim() !== '') {
       const message = {
         sender: '구름이', // 사용자 이름 또는 ID
         message: inputMessage,
       };
-      clientRef.current.send(`${config.pubUrl}/chat/${currentChatRoomId}`, {}, JSON.stringify(message));
+      clientRef.current.send(`/api/pub/chat/${currentChatRoomId}`, {}, JSON.stringify(message));
       setInputMessage('');
     }
   };
