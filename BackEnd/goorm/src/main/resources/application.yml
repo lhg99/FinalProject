@@ -1,4 +1,6 @@
 # application file selected
 spring:
   profiles:
-    active: prod
+    active: local
+    include: private
+
