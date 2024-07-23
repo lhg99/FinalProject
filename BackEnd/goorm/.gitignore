@@ -39,3 +39,6 @@ application-local.yml
 application-docker.yml
 application-h2.yml
 application-rds.yml
+
+# application-private.yml 파일을 Git에서 제외
+application-private.yml

@@ -23,7 +23,7 @@ jobs:
         run: chmod +x ./BackEnd/goorm/gradlew
       
       - name: Build backend with Gradle
-        run: cd ./BackEnd/goorm && ./gradlew clean build -Dspring.profiles.active=test
+        run: cd ./BackEnd/goorm && ./gradlew clean build -Dspring.profiles.active=test -x test
 
       - run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
       # - run: docker build -t changkiyun/final-project-app -f ./FrontEnd/goorm/Dockerfile.dev ./FrontEnd/goorm
