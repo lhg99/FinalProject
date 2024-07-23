@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 @RestController
-@RequestMapping("/s3")
+@RequestMapping("/api/s3")
 public class S3Controller {
 
     private final S3ImageService s3ImageService;

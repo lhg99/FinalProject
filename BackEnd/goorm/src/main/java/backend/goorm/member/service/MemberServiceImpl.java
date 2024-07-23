@@ -2,6 +2,7 @@ package backend.goorm.member.service;
 
 import backend.goorm.common.exception.CustomException;
 import backend.goorm.common.exception.CustomExceptionType;
+import backend.goorm.common.util.DateConvertUtil;
 import backend.goorm.member.model.dto.request.*;
 import backend.goorm.member.model.dto.response.DuplicateCheckResponse;
 import backend.goorm.member.model.dto.response.MemberInfoResponse;
@@ -18,7 +19,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.Optional;
 
 @RequiredArgsConstructor
@@ -30,6 +30,7 @@ public class MemberServiceImpl implements  MemberService{
     private final MemberInfoRepository memberInfoRepository;
 
     private final BCryptPasswordEncoder encoder;
+    private final DateConvertUtil dateConvertUtil;
 
 
     /**
@@ -52,7 +53,6 @@ public class MemberServiceImpl implements  MemberService{
                 .memberName(signupRequest.getName())
                 .memberEmail(signupRequest.getEmail())
                 .memberNickname(signupRequest.getNickname())
-                .memberPhone(signupRequest.getPhone())
                 .role(MemberRole.MEMBER)
                 .memberRegDate(LocalDateTime.now())
                 .memberInactive(false)
@@ -79,7 +79,6 @@ public class MemberServiceImpl implements  MemberService{
 
         Member member = findUser.get();
         member.setMemberName(oauthSignupRequest.getMemberName());
-        member.setMemberPhone(oauthSignupRequest.getMemberPhone());
         member.setMemberRegistered(true);
         member.setMemberRegDate(LocalDateTime.now());
 
@@ -100,7 +99,6 @@ public class MemberServiceImpl implements  MemberService{
 
             case LOGIN_ID -> member = memberRepository.findByLoginId(value);
             case EMAIL -> member = memberRepository.findByMemberEmail(value);
-            case PHONE -> member = memberRepository.findByMemberPhone(value);
             case NICKNAME -> member = memberRepository.findByMemberNickname(value);
 
         }
@@ -153,15 +151,12 @@ public class MemberServiceImpl implements  MemberService{
 
         Member findMember  = findInfo.get().getMemberId();
 
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy.MM.dd");
-        String regDate = findMember.getMemberRegDate().format(formatter);
 
         return MemberInfoResponse.builder()
                 .memberName(findMember.getMemberName())
                 .memberEmail(findMember.getMemberEmail())
                 .memberNickname(findMember.getMemberNickname())
-                .memberPhone(findMember.getMemberPhone())
-                .memberRegDate(regDate)
+                .memberRegDate(dateConvertUtil.convertDateToString(findMember.getMemberRegDate()))
                 .memberHeight(findInfo.get().getMemberHeight())
                 .memberWeight(findInfo.get().getMemberWeight())
                 .comment(findInfo.get().getComment())

@@ -16,6 +16,5 @@ public class SignupRequest {
     private String name;
     private String email;
     private String nickname;
-    private String phone;
 
 }

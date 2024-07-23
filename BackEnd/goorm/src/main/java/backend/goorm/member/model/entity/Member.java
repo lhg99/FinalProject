@@ -43,10 +43,6 @@ public class Member {
     @NotBlank
     private String memberNickname;
 
-    @Size(max = 50)
-    @NotBlank
-    private String memberPhone;
-
     @Enumerated(EnumType.STRING)
     private MemberRole role;
 
