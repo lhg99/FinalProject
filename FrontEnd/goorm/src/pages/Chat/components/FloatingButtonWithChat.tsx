@@ -93,11 +93,13 @@ const FloatingButtonWithChat: React.FC = () => {
       console.log(messages) //채팅 히스토리 목록 출력
 
       //웹소켓 연결 설정
-      const socket = new SockJS(`${config.apiRequestUrl}/websocket`, {withCredentials:true});
+      const socket = new SockJS("http://final-project-app-env.eba-xdjqmujd.ap-northeast-2.elasticbeanstalk.com/api/websocket", {withCredentials:true});
       console.log("apiRequestUrl 출력: ",config.apiRequestUrl);
+      console.log("config 출력: ",config);
       const client = Stomp.over(socket);
     
       client.connect({}, () => {
+        console.log("config connect함수 안에서 출력: ",config);
 
         //채팅구독
         client.subscribe(`${config.subUrl}/chat/${currentChatRoomId}`, (message) => {
