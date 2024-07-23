@@ -2,12 +2,12 @@
 spring:
   profiles:
     activate:
-      on-profile: prod
+      on-profile: rds
   datasource:
     driverClassName: org.mariadb.jdbc.Driver
-    url: jdbc:mariadb://${MYSQL_HOST}:${MYSQL_PORT}/${MYSQL_DATABASE}
-    username: ${MYSQL_USER}
-    password: ${MYSQL_ROOT_PASSWORD}
+    url: jdbc:mariadb://final-project-database.cryge2oy0mud.ap-northeast-2.rds.amazonaws.com:3306/goorm
+    username: root
+    password: dbsckdrl12
   jpa:
     properties:
       hibernate:
@@ -15,8 +15,7 @@ spring:
         show_sql: true
         format_sql: true
     hibernate:
-      ddl-auto: create
-
+      ddl-auto: update
 
 logging:
   level:
@@ -24,3 +23,4 @@ logging:
       springframework:
         jdbc: DEBUG
         security: DEBUG
+
