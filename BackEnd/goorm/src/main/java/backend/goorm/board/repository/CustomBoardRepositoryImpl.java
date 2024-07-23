@@ -32,6 +32,7 @@ public class CustomBoardRepositoryImpl implements CustomBoardRepository{
                 .join(board.memberId, member).fetchJoin()
                 .where(board.boardType.eq(type)
                         .and(categories.isEmpty() ? null : board.boardCategory.in(categories))
+                        .and(board.boardDeleted.eq(false))
                 );
 
         switch (sortType) {

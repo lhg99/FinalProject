@@ -2,6 +2,7 @@ package backend.goorm.member.service;
 
 import backend.goorm.common.exception.CustomException;
 import backend.goorm.common.exception.CustomExceptionType;
+import backend.goorm.common.util.DateConvertUtil;
 import backend.goorm.member.model.dto.request.*;
 import backend.goorm.member.model.dto.response.DuplicateCheckResponse;
 import backend.goorm.member.model.dto.response.MemberInfoResponse;
@@ -30,6 +31,7 @@ public class MemberServiceImpl implements  MemberService{
     private final MemberInfoRepository memberInfoRepository;
 
     private final BCryptPasswordEncoder encoder;
+    private final DateConvertUtil dateConvertUtil;
 
 
     /**
@@ -153,15 +155,13 @@ public class MemberServiceImpl implements  MemberService{
 
         Member findMember  = findInfo.get().getMemberId();
 
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy.MM.dd");
-        String regDate = findMember.getMemberRegDate().format(formatter);
 
         return MemberInfoResponse.builder()
                 .memberName(findMember.getMemberName())
                 .memberEmail(findMember.getMemberEmail())
                 .memberNickname(findMember.getMemberNickname())
                 .memberPhone(findMember.getMemberPhone())
-                .memberRegDate(regDate)
+                .memberRegDate(dateConvertUtil.convertDateToString(findMember.getMemberRegDate()))
                 .memberHeight(findInfo.get().getMemberHeight())
                 .memberWeight(findInfo.get().getMemberWeight())
                 .comment(findInfo.get().getComment())

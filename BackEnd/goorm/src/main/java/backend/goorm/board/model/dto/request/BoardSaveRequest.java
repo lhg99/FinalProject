@@ -26,4 +26,5 @@ public class BoardSaveRequest {
     BoardType boardType;
 
     BoardCategory boardCategory;
+
 }
