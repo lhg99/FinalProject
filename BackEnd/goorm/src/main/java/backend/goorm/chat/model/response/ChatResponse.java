@@ -2,12 +2,14 @@ package backend.goorm.chat.model.response;
 
 import backend.goorm.chat.model.entity.Chat;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 
 import java.time.LocalDateTime;
 
 @Data
 @AllArgsConstructor
+@Builder
 public class ChatResponse {
     private Long id;
     private String sender;

@@ -9,6 +9,7 @@ public enum CustomExceptionType {
     DUPLICATE_INFORMATION(HttpStatus.BAD_REQUEST, "E004", "중복된 사용자 정보가 존재합니다 중복체크를 진행해주세요"),
     ALREADY_REG_INFO(HttpStatus.BAD_REQUEST, "E004", "이미 사용자 정보가 등록된 사용자입니다"),
     PASSWORD_MISMATCH(HttpStatus.BAD_REQUEST, "E005", "사용하던 비빌번호가 일치하지 않습니다"),
+    CHAT_ROOM_NOT_FOUND(HttpStatus.BAD_REQUEST, "E006", "참여중인 채팅방이 존재하지 않습니다"),
 
     ;
 
