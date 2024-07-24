@@ -1,6 +1,7 @@
 package backend.goorm.board.service;
 
 import backend.goorm.board.model.dto.request.BoardSaveRequest;
+import backend.goorm.board.model.dto.request.BoardUpdateRequest;
 import backend.goorm.board.model.dto.response.BoardDetailResponse;
 import backend.goorm.board.model.dto.response.BoardListResponse;
 import backend.goorm.board.model.enums.BoardCategory;
@@ -17,4 +18,10 @@ public interface BoardService {
     BoardListResponse getBoardList(BoardType type, int page, BoardSortType sortType, List<BoardCategory> categories);
 
     BoardDetailResponse getBoardDetail(Long number, Member member);
+
+    void deleteBoard(Long boardId, Member member);
+
+    void updateBoard(BoardUpdateRequest updateRequest, Member member);
+
+    String toggleLike(Long boardId, Member member);
 }

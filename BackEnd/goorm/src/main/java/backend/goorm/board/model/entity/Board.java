@@ -1,13 +1,11 @@
 package backend.goorm.board.model.entity;
 
+import backend.goorm.board.model.dto.request.BoardUpdateRequest;
 import backend.goorm.board.model.enums.BoardCategory;
 import backend.goorm.board.model.enums.BoardType;
 import backend.goorm.member.model.entity.Member;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Size;
 import lombok.*;
-import org.springframework.cglib.core.Local;
 
 import java.time.LocalDateTime;
 
@@ -56,5 +54,14 @@ public class Board {
     public void increaseViewCnt() {
         this.viewCnt++;
     }
+
+    public void updateBoard(BoardUpdateRequest updateRequest){
+
+        this.boardTitle = updateRequest.getBoardTitle();
+        this.boardContent = updateRequest.getBoardContent();
+        this.boardCategory = updateRequest.getBoardCategory();
+
+    }
+
 
 }

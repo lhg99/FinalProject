@@ -123,4 +123,7 @@ public class S3ImageService {
             throw new RuntimeException("Error decoding image address.", e);
         }
     }
+
+    public String uploadMulti(MultipartFile[] image) {
+    }
 }

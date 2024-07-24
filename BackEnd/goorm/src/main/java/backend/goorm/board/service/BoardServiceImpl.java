@@ -2,6 +2,7 @@ package backend.goorm.board.service;
 
 import backend.goorm.board.model.dto.BoardListItem;
 import backend.goorm.board.model.dto.request.BoardSaveRequest;
+import backend.goorm.board.model.dto.request.BoardUpdateRequest;
 import backend.goorm.board.model.dto.response.BoardDetailResponse;
 import backend.goorm.board.model.dto.response.BoardListResponse;
 import backend.goorm.board.model.entity.Board;
@@ -144,6 +145,70 @@ public class BoardServiceImpl implements BoardService {
 
 
         return detailResponse;
+    }
+
+    @Override
+    @Transactional
+    public void deleteBoard(Long boardId, Member member) {
+
+        Optional<Board> findBoard = boardRepository.findBoardByIdAndNotDeleted(boardId);
+
+        if(!findBoard.isPresent()) {
+            throw new CustomException(CustomExceptionType.BOARD_NOT_FOUND);
+        }
+
+        if(findBoard.get().isBoardDeleted()){
+            throw new CustomException(CustomExceptionType.ALREADY_DELETED_BOARD);
+        }
+
+        if(findBoard.get().getMemberId().getMemberId() != member.getMemberId()){
+            throw new CustomException(CustomExceptionType.NO_AUTHORITY_TO_DELETE);
+        }
+
+        findBoard.get().setBoardDeleted(true);
+    }
+
+    @Override
+    @Transactional
+    public void updateBoard(BoardUpdateRequest updateRequest, Member member) {
+
+        Optional<Board> findBoard = boardRepository.findBoardByIdAndNotDeleted(updateRequest.getBoardId());
+
+        if(!findBoard.isPresent()) {
+            throw new CustomException(CustomExceptionType.BOARD_NOT_FOUND);
+        }
+
+        if(findBoard.get().isBoardDeleted()){
+            throw new CustomException(CustomExceptionType.ALREADY_DELETED_BOARD);
+        }
+
+        if(findBoard.get().getMemberId().getMemberId() != member.getMemberId()){
+            throw new CustomException(CustomExceptionType.NO_AUTHORITY_TO_UPDATE);
+        }
+
+        findBoard.get().updateBoard(updateRequest);
+    }
+
+    @Override
+    @Transactional
+    public String toggleLike(Long boardId, Member member) {
+
+        Optional<BoardLikes> boardLike = boardLikesRepository.findByBoardIdAndMemberId(boardId, member.getMemberId());
+
+        String message = "";
+        if(!boardLike.isPresent()) {
+
+            boardLikesRepository.save(BoardLikes.builder()
+                            .boardId(boardId)
+                            .memberId(member.getMemberId())
+                            .build());
+            message = "좋아요 처리 되었습니다";
+        }else{
+            boardLikesRepository.delete(boardLike.get());
+            message = "좋아요가 해제되었습니다";
+        }
+
+        return message;
     }
 
     /**

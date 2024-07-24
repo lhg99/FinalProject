@@ -15,6 +15,6 @@ public class SignupRequest {
     private String loginPw;
     private String name;
     private String email;
-    private String nickname;
+    private String username;
 
 }

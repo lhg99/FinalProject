@@ -12,7 +12,7 @@ public class MemberInfoResponse {
 
     private String memberName;
     private String memberEmail;
-    private String memberNickname;
+    private String username;
     private String memberRegDate;
     private Float memberHeight;
     private Float memberWeight;
