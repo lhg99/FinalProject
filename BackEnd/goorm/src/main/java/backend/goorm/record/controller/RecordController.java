@@ -18,7 +18,7 @@ import java.util.List;
 @Slf4j
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("/record")
+@RequestMapping("/api/record")
 public class RecordController {
 
     private final RecordService recordService;

@@ -2,8 +2,8 @@ package backend.goorm.training.service;
 
 import backend.goorm.training.dto.TrainingDto;
 import backend.goorm.training.model.entity.Training;
-import backend.goorm.training.dto.AddTrainingInput;
-import backend.goorm.training.dto.EditTrainingInput;
+import backend.goorm.training.dto.AddTrainingRequest;
+import backend.goorm.training.dto.EditTrainingRequest;
 import backend.goorm.training.model.entity.TrainingCategory;
 import backend.goorm.training.repository.TrainingCategoryRepository;
 import backend.goorm.training.repository.TrainingRepository;
@@ -23,7 +23,7 @@ public class CustomTrainingService {
     private final TrainingRepository trainingRepository;
     private final TrainingCategoryRepository trainingCategoryRepository;
 
-    public TrainingDto addCustomTraining(AddTrainingInput input) {
+    public TrainingDto addCustomTraining(AddTrainingRequest input) {
         TrainingCategory category = input.getCategory();
 
         if (category == null) {
@@ -41,12 +41,12 @@ public class CustomTrainingService {
             throw new IllegalArgumentException("카테고리 ID와 이름이 일치하지 않습니다.");
         }
 
-        Training training = AddTrainingInput.toEntity(input, actualCategory);
+        Training training = AddTrainingRequest.toEntity(input, actualCategory);
         Training saved = trainingRepository.save(training);
         return TrainingDto.fromEntity(saved);
     }
 
-    public TrainingDto editCustomTraining(EditTrainingInput input) {
+    public TrainingDto editCustomTraining(EditTrainingRequest input) {
         Training training = trainingRepository.findById(input.getId())
                 .orElseThrow(() -> new IllegalArgumentException("Training not found with id: " + input.getId()));
 
