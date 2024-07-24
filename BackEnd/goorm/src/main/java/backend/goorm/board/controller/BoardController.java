@@ -2,6 +2,8 @@ package backend.goorm.board.controller;
 
 import backend.goorm.board.model.dto.request.BoardSaveRequest;
 import backend.goorm.board.model.dto.BoardListItem;
+import backend.goorm.board.model.dto.request.BoardUpdateRequest;
+import backend.goorm.board.model.dto.request.CommentSaveRequest;
 import backend.goorm.board.model.dto.response.BoardDetailResponse;
 import backend.goorm.board.model.dto.response.BoardListResponse;
 import backend.goorm.board.model.enums.BoardCategory;
@@ -69,5 +71,35 @@ public class BoardController {
 
         return ResponseEntity.ok(detailResponse);
     }
+
+    @PostMapping("/delete/{boardId}")
+    public ResponseEntity deleteBoard(@PathVariable Long boardId, Authentication authentication){
+
+        PrincipalDetails principalDetails = (PrincipalDetails) authentication.getPrincipal();
+
+        boardService.deleteBoard(boardId, principalDetails.member());
+
+        return ResponseEntity.ok("삭제 완료");
+    }
+
+    @PostMapping("/update")
+    public ResponseEntity updateBoard(@RequestBody BoardUpdateRequest updateRequest, Authentication authentication){
+        PrincipalDetails principalDetails = (PrincipalDetails) authentication.getPrincipal();
+
+        boardService.updateBoard(updateRequest, principalDetails.member());
+
+        return ResponseEntity.ok("수정 완료");
+    }
+
+    @PostMapping("/toggle/like/{boardId}")
+    public ResponseEntity toggleLike(@PathVariable Long boardId, Authentication authentication){
+
+        PrincipalDetails principalDetails = (PrincipalDetails) authentication.getPrincipal();
+
+        String message = boardService.toggleLike(boardId, principalDetails.member());
+
+        return ResponseEntity.ok(message);
+    }
+
 
 }

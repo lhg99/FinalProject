@@ -13,7 +13,7 @@ import lombok.Setter;
 public class ChangeInfoRequest {
 
     @NotBlank
-    private String nickname;
+    private String username;
 
     @NotBlank
     private String comment;
