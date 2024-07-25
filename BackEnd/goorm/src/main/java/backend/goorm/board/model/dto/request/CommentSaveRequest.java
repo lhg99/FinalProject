@@ -1,4 +1,4 @@
-package backend.goorm.member.model.dto.request;
+package backend.goorm.board.model.dto.request;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -9,9 +9,9 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class OauthSignupRequest {
+public class CommentSaveRequest {
 
-    private Long memberId;
-    private String memberName;
+    private Long boardId;
 
+    private String commentContent;
 }
