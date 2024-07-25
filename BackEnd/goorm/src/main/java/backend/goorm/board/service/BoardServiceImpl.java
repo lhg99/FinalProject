@@ -173,7 +173,6 @@ public class BoardServiceImpl implements BoardService {
     public void updateBoard(BoardUpdateRequest updateRequest, Member member) {
 
         Optional<Board> findBoard = boardRepository.findBoardByIdAndNotDeleted(updateRequest.getBoardId());
-
         if(!findBoard.isPresent()) {
             throw new CustomException(CustomExceptionType.BOARD_NOT_FOUND);
         }
