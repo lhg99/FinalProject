@@ -30,6 +30,12 @@ public class ChatRoomController {
         return chatRoomService.getPublicChatRoomsByLoginId(loginId);
     }
 
+    //개설된 모든 오픈채팅방 목록
+    @GetMapping("/public/list/{loginId}")
+    public List<ChatRoomResponse> getPublicChatRooms(@PathVariable String loginId) {
+        return chatRoomService.getPublicChatRooms(loginId);
+    }
+
     //채팅방 생성
     @PostMapping
     public ResponseEntity<ChatRoomResponse> createChatRoom(@RequestBody ChatRoomRequest chatRoomRequest) {

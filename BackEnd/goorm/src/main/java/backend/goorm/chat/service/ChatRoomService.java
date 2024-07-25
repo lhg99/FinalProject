@@ -58,6 +58,20 @@ public class ChatRoomService {
                 .collect(Collectors.toList());
     }
 
+    //참여하지 않은 오픈채팅방 조회
+    public List<ChatRoomResponse> getPublicChatRooms(String loginId) {
+        List<ChatRoom> findAllChatRooms = chatRoomRepository.findAll();
+        Member findMember = memberRepository.findByLoginId(loginId)
+                .orElseThrow(() -> new CustomException(CustomExceptionType.USER_NOT_FOUND));
+
+        return findAllChatRooms
+                .stream()
+                .filter(chatRoom -> chatRoom.getChatRoomType() == ChatRoomType.PUBLIC)
+                .filter(chatRoom -> !chatRoom.getMembers().contains(findMember))
+                .map(ChatRoomResponse::changeResponse)
+                .collect(Collectors.toList());
+    }
+
     //채팅방 참여
     public String joinChatRoom(ChatRoomJoinRequest chatRoomJoinRequest) {
         Member findMember = memberRepository.findByLoginId(chatRoomJoinRequest.getLoginId())
