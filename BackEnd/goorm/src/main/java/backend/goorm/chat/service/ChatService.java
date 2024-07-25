@@ -22,6 +22,7 @@ public class ChatService {
     private final ChatRepository chatRepository;
     private final ChatRoomRepository chatRoomRepository;
 
+    //채팅 메시지 저장
     public ChatResponse sendChat(Long roomId, ChatRequest chatRequest) {
 
         ChatRoom findChatRoom = chatRoomRepository.findById(roomId)
@@ -32,6 +33,25 @@ public class ChatService {
         newChat.setSender(chatRequest.getSender());
         newChat.setMessage(chatRequest.getMessage());
         newChat.setSendDate(LocalDateTime.now());
+        newChat.setChatType(chatRequest.getChatType());
+
+        Chat saved = chatRepository.save(newChat);
+
+        return ChatResponse.changeResponse(saved);
+    }
+
+    //채팅방 참여메시지 저장
+    public ChatResponse joinChat(Long roomId, ChatRequest chatRequest) {
+
+        ChatRoom findChatRoom = chatRoomRepository.findById(roomId)
+                .orElseThrow(() ->new RuntimeException(roomId + "번 채팅방이 존재하지 않습니다."));
+
+        Chat newChat = new Chat();
+        newChat.setChatRoom(findChatRoom);
+        newChat.setSender(chatRequest.getSender());
+        newChat.setMessage(chatRequest.getMessage());
+        newChat.setSendDate(LocalDateTime.now());
+        newChat.setChatType(chatRequest.getChatType());
 
         Chat saved = chatRepository.save(newChat);
 
