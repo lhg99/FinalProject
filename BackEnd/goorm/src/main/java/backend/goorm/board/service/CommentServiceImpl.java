@@ -2,6 +2,7 @@ package backend.goorm.board.service;
 
 import backend.goorm.board.model.dto.CommentListItem;
 import backend.goorm.board.model.dto.request.CommentSaveRequest;
+import backend.goorm.board.model.dto.request.CommentUpdateRequest;
 import backend.goorm.board.model.dto.response.CommentListResponse;
 import backend.goorm.board.model.entity.Board;
 import backend.goorm.board.model.entity.Comment;
@@ -14,6 +15,7 @@ import backend.goorm.member.model.entity.Member;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -74,6 +76,50 @@ public class CommentServiceImpl implements CommentService {
                 .comments(collect)
                 .totalCnt(collect.size())
                 .build();
+    }
+
+    @Override
+    @Transactional
+    public void updateComment(CommentUpdateRequest updateCommentRequest, Member member) {
+
+        Optional<Comment> findComment = commentRepository.findByCommentId(updateCommentRequest.getCommentId());
+
+        if(!findComment.isPresent()) {
+            throw new CustomException(CustomExceptionType.COMMENT_NOT_FOUND);
+        }
+
+        if(member.getMemberId() != findComment.get().getMemberId().getMemberId()){
+            throw new CustomException(CustomExceptionType.NO_AUTHORITY_TO_UPDATE);
+        }
+
+        if(findComment.get().isCommentDeleted()){
+            throw new CustomException(CustomExceptionType.COMMENT_DELETED_BOARD);
+        }
+
+        findComment.get().updateComment(updateCommentRequest);
+
+    }
+
+    @Override
+    @Transactional
+    public void deleteComment(Long commentId, Member member) {
+
+        Optional<Comment> findComment = commentRepository.findByCommentId(commentId);
+
+        if(!findComment.isPresent()) {
+            throw new CustomException(CustomExceptionType.COMMENT_NOT_FOUND);
+        }
+
+        if(member.getMemberId() != findComment.get().getMemberId().getMemberId()){
+            throw new CustomException(CustomExceptionType.NO_AUTHORITY_TO_DELETE);
+        }
+
+        if(findComment.get().isCommentDeleted()){
+            throw new CustomException(CustomExceptionType.COMMENT_DELETED_BOARD);
+        }
+
+        findComment.get().deleteComment();
+
     }
 
     private CommentListItem convertToCommentListItem(Comment comment) {

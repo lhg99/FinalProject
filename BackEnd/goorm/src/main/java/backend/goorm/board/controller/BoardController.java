@@ -46,18 +46,18 @@ public class BoardController {
     /**
      * 게시글 목록 조회
      * @param page
-     * @param type
+     * @param boardType
      * @param sortType
      * @param categories
      * @return
      */
     @GetMapping("/list/{page}")
     public ResponseEntity getBoardList(@PathVariable int page,
-                                       @RequestParam BoardType type,
+                                       @RequestParam BoardType boardType,
                                        @RequestParam(defaultValue = "DATE_DESC")BoardSortType sortType,
                                        @RequestParam(defaultValue = "")List<BoardCategory> categories){
 
-        BoardListResponse boardList = boardService.getBoardList(type, page, sortType, categories);
+        BoardListResponse boardList = boardService.getBoardList(boardType, page, sortType, categories);
 
         return ResponseEntity.ok(boardList);
     }
