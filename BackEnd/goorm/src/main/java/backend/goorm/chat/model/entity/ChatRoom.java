@@ -19,6 +19,9 @@ public class ChatRoom {
     @Column(name = "chat_room_id")
     private Long chatRoomId;
 
+    @OneToMany(mappedBy = "chatRoom", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Chat> chats;
+
     private String chatRoomName;
 
     @Enumerated(EnumType.STRING)
