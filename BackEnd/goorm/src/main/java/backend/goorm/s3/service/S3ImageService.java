@@ -18,10 +18,7 @@ import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLDecoder;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Objects;
-import java.util.UUID;
+import java.util.*;
 
 @Slf4j
 @Service
@@ -45,6 +42,16 @@ public class S3ImageService {
         return this.uploadImage(image);
     }
 
+    public List<String> uploadMulti(MultipartFile[] image) {
+        List<String> urls = new ArrayList<>();
+        for(int i = 0; i < image.length; i++) {
+            urls.add(uploadImage(image[i]));
+        }
+
+        return urls;
+    }
+
+
     private String uploadImage(MultipartFile image) {
         this.validateImageFileExtension(image.getOriginalFilename());
         try {
@@ -63,7 +70,7 @@ public class S3ImageService {
         }
 
         String extension = filename.substring(lastDotIndex + 1).toLowerCase();
-        List<String> allowedExtensionList = Arrays.asList("jpg", "jpeg", "png", "gif");
+        List<String> allowedExtensionList = Arrays.asList("jpg", "jpeg", "png", "gif", "svg");
 
         if (!allowedExtensionList.contains(extension)) {
             log.error("Invalid file extension for file: {}", filename);
@@ -123,4 +130,5 @@ public class S3ImageService {
             throw new RuntimeException("Error decoding image address.", e);
         }
     }
+
 }

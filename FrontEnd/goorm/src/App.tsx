@@ -1,41 +1,28 @@
 import React from 'react';
-import logo from './logo.svg';
-import './App.css';
-import axios from 'axios';
+import Header from './components/Header/Header';
+import { BrowserRouter, Route, Routes } from 'react-router-dom';
+import Chat from './pages/Chat/components/Chat'
+import FloatingButtonWithChat from './pages/Chat/components/FloatingButtonWithChat';
+import Exercise from './pages/Exercise/Exercise';
+import Map from './pages/FindGym/Map/Map';
 
-
-
-function App() {
-  const handleClick = async () => {
-    try {
-      const response = await axios.post('http://final-project-app-env.eba-xdjqmujd.ap-northeast-2.elasticbeanstalk.com/api/con_test', {
-        sender: 'sender'
-      });
-      console.log('Response:', response.data);
-    } catch (error) {
-      console.error('Error posting data:', error);
-    }
-  };
-
+const App: React.FC = () => {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-        <button onClick={handleClick}>Send POST Request</button>
-      </header>
-    </div>
+    <BrowserRouter>
+      <div>
+        <Header />
+        <main>
+          <Routes>
+              <Route path="/" element={<h1>Welcome to MyWebsite</h1>} />
+              <Route path="/Chat" element={<Chat />} />
+              <Route path='/exercise' element={<Exercise />}/>
+              <Route path='/findgym' element={<Map />} />
+            </Routes>
+        </main>
+        <FloatingButtonWithChat/>
+      </div>
+    </BrowserRouter>
   );
-}
+};
 
 export default App;
