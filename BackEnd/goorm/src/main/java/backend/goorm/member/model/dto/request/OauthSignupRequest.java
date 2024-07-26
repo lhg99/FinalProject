@@ -13,6 +13,5 @@ public class OauthSignupRequest {
 
     private Long memberId;
     private String memberName;
-    private String memberPhone;
 
 }
