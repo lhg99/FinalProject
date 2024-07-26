@@ -1,5 +1,6 @@
 package backend.goorm.chat.model.entity;
 
+import backend.goorm.chat.model.entity.enums.ChatType;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Data;
@@ -17,10 +18,6 @@ public class Chat {
     @Column(name = "chat_id")
     private Long chatId;
 
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "chat_room_id")
-    private ChatRoom chatRoom;
-
     private String sender;
 
     @Column(columnDefinition = "TEXT")
@@ -30,4 +27,10 @@ public class Chat {
     @Column(updatable = false)
     private LocalDateTime sendDate;
 
+    @Enumerated(EnumType.STRING)
+    private ChatType chatType;
+
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "chat_room_id")
+    private ChatRoom chatRoom;
 }
