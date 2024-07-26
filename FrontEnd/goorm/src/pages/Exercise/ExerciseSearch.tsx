@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useState } from 'react'
-import { Category, ExerciseData, ExerciseInfo, getCategories, getExerciseData, postCustomExerciseData } from '../../api/exerciseApi';
+import { Category, ExerciseData, getExerciseData, postCustomExerciseData } from './api/exerciseApi';
 import { ExerciseStore } from '../../store/store';
 import styled from 'styled-components';
 import { SearchIcon } from '../../image/SearchIcon';
@@ -12,8 +12,8 @@ interface ExerciseSearchProps {
 const ExerciseSearch: React.FC<ExerciseSearchProps> = ({ onAddExercise, onAddCustomExercise }) => {
     const [loading, setLoading] = useState<boolean>(true);
     const [searchQuery, setSearchQuery] = useState<string>("");
-    const [filteredData, setFilteredData] = useState<ExerciseInfo[]>([]);
-    const [selectedCategories, setSelectedCategories] = useState<number[]>([]);
+    const [filteredData, setFilteredData] = useState<ExerciseData[]>([]);
+    const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
     const [customExerciseName, setCustomExerciseName] = useState<string>("");
 
     const {exercises, categories, selectedExercises, setCategories, setExercises, addSelectedExercises} = ExerciseStore();
@@ -22,18 +22,11 @@ const ExerciseSearch: React.FC<ExerciseSearchProps> = ({ onAddExercise, onAddCus
     useEffect(() => {
         const fetchExerciseData = async () => {
             try {
-                const [exercises, categories] = await Promise.all([getExerciseData(), getCategories()]);
-                const exerciseInfo = exercises.map(exercise => {
-                    const category = categories.find(cat => cat.category_id === exercise.category_id);
-                    return {
-                        ...exercise,
-                        category_name: category ? category.category_name : "unknown"
-                    };
-                }
-            );
-            setCategories(categories);
-            setExercises(exerciseInfo);
-            setFilteredData(exerciseInfo);
+                const exerciseData = await getExerciseData();
+                setExercises(exerciseData);
+                setFilteredData(exerciseData);
+                const uniqueCategories = Array.from(new Set(exerciseData.map(exercise => exercise.categoryName)))
+                setCategories(uniqueCategories.map(categoryName => ({ categoryName })));
         } catch(err) {
             console.error("운동 데이터 가져오기 실패", err);
         } finally {
@@ -43,14 +36,18 @@ const ExerciseSearch: React.FC<ExerciseSearchProps> = ({ onAddExercise, onAddCus
     fetchExerciseData();
     }, [setCategories, setExercises]);
 
+    useEffect(() => {
+        console.log("Updated selectedExercises in ExerciseSearch:", selectedExercises);
+    }, [selectedExercises]);
+
     const filterExercises = useCallback(() => {
         const filtered = exercises
-            .filter(data => data.training_name.toLowerCase().includes(searchQuery.toLowerCase()))
+            .filter(data => data.name.toLowerCase().includes(searchQuery.toLowerCase()))
             .map(data => {
-                const category = categories.find(cat => cat.category_id === data.category_id);
+                const category = categories.find(cat => cat.categoryName === data.categoryName);
                 return {
                     ...data,
-                    category_name: category ? category.category_name : "unknown"
+                    category_name: category ? category.categoryName : "unknown"
                 };
             });
         setFilteredData(filtered);
@@ -69,34 +66,34 @@ const ExerciseSearch: React.FC<ExerciseSearchProps> = ({ onAddExercise, onAddCus
     const getUpdatedFilteredData = (
         exercises: ExerciseData[], 
         categories: Category[], 
-        selectedCategories: number[]
-    ):ExerciseInfo[] => {
+        selectedCategories: string[]
+    ):ExerciseData[] => {
         return exercises.map(data => {
-            const category = categories.find(cat => cat.category_id === data.category_id);
+            const category = categories.find(cat => cat.categoryName === data.categoryName);
             return {
                 ...data,
-                category_name: category ? category.category_name : "unknown"
+                category_name: category ? category.categoryName : "unknown"
             };
-        }).filter(data => selectedCategories.length === 0 || selectedCategories.includes(data.category_id));
+        }).filter(data => selectedCategories.length === 0 || selectedCategories.includes(data.category_name));
     };
 
     // 카테고리 다른걸 클릭시 카테고리 바꾸기
-    const handleCategoryChange = (categoryId: number) => {
-        if (categoryId === 0) {
-            if (selectedCategories.includes(0)) {
+    const handleCategoryChange = (categoryName: string) => {
+        if (categoryName === "전체") {
+            if (selectedCategories.includes("전체")) {
                 // 전체 카테고리 선택시 모든 카테고리를 해제하고 전체 운동목록 설정
                 setSelectedCategories([]);
                 setFilteredData(getUpdatedFilteredData(exercises, categories, []));
             } else {
                 // 전체 카테고리 선택 안하면 모든 카테고리 선택하고 전체 운동목록 설정
-                const allCategoryIds = categories.map(cat => cat.category_id);
-                setSelectedCategories(allCategoryIds);
-                setFilteredData(getUpdatedFilteredData(exercises, categories, allCategoryIds));
+                const allCategoryNames = categories.map(cat => cat.categoryName);
+                setSelectedCategories(allCategoryNames);
+                setFilteredData(getUpdatedFilteredData(exercises, categories, allCategoryNames));
             }
         } else {
-            const newSelectedCategories = selectedCategories.includes(categoryId)
-                ? selectedCategories.filter(id => id !== categoryId) 
-                : [...selectedCategories, categoryId];
+            const newSelectedCategories = selectedCategories.includes(categoryName)
+                ? selectedCategories.filter(name => name !== categoryName) 
+                : [...selectedCategories, categoryName];
     
             setSelectedCategories(newSelectedCategories);
     
@@ -107,10 +104,9 @@ const ExerciseSearch: React.FC<ExerciseSearchProps> = ({ onAddExercise, onAddCus
 
     // 운동 추가시 이미 선택된 운동인지 확인
     const handleAddExerciseClick = (exercise: ExerciseData) => {
-        const isExerciseSelected = selectedExercises.some(selected => selected.training_name === exercise.training_name);
-        if (!isExerciseSelected) { // 운동이 이미 선택된 목록에 없는지 확인
+        const isExerciseSelected = selectedExercises.some(selected => selected.name.toLowerCase() === exercise.name.toLowerCase());
+        if(!isExerciseSelected) {
             onAddExercise(exercise);
-            addSelectedExercises(exercise);
         }
     };
 
@@ -121,7 +117,7 @@ const ExerciseSearch: React.FC<ExerciseSearchProps> = ({ onAddExercise, onAddCus
             return;
         }
 
-        const category = categories.find(cat => cat.category_id === selectedCategories[0]);
+        const category = categories.find(cat => cat.categoryName === selectedCategories[0]);
 
         if (!category) {
             alert("유효한 카테고리를 선택해주세요");
@@ -129,24 +125,23 @@ const ExerciseSearch: React.FC<ExerciseSearchProps> = ({ onAddExercise, onAddCus
         }
 
         const newCustomExercise: ExerciseData = { 
-            training_name: customExerciseName,
-            training_id: 100,
-            category_id: category.category_id,
+            name: customExerciseName,
+            id: 100,
+            categoryName: category.categoryName
         };
 
-        onAddCustomExercise(newCustomExercise);
-        addSelectedExercises(newCustomExercise);
-        setCustomExerciseName(""); // 입력 필드 초기화
+        // onAddCustomExercise(newCustomExercise);
+        // addSelectedExercises(newCustomExercise);
+        // setCustomExerciseName(""); // 입력 필드 초기화
 
-        // try {
-        //     await postCustomExerciseData(newCustomExercise);
-        //     onAddCustomExercise(newCustomExercise);
-        //     addSelectedExercises(newCustomExercise);
-        //     setCustomExerciseName(""); // 입력 필드 초기화
-        // } catch(err) {
-        //     console.error("새로운 운동 저장 실패", err);
-        //     alert("운동 추가 실패");
-        // }
+        try {
+            await postCustomExerciseData(newCustomExercise);
+            onAddCustomExercise(newCustomExercise);
+            setCustomExerciseName(""); // 입력 필드 초기화
+        } catch(err) {
+            console.error("새로운 운동 저장 실패", err);
+            alert("운동 추가 실패");
+        }
     };
 
     if(loading) {
@@ -156,14 +151,14 @@ const ExerciseSearch: React.FC<ExerciseSearchProps> = ({ onAddExercise, onAddCus
     return (
         <ExerciseSearchContainer>
             <CategoriesContainer>
-                {categories.map(option => (
-                    <label key={option.category_id}>
+                {categories.map((option, index) => (
+                    <label key={index}>
                         <input 
                             type='checkbox' 
-                            checked={selectedCategories.includes(option.category_id)}
-                            onChange={() => handleCategoryChange(option.category_id)} 
+                            checked={selectedCategories.includes(option.categoryName)}
+                            onChange={() => handleCategoryChange(option.categoryName)} 
                         />
-                        {option.category_name}
+                        {option.categoryName}
                     </label>
                     ))
                 }
@@ -182,8 +177,8 @@ const ExerciseSearch: React.FC<ExerciseSearchProps> = ({ onAddExercise, onAddCus
             <ExerciseListContainer>
                 <ExerciseItemButton onClick={handleAddCustomExerciseClick}>직접 입력하기</ExerciseItemButton>
                 {filteredData.map(data => (
-                    <ExerciseItemButton key={data.training_name} onClick={() => handleAddExerciseClick(data)}>
-                        {data.training_name}
+                    <ExerciseItemButton key={data.id} onClick={() => handleAddExerciseClick(data)}>
+                        {data.name}
                     </ExerciseItemButton>
                     ))
                 }
@@ -198,11 +193,11 @@ const ExerciseSearchContainer = styled.div`
     display: flex;
     flex-direction: column;
     padding: .625rem;
-    width: 90%;
+    width: 75%;
     height: 500px;
     max-height: 500px;
     overflow-y: auto;
-    border: 1px solid black;
+    border: 1px solid #AFAFAF;
     border-radius: 5px;
     // box-sizing: border-box;
 
@@ -230,24 +225,27 @@ const ExerciseSearchContainer = styled.div`
 
 const CategoriesContainer = styled.div`
     margin-top: .625rem;
+    font-size: 0.875rem;
 `;
 
 const SearchForm = styled.form`
     margin-top: .625rem;
     width: 100%;
-    .search-btn {
-        margin-left: .5rem;
-    }
+    display: flex;
 `;
 
 const SearchInput = styled.input`
-    width: 80%;
-    padding: .625rem;
+    width: 66%;
+    padding: 8px;
+    display: flex;
 `;
 
 const SearchButton = styled.button`
     margin-left: 0.625rem;
-    height: 95%;
+    height: 35.2px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 `
 
 const ExerciseListContainer = styled.div`
@@ -256,7 +254,6 @@ const ExerciseListContainer = styled.div`
     height: 1.875rem;
     margin-top: 1.25rem;
     margin-bottom: 1.25rem;
-    gap: .625rem;
 `;
 
 const ExerciseItemButton = styled.button`
@@ -265,8 +262,8 @@ const ExerciseItemButton = styled.button`
     justify-content: center;
     align-items: center;
     border-radius: 0.9375rem;
-    font-size: 1.125rem;
-    border: 1px solid black;
+    font-size: 0.875rem;
+    border: 1px solid #AFAFAF;
     border-radius: 0;
     background-color: white;
 

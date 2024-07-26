@@ -1,18 +1,19 @@
 import React, { useState } from "react";
 import styled from "styled-components";
+import { ExerciseStore } from "../../store/store";
 
 interface ExerciseMemoProps {
   onFileUpload: (file: File) => void;
 }
 
 const ExerciseMemo: React.FC<ExerciseMemoProps> = ({onFileUpload}) => {
-  const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [imagePreviewUrl, setImagePreviewUrl] = useState<string | null>(null);
+  const setImageFile = ExerciseStore(state => state.setImageFile);
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     if(event.target.files && event.target.files.length > 0) {
       const file = event.target.files[0];
-      setSelectedFile(file);
+      setImageFile(file);
       setImagePreviewUrl(URL.createObjectURL(file));
       onFileUpload(file);
     }
@@ -65,7 +66,7 @@ const ImagePreview = styled.img`
 
 const MemoDetails = styled.div`
   display: flex;
-  width: 52%;
+  width: 43%;
   margin-left: 1.25rem;
   margin-right: 1.875rem;
   border: 1px solid black;
@@ -75,13 +76,13 @@ const DetailsText = styled.p `
   width: 5%;
   margin-left: 1.25rem;
   margin-right: 1.25rem;
-  font-size: 24px;
+  font-size: 0.875rem;
   font-weight: bold;
 `;
 
 const MemoDetailsInput = styled.input`
   width: 100%;
-  font-size: 1rem;
+  font-size: 0.875rem;
   border-top: none;
   border-right: none;
   border-bottom: none;

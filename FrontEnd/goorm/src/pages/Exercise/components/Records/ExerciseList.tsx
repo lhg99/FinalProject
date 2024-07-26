@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo } from 'react'
-import { ExerciseData, ExerciseRecords, getExerciseRecords } from '../../../../api/exerciseApi';
+import { ExerciseData, ExerciseRecords, getExerciseRecords } from '../../api/exerciseApi';
 import ExerciseDetails from './ExerciseDetails';
 import styled from 'styled-components';
 import { ExerciseStore } from '../../../../store/store';
@@ -12,52 +12,90 @@ interface ExerciseListProps {
 // 운동을 나열하는 컴포넌트
 const ExerciseList: React.FC<ExerciseListProps> = ({exercises, dateInfo}) => {
 
-  const { exerciseRecords, setExerciseRecords } = ExerciseStore();
+  const { selectedExercises, exerciseRecords, setExerciseRecords } = ExerciseStore();
 
   useEffect(() => {
     const fetchRecords = async () => {
         try {
             const records = await getExerciseRecords();
             setExerciseRecords(records);
+            // console.log("운동 기록: ", records);
         } catch (error) {
             console.error('Failed to fetch exercise records', error);
         }
     };
-
     fetchRecords();
 }, [setExerciseRecords]);
 
   const filteredRecords = useMemo(() => {
-    if(!dateInfo) return [];
+    if(!dateInfo) {
+      console.log('No dateInfo provided');
+      return [];
+    }
     const { year, month, day } = dateInfo;
     const selectedDate = new Date(year, month - 1, day);
 
-    return exerciseRecords.filter(record => {
-      const recordDate = new Date(record.record_date);
+    const records = exerciseRecords.filter(record => {
+      const recordDate = new Date(record.exerciseDate);
       return (
         recordDate.getFullYear() === selectedDate.getFullYear() &&
         recordDate.getMonth() === selectedDate.getMonth() &&
         recordDate.getDate() === selectedDate.getDate()
       );
     });
-  }, [dateInfo, exerciseRecords]);
+
+    return records.map(record => {
+      const exercise = exercises.find(ex => ex.name.replace(/\s+/g, '').toLowerCase() === record.trainingName.replace(/\s+/g, '').toLowerCase());
+      console.log("exercise:", exercise);
+      if (exercise) {
+        return { ...record, id: exercise.id, name: exercise.name };
+      } else {
+        return { ...record, id: 0, name: "Unknown Exercise" }; // Provide default values for id and name
+      }
+    });
+  }, [dateInfo, exerciseRecords, exercises]);
+
+  const combinedRecords = useMemo(() => {
+    const maxRecordId = Math.max(0, ...exerciseRecords.map(record => record.recordId));
+
+    const selectedExerciseRecords: ExerciseRecords[] = selectedExercises.map((exercise, index) => ({
+      recordId: maxRecordId + index + 1, // 기존 maxRecordId에 index를 더해 recordId를 증가
+      trainingName: exercise.name,
+      exerciseDate: new Date().toISOString(), // 현재 날짜로 설정
+      sets: null,
+      weight: null,
+      distance: null,
+      durationMinutes: 0,
+      caloriesBurned: null,
+      incline: null,
+      reps: null,
+      satisfaction: 0, // 기본값 설정, 실제 값을 설정해야 할 수 있음
+      intensity: '',
+      categoryName: exercise.categoryName,
+      trainingId: exercise.id
+    }));
+
+    return [...filteredRecords, ...selectedExerciseRecords];
+  }, [filteredRecords, selectedExercises, exerciseRecords]);
 
   return (
     <ExerciseListWrapper>
       <ExerciseText>오늘의 운동 목록</ExerciseText>
-      <ExerciseListContainer>
-        {filteredRecords.length > 0 ? (
-          filteredRecords.map(record => (
-            <ExerciseDetails 
-              key={record.training_id} 
-              exercise={exercises.find(ex => ex.training_id === record.training_id) || { training_name: "", category_id: 0, training_id: 0 }} 
-              isNew={!record.training_id}
-              details={record}
-            />
-          ))
-        ) : (
-          <p>운동기록 없음</p>
-        )}
+        <ExerciseListContainer>
+          {combinedRecords.length > 0 ? (
+            combinedRecords.map(record => {
+                return (
+                  <ExerciseDetails
+                    key={record.recordId}
+                    exercise={record}
+                    isNew={!record.recordId}
+                    details={record}
+                  />
+                );
+            })
+          ) : (
+                <p>운동기록 없음</p>
+              )}
       </ExerciseListContainer>
     </ExerciseListWrapper>
   )
@@ -70,7 +108,7 @@ const ExerciseListWrapper = styled.div `
   height: 32.5rem;
   max-height: 32.5rem;
   overflow-y: auto;
-  border: 1px solid black;
+  border: 1px solid #AFAFAF;
   border-radius: 5px;
   box-sizing: content-box;
   padding-right: 0.5rem;
