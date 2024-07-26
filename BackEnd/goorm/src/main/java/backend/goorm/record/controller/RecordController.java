@@ -41,16 +41,16 @@ public class RecordController {
     }
 
     @PutMapping("/training/{id}/edit")
-    public ResponseEntity<RecordDto> editRecord(@PathVariable("id") Long trainingId,
+    public ResponseEntity<RecordDto> editRecord(@PathVariable("id") Long recordId,
                                                 @Valid @ModelAttribute  EditRecordRequest request,
                                                 @RequestParam("image") MultipartFile image) {
-        RecordDto result = recordService.editRecord(trainingId, request, null, image); // Member 정보를 null로 설정
+        RecordDto result = recordService.editRecord(recordId, request, null, image); // Member 정보를 null로 설정
         return ResponseEntity.ok(result);
     }
 
     @DeleteMapping("/training/{id}/delete")
-    public ResponseEntity<Void> deleteRecord(@PathVariable("id") Long trainingId) {
-        recordService.deleteRecord(trainingId, null); // Member 정보를 null로 설정
+    public ResponseEntity<Void> deleteRecord(@PathVariable("id") Long recordId) {
+        recordService.deleteRecord(recordId, null); // Member 정보를 null로 설정
         return ResponseEntity.ok().build();
     }
 

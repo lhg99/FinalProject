@@ -61,18 +61,19 @@ public class RecordService {
         Record record = recordRepository.findById(recordId)
                 .orElseThrow(() -> new IllegalArgumentException("Record not found with id: " + recordId));
 
-        String imageUrl = record.getImageUrl();
-        if (image != null && !image.isEmpty()) {
-            // 기존 이미지가 있다면 삭제
-            if (imageUrl != null && !imageUrl.isEmpty()) {
-                s3ImageService.deleteImageFromS3(imageUrl);
-            }
-            // 새 이미지 업로드
-            imageUrl = s3ImageService.upload(image);
+        String imageUrl = s3ImageService.upload(image);
+        record.setImageUrl(imageUrl); // 이미지 URL 설정
+
+        Training training = record.getTraining();
+        String categoryName = String.valueOf(training.getCategory().getCategoryName()); // 카테고리명 가져오기
+
+        if ("유산소".equalsIgnoreCase(categoryName)) {
+            EditRecordRequest.updateCardioRecord(record, request, imageUrl);
+        } else {
+            EditRecordRequest.updateStrengthRecord(record, request, imageUrl);
         }
 
-        Record updatedRecord = EditRecordRequest.updateRecord(record, request, imageUrl);
-        Record saved = recordRepository.save(updatedRecord);
+        Record saved = recordRepository.save(record);
         return RecordDto.fromEntity(saved);
     }
 
