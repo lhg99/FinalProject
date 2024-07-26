@@ -10,8 +10,11 @@ import backend.goorm.chat.repository.ChatRoomRepository;
 import backend.goorm.common.exception.CustomException;
 import backend.goorm.common.exception.CustomExceptionType;
 import backend.goorm.member.model.entity.Member;
+import backend.goorm.member.oauth.PrincipalDetails;
 import backend.goorm.member.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.boot.autoconfigure.neo4j.Neo4jProperties;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -73,9 +76,13 @@ public class ChatRoomService {
     }
 
     //채팅방 참여
-    public String joinChatRoom(ChatRoomJoinRequest chatRoomJoinRequest) {
-        Member findMember = memberRepository.findByLoginId(chatRoomJoinRequest.getLoginId())
-                .orElseThrow(() -> new CustomException(CustomExceptionType.USER_NOT_FOUND));
+    public String joinChatRoom(ChatRoomJoinRequest chatRoomJoinRequest, Authentication authentication) {
+//        Member findMember = memberRepository.findByLoginId(chatRoomJoinRequest.getLoginId())
+//                .orElseThrow(() -> new CustomException(CustomExceptionType.USER_NOT_FOUND));
+
+        // 로그인사용자정보 받아오기
+        PrincipalDetails principalDetails = (PrincipalDetails) authentication.getPrincipal();
+        Member findMember = principalDetails.member();
 
         ChatRoom findChatRoom = chatRoomRepository.findById(chatRoomJoinRequest.getChatRoomId())
                 .orElseThrow(() -> new CustomException(CustomExceptionType.CHAT_ROOM_NOT_FOUND));

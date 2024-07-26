@@ -8,6 +8,7 @@ import backend.goorm.chat.service.ChatRoomService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -46,8 +47,8 @@ public class ChatRoomController {
 
     //채팅방 참여
     @PostMapping("/join")
-    public ResponseEntity<String> joinChatRoom(@RequestBody ChatRoomJoinRequest chatRoomJoinRequest) {
-        String joinMessage = chatRoomService.joinChatRoom(chatRoomJoinRequest);
+    public ResponseEntity<String> joinChatRoom(@RequestBody ChatRoomJoinRequest chatRoomJoinRequest, Authentication authentication) {
+        String joinMessage = chatRoomService.joinChatRoom(chatRoomJoinRequest, authentication);
 
         return new ResponseEntity<>(joinMessage, HttpStatus.OK);
     }
