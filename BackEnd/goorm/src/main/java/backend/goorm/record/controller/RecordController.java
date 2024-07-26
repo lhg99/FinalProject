@@ -11,40 +11,46 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import jakarta.validation.Valid;
+import org.springframework.web.multipart.MultipartFile;
+
 import java.util.List;
 
 @Slf4j
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("/record")
+@RequestMapping("/api/record")
 public class RecordController {
 
     private final RecordService recordService;
 
     @PostMapping("/training/{id}/add/cardio")
     public ResponseEntity<RecordDto> addCardioRecord(@PathVariable("id") Long trainingId,
-                                                     @Valid @RequestBody AddCardioRecordRequest request) {
-        RecordDto result = recordService.addCardioRecord(trainingId, request, null); // Member 정보를 null로 설정
+                                                     @Valid @ModelAttribute  AddCardioRecordRequest request,
+                                                     @RequestParam(value = "image", required = false) MultipartFile image)
+    {
+        RecordDto result = recordService.addCardioRecord(trainingId, request, null, image); // Member 정보를 null로 설정
         return ResponseEntity.ok(result);
     }
 
     @PostMapping("/training/{id}/add/strength")
     public ResponseEntity<RecordDto> addStrengthRecord(@PathVariable("id") Long trainingId,
-                                                       @Valid @RequestBody AddStrengthRecordRequest request) {
-        RecordDto result = recordService.addStrengthRecord(trainingId, request, null); // Member 정보를 null로 설정
+                                                       @Valid @ModelAttribute  AddStrengthRecordRequest request,
+                                                       @RequestParam(value = "image", required = false) MultipartFile image) {
+        RecordDto result = recordService.addStrengthRecord(trainingId, request, null, image); // Member 정보를 null로 설정
         return ResponseEntity.ok(result);
     }
 
     @PutMapping("/training/{id}/edit")
-    public ResponseEntity<RecordDto> editRecord(@PathVariable("id") Long trainingId,
-                                                @Valid @RequestBody EditRecordRequest request) {
-        RecordDto result = recordService.editRecord(trainingId, request, null); // Member 정보를 null로 설정
+    public ResponseEntity<RecordDto> editRecord(@PathVariable("id") Long recordId,
+                                                @Valid @ModelAttribute  EditRecordRequest request,
+                                                @RequestParam(value = "image", required = false) MultipartFile image) {
+        RecordDto result = recordService.editRecord(recordId, request, null, image); // Member 정보를 null로 설정
         return ResponseEntity.ok(result);
     }
 
     @DeleteMapping("/training/{id}/delete")
-    public ResponseEntity<Void> deleteRecord(@PathVariable("id") Long trainingId) {
-        recordService.deleteRecord(trainingId, null); // Member 정보를 null로 설정
+    public ResponseEntity<Void> deleteRecord(@PathVariable("id") Long recordId) {
+        recordService.deleteRecord(recordId, null); // Member 정보를 null로 설정
         return ResponseEntity.ok().build();
     }
 
