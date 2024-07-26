@@ -347,3 +347,25 @@
   // background: rgba(0, 0, 0, 0.5);
 }
 
+.create-open-chat-button {
+  width: 35%;
+  height: 6%;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 10px;
+  font-size: 13px;
+  cursor: pointer;
+  text-align: center;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  transition: background-color 0.3s ease;
+  position: sticky; /* 고정 위치 설정 */
+  bottom: 0; /* 하단에 고정 */
+  left: 50%; /* 좌측에 고정 */
+  transform: translateX(-50%); /* 중앙 정렬을 위해 변환 */
+
+  &:hover {
+    background-color: #0056b3;
+  }
+}
+
