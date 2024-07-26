@@ -8,6 +8,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Data
 @AllArgsConstructor
@@ -24,6 +25,7 @@ public class AddCardioRecordRequest {
     private Integer satisfaction;
     private LocalDate exerciseDate;
 
+
     public static Record toEntity(AddCardioRecordRequest request, Training training) {
         return Record.builder()
                 .training(training)
@@ -32,7 +34,8 @@ public class AddCardioRecordRequest {
                 .intensity(request.getIntensity())
                 .distance(request.getDistance())
                 .incline(request.getIncline())
-                .exerciseDate(request.getExerciseDate())
+                .exerciseDate(request.getExerciseDate() != null ? request.getExerciseDate() : LocalDate.now())
+                .recordDate(LocalDateTime.now())
                 .memo(request.getMemo())
                 .satisfaction(request.getSatisfaction())
                 .build();
