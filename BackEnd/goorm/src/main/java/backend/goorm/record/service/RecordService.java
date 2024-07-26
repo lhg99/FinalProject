@@ -32,7 +32,10 @@ public class RecordService {
         Training training = trainingRepository.findById(trainingId)
                 .orElseThrow(() -> new IllegalArgumentException("Training not found with id: " + trainingId));
 
-        String imageUrl = s3ImageService.upload(image);
+        String imageUrl = null;
+        if (image != null && !image.isEmpty()) {
+            imageUrl = s3ImageService.upload(image);
+        }
 
         Record record = AddCardioRecordRequest.toEntity(request, training);
         record.setImageUrl(imageUrl); // 이미지 URL 설정
@@ -46,23 +49,29 @@ public class RecordService {
         Training training = trainingRepository.findById(trainingId)
                 .orElseThrow(() -> new IllegalArgumentException("Training not found with id: " + trainingId));
 
-        String imageUrl = s3ImageService.upload(image);
+        String imageUrl = null;
+        if (image != null && !image.isEmpty()) {
+            imageUrl = s3ImageService.upload(image);
+        }
 
         Record record = AddStrengthRecordRequest.toEntity(request, training);
         record.setImageUrl(imageUrl); // 이미지 URL 설정
+        record.setCaloriesBurned(0f); // Set default value for caloriesBurned
         Record saved = recordRepository.save(record);
 
         return RecordDto.fromEntity(saved);
     }
-
 
     @Transactional
     public RecordDto editRecord(Long recordId, EditRecordRequest request, Member member, MultipartFile image) {
         Record record = recordRepository.findById(recordId)
                 .orElseThrow(() -> new IllegalArgumentException("Record not found with id: " + recordId));
 
-        String imageUrl = s3ImageService.upload(image);
-        record.setImageUrl(imageUrl); // 이미지 URL 설정
+        String imageUrl = record.getImageUrl();
+        if (image != null && !image.isEmpty()) {
+            imageUrl = s3ImageService.upload(image);
+            record.setImageUrl(imageUrl); // 이미지 URL 설정
+        }
 
         Training training = record.getTraining();
         String categoryName = String.valueOf(training.getCategory().getCategoryName()); // 카테고리명 가져오기
@@ -71,6 +80,7 @@ public class RecordService {
             EditRecordRequest.updateCardioRecord(record, request, imageUrl);
         } else {
             EditRecordRequest.updateStrengthRecord(record, request, imageUrl);
+            record.setCaloriesBurned(0f); // Set default value for caloriesBurned
         }
 
         Record saved = recordRepository.save(record);

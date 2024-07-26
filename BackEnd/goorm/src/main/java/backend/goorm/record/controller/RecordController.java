@@ -26,7 +26,7 @@ public class RecordController {
     @PostMapping("/training/{id}/add/cardio")
     public ResponseEntity<RecordDto> addCardioRecord(@PathVariable("id") Long trainingId,
                                                      @Valid @ModelAttribute  AddCardioRecordRequest request,
-                                                     @RequestParam("image") MultipartFile image)
+                                                     @RequestParam(value = "image", required = false) MultipartFile image)
     {
         RecordDto result = recordService.addCardioRecord(trainingId, request, null, image); // Member 정보를 null로 설정
         return ResponseEntity.ok(result);
@@ -35,7 +35,7 @@ public class RecordController {
     @PostMapping("/training/{id}/add/strength")
     public ResponseEntity<RecordDto> addStrengthRecord(@PathVariable("id") Long trainingId,
                                                        @Valid @ModelAttribute  AddStrengthRecordRequest request,
-                                                       @RequestParam("image") MultipartFile image) {
+                                                       @RequestParam(value = "image", required = false) MultipartFile image) {
         RecordDto result = recordService.addStrengthRecord(trainingId, request, null, image); // Member 정보를 null로 설정
         return ResponseEntity.ok(result);
     }
@@ -43,7 +43,7 @@ public class RecordController {
     @PutMapping("/training/{id}/edit")
     public ResponseEntity<RecordDto> editRecord(@PathVariable("id") Long recordId,
                                                 @Valid @ModelAttribute  EditRecordRequest request,
-                                                @RequestParam("image") MultipartFile image) {
+                                                @RequestParam(value = "image", required = false) MultipartFile image) {
         RecordDto result = recordService.editRecord(recordId, request, null, image); // Member 정보를 null로 설정
         return ResponseEntity.ok(result);
     }
