@@ -1,7 +1,7 @@
 package backend.goorm.training.controller;
 
-import backend.goorm.training.dto.AddTrainingInput;
-import backend.goorm.training.dto.EditTrainingInput;
+import backend.goorm.training.dto.AddTrainingRequest;
+import backend.goorm.training.dto.EditTrainingRequest;
 import backend.goorm.training.dto.TrainingDto;
 import backend.goorm.training.service.CustomTrainingService;
 import lombok.RequiredArgsConstructor;
@@ -20,13 +20,13 @@ public class CustomTrainingController {
     private final CustomTrainingService customTrainingService;
 
     @PostMapping
-    public ResponseEntity<TrainingDto> addCustomTraining(@RequestBody AddTrainingInput input) {
+    public ResponseEntity<TrainingDto> addCustomTraining(@RequestBody AddTrainingRequest input) {
         TrainingDto result = customTrainingService.addCustomTraining(input);
         return ResponseEntity.ok(result);
     }
 
     @PutMapping
-    public ResponseEntity<TrainingDto> editCustomTraining(@RequestBody EditTrainingInput input) {
+    public ResponseEntity<TrainingDto> editCustomTraining(@RequestBody EditTrainingRequest input) {
         TrainingDto result = customTrainingService.editCustomTraining(input);
         return ResponseEntity.ok(result);
     }

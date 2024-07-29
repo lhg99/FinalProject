@@ -14,28 +14,43 @@ import java.time.LocalDateTime;
 @Builder
 public class EditRecordRequest {
 
-    private LocalDateTime modifiedDate;
+//    private LocalDateTime modifiedDate;
     private Float caloriesBurned;
     private Integer durationMinutes;
     private String intensity;
     private Integer sets;
     private Integer weight;
+    private Integer reps;
     private Float distance;
-    private Boolean userRegister;
     private String memo;
     private Integer satisfaction;
 
-    public static Record updateRecord(Record record, EditRecordRequest input) {
-        record.setModifiedDate(input.getModifiedDate());
-        record.setCaloriesBurned(input.getCaloriesBurned());
-        record.setDurationMinutes(input.getDurationMinutes());
-        record.setIntensity(input.getIntensity());
-        record.setSets(input.getSets());
-        record.setWeight(input.getWeight());
-        record.setDistance(input.getDistance());
-        record.setUserRegister(input.getUserRegister());
-        record.setMemo(input.getMemo());
-        record.setSatisfaction(input.getSatisfaction());
+
+    public static Record updateStrengthRecord(Record record, EditRecordRequest edit, String imageUrl) {
+        record.setCaloriesBurned(edit.getCaloriesBurned());
+        record.setDurationMinutes(edit.getDurationMinutes());
+        record.setIntensity(edit.getIntensity());
+        record.setSets(edit.getSets());
+        record.setWeight(edit.getWeight());
+        record.setReps(edit.getReps());
+        record.setMemo(edit.getMemo());
+        record.setSatisfaction(edit.getSatisfaction());
+        if (imageUrl != null) {
+            record.setImageUrl(imageUrl);
+        }
+        return record;
+    }
+
+    public static Record updateCardioRecord(Record record, EditRecordRequest edit, String imageUrl) {
+        record.setCaloriesBurned(edit.getCaloriesBurned());
+        record.setDurationMinutes(edit.getDurationMinutes());
+        record.setIntensity(edit.getIntensity());
+        record.setDistance(edit.getDistance());
+        record.setMemo(edit.getMemo());
+        record.setSatisfaction(edit.getSatisfaction());
+        if (imageUrl != null) {
+            record.setImageUrl(imageUrl);
+        }
         return record;
     }
 }

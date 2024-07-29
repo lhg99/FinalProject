@@ -1,5 +1,6 @@
 package backend.goorm.board.model.entity;
 
+import backend.goorm.board.model.dto.request.CommentUpdateRequest;
 import backend.goorm.member.model.entity.Member;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
@@ -34,4 +35,12 @@ public class Comment {
     private LocalDateTime commentRegDate;
 
     private boolean commentDeleted = false;
+
+    public void updateComment(CommentUpdateRequest updateCommentRequest){
+        this.commentContent = updateCommentRequest.getCommentContent();
+    }
+
+    public void deleteComment(){
+        this.commentDeleted = true;
+    }
 }

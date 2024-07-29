@@ -17,11 +17,10 @@ export const postLoginData = async (login: LoginData): Promise<LoginRequest> => 
     formData.append('loginPw', login.loginPw);
 
     try {
-        const response: AxiosResponse<LoginRequest> = await axios.post("http://localhost:8080/api/auth/login", formData, {
+        const response: AxiosResponse<LoginRequest> = await axios.post("http://final-project-app-env.eba-xdjqmujd.ap-northeast-2.elasticbeanstalk.com/api/auth/login", formData, {
             headers: {
                 "Content-Type": "multipart/form-data",
-            },
-            withCredentials: true,
+            }
         });
 
         if (response.status === 200) {
