@@ -1,17 +1,20 @@
 import React, { useState } from "react";
 import styled from "styled-components";
+import { ExerciseStore } from "../../store/store";
 
 interface ExerciseMemoProps {
   onFileUpload: (file: File) => void;
 }
 
 const ExerciseMemo: React.FC<ExerciseMemoProps> = ({onFileUpload}) => {
-  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [imagePreviewUrl, setImagePreviewUrl] = useState<string | null>(null);
+  const setImageFile = ExerciseStore(state => state.setImageFile);
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     if(event.target.files && event.target.files.length > 0) {
       const file = event.target.files[0];
-      setSelectedFile(file);
+      setImageFile(file);
+      setImagePreviewUrl(URL.createObjectURL(file));
       onFileUpload(file);
     }
   }
@@ -20,10 +23,10 @@ const ExerciseMemo: React.FC<ExerciseMemoProps> = ({onFileUpload}) => {
     <MemoContainer>
       <ImageContainer>
         <ImageInput type="file" accept="image/*" onChange={handleFileChange}/>
-        {selectedFile && <p>선택된 파일: {selectedFile.name}</p>}
+        {imagePreviewUrl && <ImagePreview src={imagePreviewUrl} alt="미리보기 이미지" />}
       </ImageContainer>
       <MemoDetails>
-        <h2>운동 메모</h2>
+        <DetailsText>메모</DetailsText>
         <MemoDetailsInput className="memo-input" type="text" placeholder='운동 관련 메모 기록하기'></MemoDetailsInput>
       </MemoDetails>
     </MemoContainer>
@@ -34,17 +37,18 @@ export default ExerciseMemo
 
 const MemoContainer = styled.div`
   display: flex;
-  margin-top: 10px;
-  width: 125rem;
+  margin-top: 20px;
+  width: 100%;
   height: 12.5rem;
-  margin-left: 23.75rem;
+  margin-left: 410px;
 `;
 
 const ImageContainer = styled.div`
   display: flex;
-  width: 31.25rem;
-  border: 1px solid black;
-  border-radius: 0.625rem;
+  width: 30%;
+  height: 100%;
+  border: 1.5px solid black;
+  border-radius: 0.3125rem;
 `;
 
 const ImageInput = styled.input`
@@ -52,19 +56,35 @@ const ImageInput = styled.input`
   margin-left: 0.625rem;
 `;
 
-const MemoDetails = styled.div`
-  display: flex;
-  margin-left: 1.25rem;
-  margin-right: 1.875rem;
-  border: 1px solid black;
+const ImagePreview = styled.img`
+  margin-top: 10px;
+  margin-bottom: 0.625rem;
+  max-width: 100%;
+  max-height: 100%;
   border-radius: 0.625rem;
 `;
 
-const MemoDetailsInput = styled.input`
-  margin-left: 0.625rem;
-  width: 1050px;
-  font-size: 1rem;
+const MemoDetails = styled.div`
+  display: flex;
+  width: 43%;
+  margin-left: 1.25rem;
+  margin-right: 1.875rem;
   border: 1px solid black;
-  border-top-right-radius: 0.625rem;
-  border-bottom-right-radius: 0.625rem;
+`;
+
+const DetailsText = styled.p `
+  width: 5%;
+  margin-left: 1.25rem;
+  margin-right: 1.25rem;
+  font-size: 0.875rem;
+  font-weight: bold;
+`;
+
+const MemoDetailsInput = styled.input`
+  width: 100%;
+  font-size: 0.875rem;
+  border-top: none;
+  border-right: none;
+  border-bottom: none;
+  border-left: 1px solid black;
 `;

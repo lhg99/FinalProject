@@ -12,7 +12,9 @@ import backend.goorm.common.exception.CustomExceptionType;
 import backend.goorm.member.model.entity.Member;
 import backend.goorm.member.oauth.PrincipalDetails;
 import backend.goorm.member.repository.MemberRepository;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.autoconfigure.neo4j.Neo4jProperties;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
@@ -22,6 +24,8 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
+@Transactional
 public class ChatRoomService {
     private final ChatRoomRepository chatRoomRepository;
     private final MemberRepository memberRepository;
@@ -83,9 +87,12 @@ public class ChatRoomService {
         // 로그인사용자정보 받아오기
         PrincipalDetails principalDetails = (PrincipalDetails) authentication.getPrincipal();
         Member findMember = principalDetails.member();
+        log.info("Join에서 불러온 사용자 정보: {}", findMember.getMemberId());
 
         ChatRoom findChatRoom = chatRoomRepository.findById(chatRoomJoinRequest.getChatRoomId())
                 .orElseThrow(() -> new CustomException(CustomExceptionType.CHAT_ROOM_NOT_FOUND));
+
+        findMember.getChatRooms().size(); // 지연 로딩 컬렉션 초기화
 
         findMember.getChatRooms().add(findChatRoom);
         findChatRoom.getMembers().add(findMember);

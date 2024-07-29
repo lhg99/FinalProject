@@ -141,7 +141,7 @@
   }
 
   &.system .message-content {
-    background-color: #e0e0e0;
+    background-color: #e0e0e0fa;
     color: #000;
     align-self: center;
     margin: 0 auto;
@@ -281,3 +281,91 @@
     color: #666;
   }
 }
+
+//모달창
+.modal {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: white;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+
+  h2 {
+    margin-top: 0; // 제목과 내용 사이의 간격을 줄이기 위해 추가
+  }
+
+  .modal-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+
+    .modal-buttons {
+      margin-top: 20px; // 버튼과 내용 사이의 간격을 조절
+      display: flex;
+      gap: 10px; // 버튼 사이의 간격을 조절
+    }
+
+    .cancel-button {
+      padding: 8px 12px;
+      background-color: #6c757d; // 진한 회색
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+
+      &:hover {
+        background-color: #5a6268;
+      }
+    }
+
+    .confirm-button {
+      padding: 8px 12px;
+      background-color: #007bff; // 채팅 헤더와 같은 색상
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+
+      &:hover {
+        background-color: #0056b3;
+      }
+    }
+  }
+}
+
+//모달 클릭 시 배경설정
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  // background: rgba(0, 0, 0, 0.5);
+}
+
+.create-open-chat-button {
+  width: 35%;
+  height: 6%;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 10px;
+  font-size: 13px;
+  cursor: pointer;
+  text-align: center;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  transition: background-color 0.3s ease;
+  position: sticky; /* 고정 위치 설정 */
+  bottom: 0; /* 하단에 고정 */
+  left: 50%; /* 좌측에 고정 */
+  transform: translateX(-50%); /* 중앙 정렬을 위해 변환 */
+
+  &:hover {
+    background-color: #0056b3;
+  }
+}
+
