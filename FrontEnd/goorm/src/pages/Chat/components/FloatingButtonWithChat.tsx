@@ -120,19 +120,20 @@ const FloatingButtonWithChat: React.FC = () => {
    //입장 확인 후 채팅방 입장 함수
    const confirmEnterChatRoom = () => {
       if (selectedChatRoom) {
+         callJoinChatRoom(selectedChatRoom);
          setCurrentChatRoomName(selectedChatRoom.chatRoomName);
          setCurrentChatRoomId(selectedChatRoom.chatRoomId);
          setInChatRoom(true);
          setTimeout(sendJoinMessage, 100);
 
          console.log("선택된 채팅방", selectedChatRoom);
-         callJoinChatRoom(selectedChatRoom);
       }
       closeModal();
    };
 
    //채팅방 참여정보 전송 함수 (모달창에서 확인클릭 시 동작)
    const callJoinChatRoom = async (chatRoom: any) => {
+      console.log("callJoinChatRoom: ",chatRoom.chatRoomId)
       try {
          await joinChatRoom(chatRoom.chatRoomId);
       } catch (error) {
