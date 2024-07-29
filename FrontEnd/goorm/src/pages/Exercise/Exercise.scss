@@ -1,41 +1,76 @@
+
 .exercise {
   display: flex;
   flex-direction: column;
   align-items: flex-start; // 상단 정렬
-  padding: 20px;
+  padding: 0 1.25rem;
+  margin: 0 auto;
+  max-width: 100rem;
 
   .exercise-container {
     display: flex;
     width: 100%;
     margin-bottom: .625rem;
+    justify-content: space-between;
 
     .left-column {
       display: flex;
-      flex-direction: row;
+      flex-direction: column;
+      margin-right: 2.5rem;
       
       .calendar {
-        margin-right: .625rem;
+        margin-bottom: .625rem;
       }
+    }
 
-      .calender-right {
-        display: flex;
-        flex-direction: column;
-      }
+    .right-column {
+      display: flex;
+      flex-direction: column;
+      border: 1px solid black;
+      border-radius: .625rem;
+
+      margin-top: .625rem;
+      flex: 1;
 
       .date-info {
-        margin-bottom: 1.25rem;
+        text-align: center;
+        background-color: #7CADF7;
+        border-radius: .3125rem;
+        color: white;
 
         .date-text {
-          font-size: 1.25rem;
+          margin-top: .625rem;
+          margin-bottom: .625rem;
+          font-size: 2rem;
           font-weight: bold;
         }
       }
-    }
-  }
 
-  .right-column {
-    flex: 1;
-    margin-left: 1.25rem;
+      .search-list-container {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+        width: 100%;
+        height: 100%;
+        margin-left: 0;
+        margin-top: 1.25rem;
+
+        .search-column {
+          flex: 1;
+          padding-right: 0;
+          margin-right: 0;
+          margin-left: 1.25rem;
+        }
+
+        .list-column {
+          flex: 3;
+          margin-bottom: 10px;
+          padding-left: 0;
+          margin-left: 0;
+          margin-right: 2.5rem;
+        }
+      }
+    }
   }
 
   .exercise-memo {

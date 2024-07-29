@@ -51,3 +51,20 @@ logging:
 login:
   register-url: http://127.0.0.1:5500/register.html
   loginSuccess-url : http://127.0.0.1:5500/main.html
+
+board:
+  page:
+    size: 10
+
+cloud:
+  aws:
+    credentials:
+      accessKey: ${AWS_CREDENTIALS_ACCESS_KEY}
+      secretKey: ${AWS_CREDENTIALS_SECRET_KEY}
+    s3:
+      bucketName: bangbumdae-images
+    region:
+      static: ap-northeast-2
+    stack:
+      auto: false
+
