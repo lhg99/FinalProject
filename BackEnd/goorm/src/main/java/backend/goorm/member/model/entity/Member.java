@@ -50,7 +50,7 @@ public class Member {
 
     private boolean memberInactive = false;
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
             name = "member_chat_room",
             joinColumns = @JoinColumn(name = "member_id"),
