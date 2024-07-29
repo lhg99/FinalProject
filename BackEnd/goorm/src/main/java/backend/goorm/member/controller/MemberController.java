@@ -3,13 +3,12 @@ package backend.goorm.member.controller;
 import backend.goorm.member.model.dto.request.*;
 import backend.goorm.member.model.dto.response.DuplicateCheckResponse;
 import backend.goorm.member.model.dto.response.MemberInfoResponse;
-import backend.goorm.member.service.MemberServiceImpl;
+import backend.goorm.member.service.MemberService;
 import backend.goorm.member.model.entity.Member;
 import backend.goorm.member.oauth.PrincipalDetails;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.coyote.Response;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
@@ -22,7 +21,7 @@ import java.io.IOException;
 @RequestMapping("/api/member")
 public class MemberController {
 
-    private final MemberServiceImpl memberService;
+    private final MemberService memberService;
 
     /**
      * 일반 회원이 회원가입 요청을 하는 API

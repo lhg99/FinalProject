@@ -43,10 +43,6 @@ public class Member {
     @NotBlank
     private String memberNickname;
 
-    @Size(max = 50)
-    @NotBlank
-    private String memberPhone;
-
     @Enumerated(EnumType.STRING)
     private MemberRole role;
 
@@ -54,7 +50,7 @@ public class Member {
 
     private boolean memberInactive = false;
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
             name = "member_chat_room",
             joinColumns = @JoinColumn(name = "member_id"),

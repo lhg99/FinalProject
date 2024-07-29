@@ -35,9 +35,11 @@ public class ChatController {
 
     //입장 메시지
     @MessageMapping("/join/{roomId}")
-    @SendTo("/api/sub/join/{roodId}")
-    public ResponseEntity<String> join(@DestinationVariable Long roomId) {
-        return new ResponseEntity<>("님이 입장하셨습니다.", HttpStatus.OK);
+    @SendTo("/api/sub/join/{roomId}")
+    public ResponseEntity<ChatResponse> join(@DestinationVariable Long roomId, @RequestBody ChatRequest chatRequest) {
+        ChatResponse chatResponse = chatService.joinChat(roomId, chatRequest);
+
+        return new ResponseEntity<>(chatResponse, HttpStatus.OK);
     }
 
     //채팅 히스토리

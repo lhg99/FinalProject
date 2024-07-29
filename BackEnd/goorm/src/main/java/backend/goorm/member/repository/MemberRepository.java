@@ -19,8 +19,6 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
 
     Optional<Member> findByMemberEmail(String email);
 
-    Optional<Member> findByMemberPhone(String phone);
-
     Optional<Member> findByMemberNickname(String nickname);
 
     @Query("SELECT m FROM Member m WHERE m.loginId = :loginId AND m.memberInactive = false")

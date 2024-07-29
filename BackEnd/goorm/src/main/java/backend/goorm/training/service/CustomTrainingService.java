@@ -2,14 +2,17 @@ package backend.goorm.training.service;
 
 import backend.goorm.training.dto.TrainingDto;
 import backend.goorm.training.model.entity.Training;
-import backend.goorm.training.dto.AddTrainingInput;
-import backend.goorm.training.dto.EditTrainingInput;
+import backend.goorm.training.dto.AddTrainingRequest;
+import backend.goorm.training.dto.EditTrainingRequest;
+import backend.goorm.training.model.entity.TrainingCategory;
+import backend.goorm.training.repository.TrainingCategoryRepository;
 import backend.goorm.training.repository.TrainingRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -18,23 +21,40 @@ import java.util.stream.Collectors;
 public class CustomTrainingService {
 
     private final TrainingRepository trainingRepository;
+    private final TrainingCategoryRepository trainingCategoryRepository;
 
-    public TrainingDto addCustomTraining(AddTrainingInput input) {
-        Training training = AddTrainingInput.toEntity(input);
-        training.setUserCustom(true);
+    public TrainingDto addCustomTraining(AddTrainingRequest input) {
+        TrainingCategory category = input.getCategory();
+
+        if (category == null) {
+            throw new IllegalArgumentException("카테고리가 제공되지 않았습니다.");
+        }
+
+        Optional<TrainingCategory> optionalCategory = trainingCategoryRepository.findById(category.getCategoryId());
+
+        if (!optionalCategory.isPresent()) {
+            throw new IllegalArgumentException("카테고리 ID가 존재하지 않습니다.");
+        }
+
+        TrainingCategory actualCategory = optionalCategory.get();
+        if (!actualCategory.getCategoryName().equals(category.getCategoryName())) {
+            throw new IllegalArgumentException("카테고리 ID와 이름이 일치하지 않습니다.");
+        }
+
+        Training training = AddTrainingRequest.toEntity(input, actualCategory);
         Training saved = trainingRepository.save(training);
         return TrainingDto.fromEntity(saved);
     }
 
-    public TrainingDto editCustomTraining(EditTrainingInput input) {
-        Training training = trainingRepository.findById(input.getId()).orElseThrow(() -> new IllegalArgumentException("Training not found with id: " + input.getId()));
-        // For simplicity, assuming the user is always authorized
+    public TrainingDto editCustomTraining(EditTrainingRequest input) {
+        Training training = trainingRepository.findById(input.getId())
+                .orElseThrow(() -> new IllegalArgumentException("Training not found with id: " + input.getId()));
+
         training.setTrainingName(input.getTrainingName());
         training.setCategory(input.getCategory());
         Training saved = trainingRepository.save(training);
         return TrainingDto.fromEntity(saved);
     }
-
 
     public TrainingDto deleteCustomTraining(Long trainingId) {
         Training training = trainingRepository.findById(trainingId).orElseThrow();

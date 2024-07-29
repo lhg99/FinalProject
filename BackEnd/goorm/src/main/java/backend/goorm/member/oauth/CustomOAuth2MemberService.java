@@ -48,7 +48,6 @@ public class CustomOAuth2MemberService extends DefaultOAuth2UserService {
                     .memberName("temp")
                     .memberEmail(oAuth2MemberInfo.getEmail())
                     .memberNickname(oAuth2MemberInfo.getNickname())
-                    .memberPhone("temp")
                     .role(MemberRole.MEMBER)
                     .socialId(oAuth2MemberInfo.getProviderId())
                     .memberType(MemberType.SOCIAL)
