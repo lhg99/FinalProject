@@ -250,7 +250,7 @@ const FloatingButtonWithChat: React.FC = () => {
          console.log("채팅 히스토리: ", messages); //채팅 히스토리 목록 출력
 
          //웹소켓 연결 설정
-         const socket = new SockJS("http://localhost:8080/api/websocket", {
+         const socket = new SockJS("http://final-project-app-env.eba-xdjqmujd.ap-northeast-2.elasticbeanstalk.com/api/websocket", {
             withCredentials: true,
          });
          // console.log("apiRequestUrl 출력: ",config.apiRequestUrl);
