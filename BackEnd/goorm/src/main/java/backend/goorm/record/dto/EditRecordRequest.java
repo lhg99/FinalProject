@@ -6,7 +6,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDateTime;
+import java.util.List;
 
 @Data
 @AllArgsConstructor
@@ -14,7 +14,6 @@ import java.time.LocalDateTime;
 @Builder
 public class EditRecordRequest {
 
-//    private LocalDateTime modifiedDate;
     private Float caloriesBurned;
     private Integer durationMinutes;
     private String intensity;
@@ -24,10 +23,9 @@ public class EditRecordRequest {
     private Float distance;
     private String memo;
     private Integer satisfaction;
+    private List<String> imageUrls;
 
-
-    public static Record updateStrengthRecord(Record record, EditRecordRequest edit, String imageUrl) {
-        record.setCaloriesBurned(edit.getCaloriesBurned());
+    public static Record updateStrengthRecord(Record record, EditRecordRequest edit) {
         record.setDurationMinutes(edit.getDurationMinutes());
         record.setIntensity(edit.getIntensity());
         record.setSets(edit.getSets());
@@ -35,22 +33,16 @@ public class EditRecordRequest {
         record.setReps(edit.getReps());
         record.setMemo(edit.getMemo());
         record.setSatisfaction(edit.getSatisfaction());
-        if (imageUrl != null) {
-            record.setImageUrl(imageUrl);
-        }
         return record;
     }
 
-    public static Record updateCardioRecord(Record record, EditRecordRequest edit, String imageUrl) {
+    public static Record updateCardioRecord(Record record, EditRecordRequest edit) {
         record.setCaloriesBurned(edit.getCaloriesBurned());
         record.setDurationMinutes(edit.getDurationMinutes());
         record.setIntensity(edit.getIntensity());
         record.setDistance(edit.getDistance());
         record.setMemo(edit.getMemo());
         record.setSatisfaction(edit.getSatisfaction());
-        if (imageUrl != null) {
-            record.setImageUrl(imageUrl);
-        }
         return record;
     }
 }

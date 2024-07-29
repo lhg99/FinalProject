@@ -4,14 +4,16 @@ import backend.goorm.training.model.entity.Training;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
+@Builder
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
 @Entity
 @Table(name = "record")
 public class Record {
@@ -22,7 +24,7 @@ public class Record {
     private Long recordId;
 
     @ManyToOne
-    @JoinColumn(name = "training_id")
+    @JoinColumn(name = "training_id", nullable = false)
     private Training training;
 
     @Column(name = "record_date", nullable = false)
@@ -34,7 +36,7 @@ public class Record {
     @Column(name = "modified_date")
     private LocalDateTime modifiedDate;
 
-    @Column(name = "calories_burned", nullable = true)
+    @Column(name = "calories_burned", nullable = false)
     private Float caloriesBurned;
 
     @Column(name = "duration_minutes", nullable = false)
@@ -46,7 +48,7 @@ public class Record {
     @Column(name = "sets")
     private Integer sets;
 
-    @Column(name = "reps")
+    @Column(name = "reps") // 횟수 필드 추가
     private Integer reps;
 
     @Column(name = "weight")
@@ -64,26 +66,12 @@ public class Record {
     @Column(name = "satisfaction")
     private Integer satisfaction;
 
-    private String imageUrl;
+    @OneToMany(mappedBy = "record", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<RecordImages> recordImages = new ArrayList<>(); // 초기화
 
-    @Builder
-    public Record(Training training, LocalDateTime recordDate, LocalDateTime modifiedDate,
-                  Float caloriesBurned, Integer durationMinutes, String intensity, Integer sets,
-                  Integer weight, Float distance, Float incline, LocalDate exerciseDate,
-                  String memo, Integer satisfaction, String imageUrl) {
-        this.training = training;
-        this.recordDate = recordDate;
-        this.modifiedDate = modifiedDate;
-        this.caloriesBurned = caloriesBurned;
-        this.durationMinutes = durationMinutes;
-        this.intensity = intensity;
-        this.sets = sets;
-        this.weight = weight;
-        this.distance = distance;
-        this.incline = incline;
-        this.exerciseDate = exerciseDate;
-        this.memo = memo;
-        this.satisfaction = satisfaction;
-        this.imageUrl = imageUrl;
+   
+
+    public void setRecordImages(List<RecordImages> recordImages) {
+        this.recordImages = (recordImages != null) ? recordImages : new ArrayList<>();
     }
 }
