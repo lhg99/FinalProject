@@ -60,7 +60,7 @@ cloud:
   aws:
     credentials:
       accessKey: ${AWS_CREDENTIALS_ACCESS_KEY}
-      secretKey: ${ AWS_CREDENTIALS_SECRET_KEY }
+      secretKey: ${AWS_CREDENTIALS_SECRET_KEY}
     s3:
       bucketName: bangbumdae-images
     region:
