@@ -1,0 +1,619 @@
+Index: goorm/src/main/java/backend/goorm/record/dto/AddStrengthRecordRequest.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package backend.goorm.record.dto;\r\n\r\nimport backend.goorm.record.entity.Record;\r\nimport backend.goorm.training.model.entity.Training;\r\nimport lombok.AllArgsConstructor;\r\nimport lombok.Builder;\r\nimport lombok.Data;\r\nimport lombok.NoArgsConstructor;\r\n\r\nimport java.time.LocalDate;\r\nimport java.time.LocalDateTime;\r\n\r\n@Data\r\n@AllArgsConstructor\r\n@NoArgsConstructor\r\n@Builder\r\npublic class AddStrengthRecordRequest {\r\n\r\n    private Float caloriesBurned;\r\n    private Integer durationMinutes;\r\n    private String intensity;\r\n    private Integer sets;\r\n    private Integer reps; // 횟수 추가\r\n    private Integer weight;\r\n    private String memo;\r\n    private Integer satisfaction;\r\n    private LocalDate exerciseDate; // 운동 날짜 추가\r\n\r\n\r\n    public static Record toEntity(AddStrengthRecordRequest request, Training training) {\r\n        return Record.builder()\r\n                .training(training)\r\n                .caloriesBurned(request.getCaloriesBurned())\r\n                .durationMinutes(request.getDurationMinutes())\r\n                .intensity(request.getIntensity())\r\n                .sets(request.getSets())\r\n                .reps(request.getReps())\r\n                .weight(request.getWeight())\r\n                .exerciseDate(request.getExerciseDate() != null ? request.getExerciseDate() : LocalDate.now())\r\n                .recordDate(LocalDateTime.now())\r\n                .memo(request.getMemo())\r\n                .satisfaction(request.getSatisfaction())\r\n                .build();\r\n    }\r\n}\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/goorm/src/main/java/backend/goorm/record/dto/AddStrengthRecordRequest.java b/goorm/src/main/java/backend/goorm/record/dto/AddStrengthRecordRequest.java
+--- a/goorm/src/main/java/backend/goorm/record/dto/AddStrengthRecordRequest.java	(revision d65487ecd83a16898f27b46bc891b5ddc2ee2b04)
++++ b/goorm/src/main/java/backend/goorm/record/dto/AddStrengthRecordRequest.java	(date 1722223427349)
+@@ -16,7 +16,6 @@
+ @Builder
+ public class AddStrengthRecordRequest {
+ 
+-    private Float caloriesBurned;
+     private Integer durationMinutes;
+     private String intensity;
+     private Integer sets;
+@@ -30,7 +29,7 @@
+     public static Record toEntity(AddStrengthRecordRequest request, Training training) {
+         return Record.builder()
+                 .training(training)
+-                .caloriesBurned(request.getCaloriesBurned())
++                .caloriesBurned(0f)
+                 .durationMinutes(request.getDurationMinutes())
+                 .intensity(request.getIntensity())
+                 .sets(request.getSets())
+Index: goorm/src/main/java/backend/goorm/record/dto/RecordDto.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package backend.goorm.record.dto;\r\n\r\nimport backend.goorm.record.entity.Record;\r\nimport lombok.Getter;\r\nimport lombok.Setter;\r\n\r\nimport java.time.LocalDate;\r\n\r\n@Getter\r\n@Setter\r\npublic class RecordDto {\r\n    private Long recordId;\r\n    private Float caloriesBurned;\r\n    private Integer durationMinutes;\r\n    private String intensity;\r\n    private Integer sets;\r\n    private Integer reps; // 횟수 필드 추가\r\n    private Integer weight;\r\n    private Float distance;\r\n    private Float incline; // 경사 필드 추가\r\n    private String memo;\r\n    private Integer satisfaction;\r\n    private String trainingName; // 운동 이름 필드 추가\r\n    private LocalDate exerciseDate; // 운동 날짜 필드 추가\r\n    private String imageUrl;\r\n    private String categoryName; // 운동 카테고리 이름 필드 추가\r\n\r\n    public static RecordDto fromEntity(Record record) {\r\n        RecordDto dto = new RecordDto();\r\n        dto.setRecordId(record.getRecordId());\r\n        dto.setCaloriesBurned(record.getCaloriesBurned());\r\n        dto.setDurationMinutes(record.getDurationMinutes());\r\n        dto.setIntensity(record.getIntensity());\r\n        dto.setSets(record.getSets());\r\n        dto.setReps(record.getReps()); // 횟수 필드 설정\r\n        dto.setWeight(record.getWeight());\r\n        dto.setDistance(record.getDistance());\r\n        dto.setIncline(record.getIncline()); // 경사 필드 설정\r\n        dto.setMemo(record.getMemo());\r\n        dto.setSatisfaction(record.getSatisfaction());\r\n        dto.setTrainingName(record.getTraining().getTrainingName()); // 운동 이름 필드 설정\r\n        dto.setExerciseDate(record.getExerciseDate()); // 운동 날짜 필드 설정\r\n        dto.setImageUrl(record.getImageUrl());\r\n        dto.setCategoryName(String.valueOf(record.getTraining().getCategory().getCategoryName())); // 운동 카테고리 이름 설정\r\n        return dto;\r\n    }\r\n}\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/goorm/src/main/java/backend/goorm/record/dto/RecordDto.java b/goorm/src/main/java/backend/goorm/record/dto/RecordDto.java
+--- a/goorm/src/main/java/backend/goorm/record/dto/RecordDto.java	(revision d65487ecd83a16898f27b46bc891b5ddc2ee2b04)
++++ b/goorm/src/main/java/backend/goorm/record/dto/RecordDto.java	(date 1722224766366)
+@@ -1,10 +1,13 @@
+ package backend.goorm.record.dto;
+ 
+ import backend.goorm.record.entity.Record;
++import backend.goorm.record.entity.RecordImages;
+ import lombok.Getter;
+ import lombok.Setter;
+ 
+ import java.time.LocalDate;
++import java.util.List;
++import java.util.stream.Collectors;
+ 
+ @Getter
+ @Setter
+@@ -22,7 +25,7 @@
+     private Integer satisfaction;
+     private String trainingName; // 운동 이름 필드 추가
+     private LocalDate exerciseDate; // 운동 날짜 필드 추가
+-    private String imageUrl;
++    private List<String> imageUrls;
+     private String categoryName; // 운동 카테고리 이름 필드 추가
+ 
+     public static RecordDto fromEntity(Record record) {
+@@ -40,7 +43,9 @@
+         dto.setSatisfaction(record.getSatisfaction());
+         dto.setTrainingName(record.getTraining().getTrainingName()); // 운동 이름 필드 설정
+         dto.setExerciseDate(record.getExerciseDate()); // 운동 날짜 필드 설정
+-        dto.setImageUrl(record.getImageUrl());
++        dto.setImageUrls(record.getRecordImages().stream()
++                .map(RecordImages::getImageUrl)
++                .collect(Collectors.toList()));
+         dto.setCategoryName(String.valueOf(record.getTraining().getCategory().getCategoryName())); // 운동 카테고리 이름 설정
+         return dto;
+     }
+Index: goorm/src/main/java/backend/goorm/diet/entity/Diet.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package backend.goorm.diet.entity;\r\n\r\nimport backend.goorm.diet.enums.MealType;\r\nimport backend.goorm.member.model.entity.Member;\r\nimport jakarta.persistence.*;\r\nimport lombok.Getter;\r\nimport lombok.Setter;\r\nimport org.springframework.data.annotation.CreatedDate;\r\n\r\nimport java.time.LocalDate;\r\nimport java.time.LocalDateTime;\r\n\r\n@Getter\r\n@Setter\r\n@Entity\r\n@Table(name = \"diet\")\r\npublic class Diet {\r\n\r\n    @Id\r\n    @GeneratedValue(strategy = GenerationType.IDENTITY)\r\n    @Column(name = \"diet_id\")\r\n    private Long dietId;\r\n\r\n    @ManyToOne(cascade = CascadeType.PERSIST, fetch = FetchType.LAZY)\r\n    @JoinColumn(name = \"member_id\")\r\n    private Member member;\r\n\r\n    @ManyToOne(cascade = CascadeType.PERSIST, fetch = FetchType.LAZY)\r\n    @JoinColumn(name = \"food_id\")\r\n    private Food food;\r\n\r\n    private Float count;\r\n\r\n    @Column(name = \"meal_time\")\r\n    @Enumerated(EnumType.STRING)\r\n    private MealType mealType;\r\n\r\n    @Column(name = \"diet_date\")\r\n    private LocalDate dietDate;\r\n\r\n    @Column(name = \"quantity\")\r\n    private Float quantity;\r\n\r\n    @CreatedDate\r\n    @Column(name = \"created_at\", updatable = false, nullable = false)\r\n    private LocalDateTime createdAt;\r\n}
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/goorm/src/main/java/backend/goorm/diet/entity/Diet.java b/goorm/src/main/java/backend/goorm/diet/entity/Diet.java
+--- a/goorm/src/main/java/backend/goorm/diet/entity/Diet.java	(revision d65487ecd83a16898f27b46bc891b5ddc2ee2b04)
++++ b/goorm/src/main/java/backend/goorm/diet/entity/Diet.java	(date 1722217200007)
+@@ -1,15 +1,18 @@
+ package backend.goorm.diet.entity;
+ 
+-import backend.goorm.diet.enums.MealType;
++import backend.goorm.diet.enums.MealTime;
+ import backend.goorm.member.model.entity.Member;
+ import jakarta.persistence.*;
+-import lombok.Getter;
+-import lombok.Setter;
++import lombok.*;
+ import org.springframework.data.annotation.CreatedDate;
+ 
+ import java.time.LocalDate;
+ import java.time.LocalDateTime;
++import java.util.List;
+ 
++@AllArgsConstructor
++@NoArgsConstructor
++@Builder
+ @Getter
+ @Setter
+ @Entity
+@@ -29,11 +32,9 @@
+     @JoinColumn(name = "food_id")
+     private Food food;
+ 
+-    private Float count;
+-
+     @Column(name = "meal_time")
+     @Enumerated(EnumType.STRING)
+-    private MealType mealType;
++    private MealTime mealTime;
+ 
+     @Column(name = "diet_date")
+     private LocalDate dietDate;
+@@ -41,7 +42,10 @@
+     @Column(name = "quantity")
+     private Float quantity;
+ 
++    @OneToMany(mappedBy = "diet", cascade = CascadeType.ALL, orphanRemoval = true)
++    private List<DietImages> dietImages;
++
+     @CreatedDate
+     @Column(name = "created_at", updatable = false, nullable = false)
+     private LocalDateTime createdAt;
+-}
+\ No newline at end of file
++}
+Index: .idea/workspace.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n<project version=\"4\">\r\n  <component name=\"ChangeListManager\">\r\n    <list default=\"true\" id=\"b7a6f3c8-e28f-4900-a786-b33bfffdaf29\" name=\"Changes\" comment=\"\">\r\n      <change beforePath=\"$PROJECT_DIR$/goorm/src/main/java/backend/goorm/board/controller/BoardController.java\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/goorm/src/main/java/backend/goorm/board/controller/BoardController.java\" afterDir=\"false\" />\r\n    </list>\r\n    <option name=\"SHOW_DIALOG\" value=\"false\" />\r\n    <option name=\"HIGHLIGHT_CONFLICTS\" value=\"true\" />\r\n    <option name=\"HIGHLIGHT_NON_ACTIVE_CHANGELIST\" value=\"false\" />\r\n    <option name=\"LAST_RESOLUTION\" value=\"IGNORE\" />\r\n  </component>\r\n  <component name=\"Git.Settings\">\r\n    <option name=\"RECENT_GIT_ROOT_PATH\" value=\"$PROJECT_DIR$/..\" />\r\n  </component>\r\n  <component name=\"ProjectColorInfo\"><![CDATA[{\r\n  \"associatedIndex\": 4\r\n}]]></component>\r\n  <component name=\"ProjectId\" id=\"2jJZEyKib5302abIojTINCZAzm2\" />\r\n  <component name=\"PropertiesComponent\"><![CDATA[{\r\n  \"keyToString\": {\r\n    \"RunOnceActivity.OpenDatabaseViewOnStart\": \"true\",\r\n    \"RunOnceActivity.ShowReadmeOnStart\": \"true\",\r\n    \"git-widget-placeholder\": \"feature-back/training-GRBBD-7-BE-\",\r\n    \"last_opened_file_path\": \"C:/Users/zvpdr/9oorm-bangbumdae\"\r\n  }\r\n}]]></component>\r\n  <component name=\"SpellCheckerSettings\" RuntimeDictionaries=\"0\" Folders=\"0\" CustomDictionaries=\"0\" DefaultDictionary=\"application-level\" UseSingleDictionary=\"true\" transferred=\"true\" />\r\n</project>
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/.idea/workspace.xml b/.idea/workspace.xml
+--- a/.idea/workspace.xml	(revision d65487ecd83a16898f27b46bc891b5ddc2ee2b04)
++++ b/.idea/workspace.xml	(date 1722223735973)
+@@ -1,28 +1,125 @@
+ <?xml version="1.0" encoding="UTF-8"?>
+ <project version="4">
++  <component name="AutoImportSettings">
++    <option name="autoReloadType" value="SELECTIVE" />
++  </component>
+   <component name="ChangeListManager">
+     <list default="true" id="b7a6f3c8-e28f-4900-a786-b33bfffdaf29" name="Changes" comment="">
+-      <change beforePath="$PROJECT_DIR$/goorm/src/main/java/backend/goorm/board/controller/BoardController.java" beforeDir="false" afterPath="$PROJECT_DIR$/goorm/src/main/java/backend/goorm/board/controller/BoardController.java" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/goorm/src/main/java/backend/goorm/diet/entity/Diet.java" beforeDir="false" afterPath="$PROJECT_DIR$/goorm/src/main/java/backend/goorm/diet/entity/Diet.java" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/goorm/src/main/java/backend/goorm/diet/enums/MealType.java" beforeDir="false" afterPath="$PROJECT_DIR$/goorm/src/main/java/backend/goorm/diet/enums/MealTime.java" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/goorm/src/main/java/backend/goorm/diet/repository/DietRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/goorm/src/main/java/backend/goorm/diet/repository/DietRepository.java" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/goorm/src/main/java/backend/goorm/record/controller/RecordController.java" beforeDir="false" afterPath="$PROJECT_DIR$/goorm/src/main/java/backend/goorm/record/controller/RecordController.java" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/goorm/src/main/java/backend/goorm/record/dto/AddStrengthRecordRequest.java" beforeDir="false" afterPath="$PROJECT_DIR$/goorm/src/main/java/backend/goorm/record/dto/AddStrengthRecordRequest.java" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/goorm/src/main/java/backend/goorm/record/dto/EditRecordRequest.java" beforeDir="false" afterPath="$PROJECT_DIR$/goorm/src/main/java/backend/goorm/record/dto/EditRecordRequest.java" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/goorm/src/main/java/backend/goorm/record/dto/RecordDto.java" beforeDir="false" afterPath="$PROJECT_DIR$/goorm/src/main/java/backend/goorm/record/dto/RecordDto.java" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/goorm/src/main/java/backend/goorm/record/entity/Record.java" beforeDir="false" afterPath="$PROJECT_DIR$/goorm/src/main/java/backend/goorm/record/entity/Record.java" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/goorm/src/main/java/backend/goorm/record/service/RecordService.java" beforeDir="false" afterPath="$PROJECT_DIR$/goorm/src/main/java/backend/goorm/record/service/RecordService.java" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/goorm/src/main/resources/application.yml" beforeDir="false" afterPath="$PROJECT_DIR$/goorm/src/main/resources/application.yml" afterDir="false" />
+     </list>
+     <option name="SHOW_DIALOG" value="false" />
+     <option name="HIGHLIGHT_CONFLICTS" value="true" />
+     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+     <option name="LAST_RESOLUTION" value="IGNORE" />
+   </component>
++  <component name="ExternalProjectsData">
++    <projectState path="$PROJECT_DIR$/goorm">
++      <ProjectState />
++    </projectState>
++  </component>
++  <component name="ExternalProjectsManager">
++    <system id="GRADLE">
++      <state>
++        <projects_view>
++          <tree_state>
++            <expand />
++            <select />
++          </tree_state>
++        </projects_view>
++      </state>
++    </system>
++  </component>
+   <component name="Git.Settings">
++    <option name="RECENT_BRANCH_BY_REPOSITORY">
++      <map>
++        <entry key="$PROJECT_DIR$/.." value="feature-back/training-GRBBD-7-BE-" />
++      </map>
++    </option>
+     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
+   </component>
+-  <component name="ProjectColorInfo"><![CDATA[{
+-  "associatedIndex": 4
++  <component name="GitHubPullRequestSearchHistory"><![CDATA[{
++  "lastFilter": {
++    "state": "OPEN",
++    "assignee": "junyoungkim12"
++  }
+ }]]></component>
++  <component name="GithubPullRequestsUISettings"><![CDATA[{
++  "selectedUrlAndAccountId": {
++    "url": "https://github.com/9oooorm-bangbumde/FinalProject.git",
++    "accountId": "587c77cb-76de-4a49-8e93-705f79100dca"
++  }
++}]]></component>
++  <component name="PerforceDirect.Settings">
++    <option name="CHARSET" value="없음" />
++  </component>
++  <component name="ProjectColorInfo">{
++  &quot;associatedIndex&quot;: 4
++}</component>
+   <component name="ProjectId" id="2jJZEyKib5302abIojTINCZAzm2" />
++  <component name="ProjectViewState">
++    <option name="showLibraryContents" value="true" />
++  </component>
+   <component name="PropertiesComponent"><![CDATA[{
+   "keyToString": {
++    "Gradle.goorm 빌드.executor": "Run",
++    "RequestMappingsPanelOrder0": "0",
++    "RequestMappingsPanelOrder1": "1",
++    "RequestMappingsPanelWidth0": "75",
++    "RequestMappingsPanelWidth1": "75",
+     "RunOnceActivity.OpenDatabaseViewOnStart": "true",
+     "RunOnceActivity.ShowReadmeOnStart": "true",
+-    "git-widget-placeholder": "feature-back/training-GRBBD-7-BE-",
+-    "last_opened_file_path": "C:/Users/zvpdr/9oorm-bangbumdae"
++    "Spring Boot.BangbumdeApplication.executor": "Run",
++    "git-widget-placeholder": "feature-back/diet-GRBBD-8-BE",
++    "kotlin-language-version-configured": "true",
++    "last_opened_file_path": "C:/Users/zvpdr/9oorm-bangbumdae/FinalProject/BackEnd",
++    "node.js.detected.package.eslint": "true",
++    "node.js.detected.package.tslint": "true",
++    "node.js.selected.package.eslint": "(autodetect)",
++    "node.js.selected.package.tslint": "(autodetect)",
++    "nodejs_package_manager_path": "npm",
++    "settings.editor.selected.configurable": "preferences.lookFeel",
++    "vue.rearranger.settings.migration": "true"
+   }
+ }]]></component>
++  <component name="RunManager">
++    <configuration name="BangbumdeApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" nameIsGenerated="true">
++      <module name="goorm.main" />
++      <option name="SPRING_BOOT_MAIN_CLASS" value="backend.goorm.BangbumdeApplication" />
++      <method v="2">
++        <option name="Make" enabled="true" />
++      </method>
++    </configuration>
++  </component>
++  <component name="SharedIndexes">
++    <attachedChunks>
++      <set>
++        <option value="bundled-jdk-9f38398b9061-39b83d9b5494-intellij.indexing.shared.core-IU-241.18034.62" />
++        <option value="bundled-js-predefined-1d06a55b98c1-0b3e54e931b4-JavaScript-IU-241.18034.62" />
++      </set>
++    </attachedChunks>
++  </component>
+   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
++  <component name="TaskManager">
++    <task active="true" id="Default" summary="디폴트 작업">
++      <created>1722216161140</created>
++      <option name="number" value="Default" />
++      <option name="presentableId" value="Default" />
++      <updated>1722216161140</updated>
++      <workItem from="1722216162328" duration="4492000" />
++    </task>
++    <servers />
++  </component>
++  <component name="TypeScriptGeneratedFilesManager">
++    <option name="version" value="3" />
++  </component>
+ </project>
+\ No newline at end of file
+Index: goorm/src/main/java/backend/goorm/diet/enums/MealType.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/goorm/src/main/java/backend/goorm/diet/enums/MealType.java b/goorm/src/main/java/backend/goorm/diet/enums/MealTime.java
+rename from goorm/src/main/java/backend/goorm/diet/enums/MealType.java
+rename to goorm/src/main/java/backend/goorm/diet/enums/MealTime.java
+--- a/goorm/src/main/java/backend/goorm/diet/enums/MealType.java	(revision d65487ecd83a16898f27b46bc891b5ddc2ee2b04)
++++ b/goorm/src/main/java/backend/goorm/diet/enums/MealTime.java	(date 1722217200126)
+@@ -1,6 +1,6 @@
+ package backend.goorm.diet.enums;
+ 
+-public enum MealType {
++public enum MealTime {
+     BREAKFAST,
+     LUNCH,
+     DINNER,
+Index: goorm/src/main/java/backend/goorm/record/dto/EditRecordRequest.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package backend.goorm.record.dto;\r\n\r\nimport backend.goorm.record.entity.Record;\r\nimport lombok.AllArgsConstructor;\r\nimport lombok.Builder;\r\nimport lombok.Data;\r\nimport lombok.NoArgsConstructor;\r\n\r\nimport java.time.LocalDateTime;\r\n\r\n@Data\r\n@AllArgsConstructor\r\n@NoArgsConstructor\r\n@Builder\r\npublic class EditRecordRequest {\r\n\r\n//    private LocalDateTime modifiedDate;\r\n    private Float caloriesBurned;\r\n    private Integer durationMinutes;\r\n    private String intensity;\r\n    private Integer sets;\r\n    private Integer weight;\r\n    private Integer reps;\r\n    private Float distance;\r\n    private String memo;\r\n    private Integer satisfaction;\r\n\r\n\r\n    public static Record updateStrengthRecord(Record record, EditRecordRequest edit, String imageUrl) {\r\n        record.setCaloriesBurned(edit.getCaloriesBurned());\r\n        record.setDurationMinutes(edit.getDurationMinutes());\r\n        record.setIntensity(edit.getIntensity());\r\n        record.setSets(edit.getSets());\r\n        record.setWeight(edit.getWeight());\r\n        record.setReps(edit.getReps());\r\n        record.setMemo(edit.getMemo());\r\n        record.setSatisfaction(edit.getSatisfaction());\r\n        if (imageUrl != null) {\r\n            record.setImageUrl(imageUrl);\r\n        }\r\n        return record;\r\n    }\r\n\r\n    public static Record updateCardioRecord(Record record, EditRecordRequest edit, String imageUrl) {\r\n        record.setCaloriesBurned(edit.getCaloriesBurned());\r\n        record.setDurationMinutes(edit.getDurationMinutes());\r\n        record.setIntensity(edit.getIntensity());\r\n        record.setDistance(edit.getDistance());\r\n        record.setMemo(edit.getMemo());\r\n        record.setSatisfaction(edit.getSatisfaction());\r\n        if (imageUrl != null) {\r\n            record.setImageUrl(imageUrl);\r\n        }\r\n        return record;\r\n    }\r\n}\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/goorm/src/main/java/backend/goorm/record/dto/EditRecordRequest.java b/goorm/src/main/java/backend/goorm/record/dto/EditRecordRequest.java
+--- a/goorm/src/main/java/backend/goorm/record/dto/EditRecordRequest.java	(revision d65487ecd83a16898f27b46bc891b5ddc2ee2b04)
++++ b/goorm/src/main/java/backend/goorm/record/dto/EditRecordRequest.java	(date 1722223478882)
+@@ -1,20 +1,20 @@
+ package backend.goorm.record.dto;
+ 
+ import backend.goorm.record.entity.Record;
++import backend.goorm.record.entity.RecordImages;
+ import lombok.AllArgsConstructor;
+ import lombok.Builder;
+ import lombok.Data;
+ import lombok.NoArgsConstructor;
+ 
+-import java.time.LocalDateTime;
++import java.util.List;
++import java.util.stream.Collectors;
+ 
+ @Data
+ @AllArgsConstructor
+ @NoArgsConstructor
+ @Builder
+ public class EditRecordRequest {
+-
+-//    private LocalDateTime modifiedDate;
+     private Float caloriesBurned;
+     private Integer durationMinutes;
+     private String intensity;
+@@ -25,8 +25,7 @@
+     private String memo;
+     private Integer satisfaction;
+ 
+-
+-    public static Record updateStrengthRecord(Record record, EditRecordRequest edit, String imageUrl) {
++    public static Record updateStrengthRecord(Record record, EditRecordRequest edit, List<String> imageUrls) {
+         record.setCaloriesBurned(edit.getCaloriesBurned());
+         record.setDurationMinutes(edit.getDurationMinutes());
+         record.setIntensity(edit.getIntensity());
+@@ -35,21 +34,27 @@
+         record.setReps(edit.getReps());
+         record.setMemo(edit.getMemo());
+         record.setSatisfaction(edit.getSatisfaction());
+-        if (imageUrl != null) {
+-            record.setImageUrl(imageUrl);
++        if (imageUrls != null && !imageUrls.isEmpty()) {
++            List<RecordImages> recordImages = imageUrls.stream()
++                    .map(url -> new RecordImages(record, url))
++                    .collect(Collectors.toList());
++            record.setRecordImages(recordImages);
+         }
+         return record;
+     }
+ 
+-    public static Record updateCardioRecord(Record record, EditRecordRequest edit, String imageUrl) {
++    public static Record updateCardioRecord(Record record, EditRecordRequest edit, List<String> imageUrls) {
+         record.setCaloriesBurned(edit.getCaloriesBurned());
+         record.setDurationMinutes(edit.getDurationMinutes());
+         record.setIntensity(edit.getIntensity());
+         record.setDistance(edit.getDistance());
+         record.setMemo(edit.getMemo());
+         record.setSatisfaction(edit.getSatisfaction());
+-        if (imageUrl != null) {
+-            record.setImageUrl(imageUrl);
++        if (imageUrls != null && !imageUrls.isEmpty()) {
++            List<RecordImages> recordImages = imageUrls.stream()
++                    .map(url -> new RecordImages(record, url))
++                    .collect(Collectors.toList());
++            record.setRecordImages(recordImages);
+         }
+         return record;
+     }
+Index: goorm/src/main/java/backend/goorm/record/service/RecordService.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package backend.goorm.record.service;\r\n\r\nimport backend.goorm.record.dto.EditRecordRequest;\r\nimport backend.goorm.record.dto.RecordDto;\r\nimport backend.goorm.record.entity.Record;\r\nimport backend.goorm.record.repository.RecordRepository;\r\nimport backend.goorm.record.dto.AddCardioRecordRequest;\r\nimport backend.goorm.record.dto.AddStrengthRecordRequest;\r\n\r\nimport backend.goorm.member.model.entity.Member;\r\nimport backend.goorm.training.model.entity.Training;\r\nimport backend.goorm.training.repository.TrainingRepository;\r\nimport backend.goorm.s3.service.S3ImageService;\r\nimport lombok.RequiredArgsConstructor;\r\nimport org.springframework.stereotype.Service;\r\nimport org.springframework.transaction.annotation.Transactional;\r\nimport org.springframework.web.multipart.MultipartFile;\r\n\r\nimport java.util.List;\r\nimport java.util.stream.Collectors;\r\n\r\n@RequiredArgsConstructor\r\n@Service\r\npublic class RecordService {\r\n\r\n    private final RecordRepository recordRepository;\r\n    private final TrainingRepository trainingRepository;\r\n    private final S3ImageService s3ImageService;\r\n\r\n    @Transactional\r\n    public RecordDto addCardioRecord(Long trainingId, AddCardioRecordRequest request, Member member, MultipartFile image) {\r\n        Training training = trainingRepository.findById(trainingId)\r\n                .orElseThrow(() -> new IllegalArgumentException(\"Training not found with id: \" + trainingId));\r\n\r\n        String imageUrl = s3ImageService.upload(image);\r\n\r\n        Record record = AddCardioRecordRequest.toEntity(request, training);\r\n        record.setImageUrl(imageUrl); // 이미지 URL 설정\r\n        Record saved = recordRepository.save(record);\r\n\r\n        return RecordDto.fromEntity(saved);\r\n    }\r\n\r\n    @Transactional\r\n    public RecordDto addStrengthRecord(Long trainingId, AddStrengthRecordRequest request, Member member, MultipartFile image) {\r\n        Training training = trainingRepository.findById(trainingId)\r\n                .orElseThrow(() -> new IllegalArgumentException(\"Training not found with id: \" + trainingId));\r\n\r\n        String imageUrl = s3ImageService.upload(image);\r\n\r\n        Record record = AddStrengthRecordRequest.toEntity(request, training);\r\n        record.setImageUrl(imageUrl); // 이미지 URL 설정\r\n        Record saved = recordRepository.save(record);\r\n\r\n        return RecordDto.fromEntity(saved);\r\n    }\r\n\r\n\r\n    @Transactional\r\n    public RecordDto editRecord(Long recordId, EditRecordRequest request, Member member, MultipartFile image) {\r\n        Record record = recordRepository.findById(recordId)\r\n                .orElseThrow(() -> new IllegalArgumentException(\"Record not found with id: \" + recordId));\r\n\r\n        String imageUrl = s3ImageService.upload(image);\r\n        record.setImageUrl(imageUrl); // 이미지 URL 설정\r\n\r\n        Training training = record.getTraining();\r\n        String categoryName = String.valueOf(training.getCategory().getCategoryName()); // 카테고리명 가져오기\r\n\r\n        if (\"유산소\".equalsIgnoreCase(categoryName)) {\r\n            EditRecordRequest.updateCardioRecord(record, request, imageUrl);\r\n        } else {\r\n            EditRecordRequest.updateStrengthRecord(record, request, imageUrl);\r\n        }\r\n\r\n        Record saved = recordRepository.save(record);\r\n        return RecordDto.fromEntity(saved);\r\n    }\r\n\r\n    @Transactional\r\n    public void deleteRecord(Long recordId, Member member) {\r\n        Record record = recordRepository.findById(recordId)\r\n                .orElseThrow(() -> new IllegalArgumentException(\"Record not found with id: \" + recordId));\r\n\r\n        if (record.getImageUrl() != null) {\r\n            s3ImageService.deleteImageFromS3(record.getImageUrl());\r\n        }\r\n\r\n        recordRepository.delete(record);\r\n    }\r\n\r\n    @Transactional(readOnly = true)\r\n    public List<RecordDto> getAllRecords(Member member) {\r\n        List<Record> records = recordRepository.findAll();\r\n        return records.stream().map(RecordDto::fromEntity).collect(Collectors.toList());\r\n    }\r\n}\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/goorm/src/main/java/backend/goorm/record/service/RecordService.java b/goorm/src/main/java/backend/goorm/record/service/RecordService.java
+--- a/goorm/src/main/java/backend/goorm/record/service/RecordService.java	(revision d65487ecd83a16898f27b46bc891b5ddc2ee2b04)
++++ b/goorm/src/main/java/backend/goorm/record/service/RecordService.java	(date 1722224543368)
+@@ -3,6 +3,7 @@
+ import backend.goorm.record.dto.EditRecordRequest;
+ import backend.goorm.record.dto.RecordDto;
+ import backend.goorm.record.entity.Record;
++import backend.goorm.record.entity.RecordImages;
+ import backend.goorm.record.repository.RecordRepository;
+ import backend.goorm.record.dto.AddCardioRecordRequest;
+ import backend.goorm.record.dto.AddStrengthRecordRequest;
+@@ -12,6 +13,7 @@
+ import backend.goorm.training.repository.TrainingRepository;
+ import backend.goorm.s3.service.S3ImageService;
+ import lombok.RequiredArgsConstructor;
++import lombok.extern.slf4j.Slf4j;
+ import org.springframework.stereotype.Service;
+ import org.springframework.transaction.annotation.Transactional;
+ import org.springframework.web.multipart.MultipartFile;
+@@ -19,6 +21,7 @@
+ import java.util.List;
+ import java.util.stream.Collectors;
+ 
++@Slf4j
+ @RequiredArgsConstructor
+ @Service
+ public class RecordService {
+@@ -28,49 +31,64 @@
+     private final S3ImageService s3ImageService;
+ 
+     @Transactional
+-    public RecordDto addCardioRecord(Long trainingId, AddCardioRecordRequest request, Member member, MultipartFile image) {
++    public RecordDto addCardioRecord(Long trainingId, AddCardioRecordRequest request, Member member, MultipartFile[] images) {
+         Training training = trainingRepository.findById(trainingId)
+                 .orElseThrow(() -> new IllegalArgumentException("Training not found with id: " + trainingId));
+ 
+-        String imageUrl = s3ImageService.upload(image);
++        log.info("images : {images}", images);
++        List<String> imageUrls = s3ImageService.uploadMulti(images);
+ 
+         Record record = AddCardioRecordRequest.toEntity(request, training);
+-        record.setImageUrl(imageUrl); // 이미지 URL 설정
++        List<RecordImages> recordImages = imageUrls.stream()
++                .map(url -> RecordImages.builder().record(record).imageUrl(url).build())
++                .collect(Collectors.toList());
++        record.setRecordImages(recordImages);
+         Record saved = recordRepository.save(record);
+ 
+         return RecordDto.fromEntity(saved);
+     }
+ 
+     @Transactional
+-    public RecordDto addStrengthRecord(Long trainingId, AddStrengthRecordRequest request, Member member, MultipartFile image) {
++    public RecordDto addStrengthRecord(Long trainingId, AddStrengthRecordRequest request, Member member, MultipartFile[] images) {
+         Training training = trainingRepository.findById(trainingId)
+                 .orElseThrow(() -> new IllegalArgumentException("Training not found with id: " + trainingId));
+-
+-        String imageUrl = s3ImageService.upload(image);
++        log.info("images : {images}", images);
++        List<String> imageUrls = s3ImageService.uploadMulti(images);
+ 
+         Record record = AddStrengthRecordRequest.toEntity(request, training);
+-        record.setImageUrl(imageUrl); // 이미지 URL 설정
++        List<RecordImages> recordImages = imageUrls.stream()
++                .map(url -> RecordImages.builder().record(record).imageUrl(url).build())
++                .collect(Collectors.toList());
++        record.setRecordImages(recordImages);
+         Record saved = recordRepository.save(record);
+ 
+         return RecordDto.fromEntity(saved);
+     }
+ 
+-
+     @Transactional
+-    public RecordDto editRecord(Long recordId, EditRecordRequest request, Member member, MultipartFile image) {
++    public RecordDto editRecord(Long recordId, EditRecordRequest request, Member member, MultipartFile[] images) {
+         Record record = recordRepository.findById(recordId)
+                 .orElseThrow(() -> new IllegalArgumentException("Record not found with id: " + recordId));
+ 
+-        String imageUrl = s3ImageService.upload(image);
+-        record.setImageUrl(imageUrl); // 이미지 URL 설정
++        List<String> imageUrls = null;
++        if (images != null && images.length > 0) {
++            imageUrls = s3ImageService.uploadMulti(images);
++        }
+ 
+         Training training = record.getTraining();
+         String categoryName = String.valueOf(training.getCategory().getCategoryName()); // 카테고리명 가져오기
+ 
+         if ("유산소".equalsIgnoreCase(categoryName)) {
+-            EditRecordRequest.updateCardioRecord(record, request, imageUrl);
++            EditRecordRequest.updateCardioRecord(record, request);
+         } else {
+-            EditRecordRequest.updateStrengthRecord(record, request, imageUrl);
++            EditRecordRequest.updateStrengthRecord(record, request);
++        }
++        if (imageUrls != null) {
++            List<RecordImages> newImages = imageUrls.stream()
++                    .map(url -> RecordImages.builder().record(record).imageUrl(url).build())
++                    .collect(Collectors.toList());
++            record.getRecordImages().clear();
++            record.getRecordImages().addAll(newImages);
+         }
+ 
+         Record saved = recordRepository.save(record);
+@@ -82,10 +100,7 @@
+         Record record = recordRepository.findById(recordId)
+                 .orElseThrow(() -> new IllegalArgumentException("Record not found with id: " + recordId));
+ 
+-        if (record.getImageUrl() != null) {
+-            s3ImageService.deleteImageFromS3(record.getImageUrl());
+-        }
+-
++        record.getRecordImages().forEach(image -> s3ImageService.deleteImageFromS3(image.getImageUrl()));
+         recordRepository.delete(record);
+     }
+ 
+Index: goorm/src/main/resources/application.yml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+># application file selected\r\nspring:\r\n  profiles:\r\n    active: local\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/goorm/src/main/resources/application.yml b/goorm/src/main/resources/application.yml
+--- a/goorm/src/main/resources/application.yml	(revision d65487ecd83a16898f27b46bc891b5ddc2ee2b04)
++++ b/goorm/src/main/resources/application.yml	(date 1722219260933)
+@@ -2,3 +2,4 @@
+ spring:
+   profiles:
+     active: local
++    include: private
+Index: goorm/src/main/java/backend/goorm/record/controller/RecordController.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package backend.goorm.record.controller;\r\n\r\nimport backend.goorm.record.dto.AddCardioRecordRequest;\r\nimport backend.goorm.record.dto.AddStrengthRecordRequest;\r\nimport backend.goorm.record.dto.EditRecordRequest;\r\nimport backend.goorm.record.dto.RecordDto;\r\nimport backend.goorm.record.service.RecordService;\r\nimport lombok.RequiredArgsConstructor;\r\nimport lombok.extern.slf4j.Slf4j;\r\nimport org.springframework.http.ResponseEntity;\r\nimport org.springframework.web.bind.annotation.*;\r\n\r\nimport jakarta.validation.Valid;\r\nimport org.springframework.web.multipart.MultipartFile;\r\n\r\nimport java.util.List;\r\n\r\n@Slf4j\r\n@RequiredArgsConstructor\r\n@RestController\r\n@RequestMapping(\"/api/record\")\r\npublic class RecordController {\r\n\r\n    private final RecordService recordService;\r\n\r\n    @PostMapping(\"/training/{id}/add/cardio\")\r\n    public ResponseEntity<RecordDto> addCardioRecord(@PathVariable(\"id\") Long trainingId,\r\n                                                     @Valid @ModelAttribute  AddCardioRecordRequest request,\r\n                                                     @RequestParam(\"image\") MultipartFile image)\r\n    {\r\n        RecordDto result = recordService.addCardioRecord(trainingId, request, null, image); // Member 정보를 null로 설정\r\n        return ResponseEntity.ok(result);\r\n    }\r\n\r\n    @PostMapping(\"/training/{id}/add/strength\")\r\n    public ResponseEntity<RecordDto> addStrengthRecord(@PathVariable(\"id\") Long trainingId,\r\n                                                       @Valid @ModelAttribute  AddStrengthRecordRequest request,\r\n                                                       @RequestParam(\"image\") MultipartFile image) {\r\n        RecordDto result = recordService.addStrengthRecord(trainingId, request, null, image); // Member 정보를 null로 설정\r\n        return ResponseEntity.ok(result);\r\n    }\r\n\r\n    @PutMapping(\"/training/{id}/edit\")\r\n    public ResponseEntity<RecordDto> editRecord(@PathVariable(\"id\") Long recordId,\r\n                                                @Valid @ModelAttribute  EditRecordRequest request,\r\n                                                @RequestParam(\"image\") MultipartFile image) {\r\n        RecordDto result = recordService.editRecord(recordId, request, null, image); // Member 정보를 null로 설정\r\n        return ResponseEntity.ok(result);\r\n    }\r\n\r\n    @DeleteMapping(\"/training/{id}/delete\")\r\n    public ResponseEntity<Void> deleteRecord(@PathVariable(\"id\") Long recordId) {\r\n        recordService.deleteRecord(recordId, null); // Member 정보를 null로 설정\r\n        return ResponseEntity.ok().build();\r\n    }\r\n\r\n    @GetMapping(\"/all\")\r\n    public ResponseEntity<List<RecordDto>> getAllRecords() {\r\n        List<RecordDto> records = recordService.getAllRecords(null); // Member 정보를 null로 설정\r\n        return ResponseEntity.ok(records);\r\n    }\r\n}\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/goorm/src/main/java/backend/goorm/record/controller/RecordController.java b/goorm/src/main/java/backend/goorm/record/controller/RecordController.java
+--- a/goorm/src/main/java/backend/goorm/record/controller/RecordController.java	(revision d65487ecd83a16898f27b46bc891b5ddc2ee2b04)
++++ b/goorm/src/main/java/backend/goorm/record/controller/RecordController.java	(date 1722219623891)
+@@ -25,26 +25,25 @@
+ 
+     @PostMapping("/training/{id}/add/cardio")
+     public ResponseEntity<RecordDto> addCardioRecord(@PathVariable("id") Long trainingId,
+-                                                     @Valid @ModelAttribute  AddCardioRecordRequest request,
+-                                                     @RequestParam("image") MultipartFile image)
+-    {
+-        RecordDto result = recordService.addCardioRecord(trainingId, request, null, image); // Member 정보를 null로 설정
++                                                     @Valid @ModelAttribute AddCardioRecordRequest request,
++                                                     @RequestParam("images") List<MultipartFile> images) {
++        RecordDto result = recordService.addCardioRecord(trainingId, request, null, images); // Member 정보를 null로 설정
+         return ResponseEntity.ok(result);
+     }
+ 
+     @PostMapping("/training/{id}/add/strength")
+     public ResponseEntity<RecordDto> addStrengthRecord(@PathVariable("id") Long trainingId,
+-                                                       @Valid @ModelAttribute  AddStrengthRecordRequest request,
+-                                                       @RequestParam("image") MultipartFile image) {
+-        RecordDto result = recordService.addStrengthRecord(trainingId, request, null, image); // Member 정보를 null로 설정
++                                                       @Valid @ModelAttribute AddStrengthRecordRequest request,
++                                                       @RequestParam("images") List<MultipartFile> images) {
++        RecordDto result = recordService.addStrengthRecord(trainingId, request, null, images); // Member 정보를 null로 설정
+         return ResponseEntity.ok(result);
+     }
+ 
+     @PutMapping("/training/{id}/edit")
+     public ResponseEntity<RecordDto> editRecord(@PathVariable("id") Long recordId,
+-                                                @Valid @ModelAttribute  EditRecordRequest request,
+-                                                @RequestParam("image") MultipartFile image) {
+-        RecordDto result = recordService.editRecord(recordId, request, null, image); // Member 정보를 null로 설정
++                                                @Valid @ModelAttribute EditRecordRequest request,
++                                                @RequestParam("images") List<MultipartFile> images) {
++        RecordDto result = recordService.editRecord(recordId, request, null, images); // Member 정보를 null로 설정
+         return ResponseEntity.ok(result);
+     }
+ 
+Index: goorm/src/main/java/backend/goorm/record/entity/Record.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package backend.goorm.record.entity;\r\n\r\nimport backend.goorm.training.model.entity.Training;\r\nimport jakarta.persistence.*;\r\nimport lombok.*;\r\n\r\nimport java.time.LocalDateTime;\r\nimport java.time.LocalDate;\r\n\r\n@Getter\r\n@Setter\r\n@NoArgsConstructor\r\n@AllArgsConstructor\r\n@Builder\r\n@Entity\r\n@Table(name = \"record\")\r\npublic class Record {\r\n\r\n    @Id\r\n    @GeneratedValue(strategy = GenerationType.IDENTITY)\r\n    @Column(name = \"record_id\")\r\n    private Long recordId;\r\n\r\n    @ManyToOne\r\n    @JoinColumn(name = \"training_id\")\r\n    private Training training;\r\n\r\n    @Column(name = \"record_date\", nullable = false)\r\n    private LocalDateTime recordDate;\r\n\r\n    @Column(name = \"exercise_date\", nullable = false)\r\n    private LocalDate exerciseDate;\r\n\r\n    @Column(name = \"modified_date\")\r\n    private LocalDateTime modifiedDate;\r\n\r\n    @Column(name = \"calories_burned\", nullable = false)\r\n    private Float caloriesBurned;\r\n\r\n    @Column(name = \"duration_minutes\", nullable = false)\r\n    private Integer durationMinutes;\r\n\r\n    @Column(name = \"intensity\")\r\n    private String intensity;\r\n\r\n    @Column(name = \"sets\")\r\n    private Integer sets;\r\n\r\n    @Column(name = \"reps\") // 횟수 필드 추가\r\n    private Integer reps;\r\n\r\n    @Column(name = \"weight\")\r\n    private Integer weight;\r\n\r\n    @Column(name = \"distance\")\r\n    private Float distance;\r\n\r\n    @Column(name = \"incline\")\r\n    private Float incline;\r\n\r\n    @Column(name = \"memo\", length = 1000)\r\n    private String memo;\r\n\r\n    @Column(name = \"satisfaction\")\r\n    private Integer satisfaction;\r\n\r\n    private String imageUrl;\r\n\r\n    @Builder\r\n    public Record(Training training, LocalDateTime recordDate, LocalDateTime modifiedDate,\r\n                  Float caloriesBurned, Integer durationMinutes,\r\n                  String intensity, Integer sets, Integer weight, Float distance,\r\n                  Float incline, LocalDate exerciseDate, String memo, Integer satisfaction, String imageUrl) {\r\n        this.training = training;\r\n        this.recordDate = recordDate;\r\n        this.modifiedDate = modifiedDate;\r\n        this.caloriesBurned = caloriesBurned;\r\n        this.durationMinutes = durationMinutes;\r\n        this.intensity = intensity;\r\n        this.sets = sets;\r\n        this.weight = weight;\r\n        this.distance = distance;\r\n        this.incline = incline;\r\n        this.exerciseDate = exerciseDate;\r\n        this.memo = memo;\r\n        this.satisfaction = satisfaction;\r\n        this.imageUrl = imageUrl;\r\n    }\r\n}\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/goorm/src/main/java/backend/goorm/record/entity/Record.java b/goorm/src/main/java/backend/goorm/record/entity/Record.java
+--- a/goorm/src/main/java/backend/goorm/record/entity/Record.java	(revision d65487ecd83a16898f27b46bc891b5ddc2ee2b04)
++++ b/goorm/src/main/java/backend/goorm/record/entity/Record.java	(date 1722219700162)
+@@ -6,6 +6,7 @@
+ 
+ import java.time.LocalDateTime;
+ import java.time.LocalDate;
++import java.util.List;
+ 
+ @Getter
+ @Setter
+@@ -64,13 +65,16 @@
+     @Column(name = "satisfaction")
+     private Integer satisfaction;
+ 
+-    private String imageUrl;
++    @ElementCollection
++    @CollectionTable(name = "record_images", joinColumns = @JoinColumn(name = "record_id"))
++    @Column(name = "image_url")
++    private List<String> imageUrls;
+ 
+     @Builder
+     public Record(Training training, LocalDateTime recordDate, LocalDateTime modifiedDate,
+                   Float caloriesBurned, Integer durationMinutes,
+                   String intensity, Integer sets, Integer weight, Float distance,
+-                  Float incline, LocalDate exerciseDate, String memo, Integer satisfaction, String imageUrl) {
++                  Float incline, LocalDate exerciseDate, String memo, Integer satisfaction, List<String> imageUrls) {
+         this.training = training;
+         this.recordDate = recordDate;
+         this.modifiedDate = modifiedDate;
+@@ -84,6 +88,6 @@
+         this.exerciseDate = exerciseDate;
+         this.memo = memo;
+         this.satisfaction = satisfaction;
+-        this.imageUrl = imageUrl;
++        this.imageUrls = imageUrls;
+     }
+ }
+Index: goorm/src/main/java/backend/goorm/diet/repository/DietRepository.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package backend.goorm.diet.repository;\r\n\r\nimport backend.goorm.diet.entity.Diet;\r\nimport backend.goorm.diet.entity.Food;\r\nimport backend.goorm.member.model.entity.Member;\r\nimport org.springframework.data.domain.Pageable;\r\nimport org.springframework.data.jpa.repository.JpaRepository;\r\n\r\nimport java.util.List;\r\n\r\npublic interface DietRepository extends JpaRepository<Diet, Long> {\r\n    List<Food> findDistinctFoodByMember(Member member, Pageable pageRequest);\r\n}
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/goorm/src/main/java/backend/goorm/diet/repository/DietRepository.java b/goorm/src/main/java/backend/goorm/diet/repository/DietRepository.java
+--- a/goorm/src/main/java/backend/goorm/diet/repository/DietRepository.java	(revision d65487ecd83a16898f27b46bc891b5ddc2ee2b04)
++++ b/goorm/src/main/java/backend/goorm/diet/repository/DietRepository.java	(date 1722216881561)
+@@ -6,8 +6,11 @@
+ import org.springframework.data.domain.Pageable;
+ import org.springframework.data.jpa.repository.JpaRepository;
+ 
++import java.time.LocalDate;
+ import java.util.List;
+ 
+ public interface DietRepository extends JpaRepository<Diet, Long> {
+     List<Food> findDistinctFoodByMember(Member member, Pageable pageRequest);
++
++    List<Diet> findByMemberAndDietDate(Member member, LocalDate date);
+ }
+\ No newline at end of file

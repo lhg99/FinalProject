@@ -25,7 +25,6 @@ public class Food {
 
     private String foodType;
 
-    @Column(nullable = false)
     private Double amount;
 
     @ManyToOne(cascade = CascadeType.PERSIST, fetch = FetchType.LAZY)

@@ -25,7 +25,6 @@ public class FoodResponseDto {
     private Float cholesterol;
     private Float saturatedFat;
     private Float transFat;
-//    private String imageUrl;
     private Integer useCount;
     private Boolean userRegister;
 
@@ -44,7 +43,6 @@ public class FoodResponseDto {
                 .cholesterol(food.getCholesterol())
                 .saturatedFat(food.getSaturatedFat())
                 .transFat(food.getTransFat())
-//                .imageUrl(food.getImageUrl())
                 .useCount(food.getUseCount())
                 .userRegister(food.getUserRegister())
                 .build();
