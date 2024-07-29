@@ -1,47 +1,67 @@
 import { create } from "zustand";
-import { Category, ExerciseData, ExerciseDetails } from "../api/exerciseApi";
+import { Category, ExerciseData, ExerciseRecords } from "../pages/Exercise/api/exerciseApi";
 
 interface ExerciseState {
     exercises: ExerciseData[];
-    exerciseDetails: ExerciseDetails[];
+    exerciseDetails: {[key: string]: ExerciseRecords};
     customExercises: ExerciseData[];
     selectedExercises: ExerciseData[];
     categories: Category[];
-    setExercises: (exercises: ExerciseData[]) => void;
-    setCategories: (categories: Category[]) => void;
+    exerciseRecords: ExerciseRecords[];
+    imageFile: File | null;
     addExercise: (exercise: ExerciseData) => void;
     addCustomExercises: (exercise: ExerciseData) => void;
     addSelectedExercises: (exercise: ExerciseData) => void;
+    addExerciseRecord: (record: ExerciseRecords) => void;
+    setExercises: (exercises: ExerciseData[]) => void;
+    setCategories: (categories: Category[]) => void;
+    setImageFile: (file: File | null) => void;
+    setExerciseRecords: (records: ExerciseRecords[]) => void;
     removeExercise: (exerciseName: string) => void;
-    updateExerciseDetails: (details: ExerciseDetails) => void;
+    updateExerciseDetails: (details: ExerciseRecords) => void;
 }
 
-export const ExerciseStore = create<ExerciseState>((set) => ({
+export const ExerciseStore = create<ExerciseState>((set, get) => ({
     exercises: [],
-    exerciseDetails: [],
+    exerciseDetails: {},
     customExercises: [],
     selectedExercises: [],
     categories: [],
-    setExercises: (exercises) => set({ exercises }),
-    setCategories: (categories) => set({ categories }),
+    exerciseRecords: [],
+    imageFile: null,
     addExercise: (exercise) => set((state) => ({
         exercises: [...state.exercises, exercise]
     })),
     addCustomExercises: (exercise) => set((state) => ({
         customExercises: [...state.customExercises, exercise]
     })),
-    addSelectedExercises: (exercise) => set((state) => ({
-        selectedExercises: state.selectedExercises.find(ex => ex.training_name === exercise.training_name)
-            ? state.selectedExercises
-            : [...state.selectedExercises, exercise]
+    addSelectedExercises: (exercise) => set((state) => {
+        console.log("Adding selected exercise:", exercise);
+        return {
+            selectedExercises: state.selectedExercises.some(ex => ex.name === exercise.name)
+                ? state.selectedExercises
+                : [...state.selectedExercises, exercise]
+        };
+    }),
+    addExerciseRecord: (record) => set((state) => ({
+        exerciseRecords: [...state.exerciseRecords, record]
     })),
+    setExercises: (exercises) => set({ exercises }),
+    setCategories: (categories) => set({ categories }),
+    setExerciseRecords: (records) => set({ exerciseRecords: records }),
+    setImageFile: (file) => set({imageFile: file}),
     removeExercise: (exerciseName) => set((state) => ({
-        selectedExercises: state.selectedExercises.filter((ex) => ex.training_name !== exerciseName)
+        selectedExercises: state.selectedExercises.filter((ex) => ex.name !== exerciseName)
     })),
-    updateExerciseDetails: (details) => set((state) => ({
-        exerciseDetails: {
-            ...state.exerciseDetails,
-            [details.training_name]: details
+    updateExerciseDetails: (details) => {
+        const state = get();
+        if (JSON.stringify(state.exerciseDetails[details.trainingName]) !== JSON.stringify(details)) {
+            set((state) => ({
+                exerciseDetails: {
+                    ...state.exerciseDetails,
+                    [details.trainingName]: details
+                }
+            }));
         }
-    }))
+    }
 }));

@@ -46,7 +46,9 @@ export const getChatHistory = async (chatRoomId: number) => {
 //채팅방 참여하기
 export const joinChatRoom = async (chatRoomId: number) => {
    try {
-      const response = await axiosInstance.post(`/chatroom/join`);
+      const response = await axiosInstance.post(`/chatroom/join`, {
+         chatRoomId
+      });
       return response.data;
    } catch (error) {
       throw error;
