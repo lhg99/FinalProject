@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import styles from './SignUp.module.scss';
 import { SignUpData, postSignUpData } from '../../api/signupApi';
 
@@ -10,6 +10,7 @@ const SignUp: React.FC = () => {
   const [loginPw, setPassword] = useState<string>('');
   const [confirmPassword, setConfirmPassword] = useState<string>('');
   const [loginId, setId] = useState<string>('');
+  const navigate = useNavigate();
 
   const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[$@$!%*#?&])[A-Za-z\d$@$!%*#?&]{8,16}$/;
 
@@ -37,6 +38,7 @@ const SignUp: React.FC = () => {
     try {
       await postSignUpData(signupData);
       alert('회원가입이 완료되었습니다.');
+      navigate('/Login');
     } catch (err) {
       alert('회원가입에 실패하였습니다.');
       console.error(err);
