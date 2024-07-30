@@ -1,6 +1,6 @@
 import React from 'react'
-import { Category, ExerciseData } from './api/exerciseApi'
 import styled from 'styled-components';
+import { Category, ExerciseData } from './ExerciseTypes';
 
 interface ExerciseCategoryTableProps {
   exercises: ExerciseData[];

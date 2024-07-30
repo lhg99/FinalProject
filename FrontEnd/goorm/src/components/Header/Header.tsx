@@ -11,7 +11,7 @@ const Header: React.FC = () => {
         <ul>
           <li><a href="/Chat">채팅</a></li>
           <li><a href="/Board">게시판</a></li>
-          <li><a href="/">운동 기록</a></li>
+          <li><a href="/exercise">운동 기록</a></li>
           <li><a href="/Food">식단 기록</a></li>
         </ul>
       </nav>

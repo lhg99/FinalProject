@@ -1,38 +1,10 @@
 import axiosInstance from '../../../api/axiosInstance';
-
-export interface ExerciseData {
-    id: number;
-    name: string;
-    categoryName: string;
-}
-
-export interface Category {
-    categoryName: string;
-}
-
-export interface ExerciseRecords {
-    recordId: number;
-    trainingName: string;
-    exerciseDate: string; // Date 문자열로 나타내기 때문에 string 타입으로 변경
-    sets?: number | null;
-    weight?: number | null;
-    distance?: number | null;
-    durationMinutes: number;
-    caloriesBurned?: number | null;
-    incline?: number | null;
-    reps?: number | null;
-    satisfaction: number;
-    intensity: string; // 운동 강도(high, middle, low)
-    memo?: string;
-    imageUrl?: string;
-    categoryName: string;
-    trainingId: number;
-}
+import { ExerciseData, ExerciseRecords } from '../ExerciseTypes';
 
 export const getExerciseData = async (): Promise<ExerciseData[]> => {
     try {
         const response = await axiosInstance.get<ExerciseData[]>('/admin/trainings');
-        console.log(response.data);
+        console.log("운동 정보", response.data);
         return response.data;
     } catch (err) {
         console.error("failed to get exercise Data: ", err);
@@ -52,10 +24,12 @@ export const getExerciseRecords = async (): Promise<ExerciseRecords[]> => {
     }
 }
 
-export const postCustomExerciseData = async (exercise: ExerciseData): Promise<void> => {
+export const postCustomExerciseData = async (exercise: { trainingName: string; category: {categoryId: number; categoryName: string} }): Promise<number> => {
     try {
-        const response = await axiosInstance.post<ExerciseData[]>(`/trainings`, exercise);
+        // console.log("trainingName: ", exercise.trainingName);
+        const response = await axiosInstance.post<{id: number}>(`/user/custom-trainings`, exercise);
         console.log("post custom exercise success", response.data);
+        return response.data.id;
     } catch(err) {
         console.error("failed to post custom exercise ", err);
         throw err;
@@ -82,9 +56,9 @@ export const postCardioRecord = async (trainingId: number, exerciseRecord: Exerc
                 'Content-Type': 'multipart/form-data'
             }
         });
-        console.log("유산소 운동 post 성공", response.data);
+        console.log("유산소 운동 기록 post 성공", response.data);
     } catch(err) {
-        console.error("유산소 운동 post 실패", err);
+        console.error("유산소 운동 기록 post 실패", err);
         throw err;
     }
 }
@@ -110,9 +84,9 @@ export const postStrengthRecord = async (trainingId: number, exerciseRecord: Exe
                 'Content-Type': 'multipart/form-data'
             }
         });
-        console.log("근력운동 post 성공", response.data);
+        console.log("근력운동 기록 post 성공", response.data);
     } catch(err) {
-        console.error("근력운동 post 실패", err);
+        console.error("근력운동 기록 post 실패", err);
         throw err;
     }
 }
