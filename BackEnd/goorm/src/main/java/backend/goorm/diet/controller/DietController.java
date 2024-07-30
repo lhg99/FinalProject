@@ -25,8 +25,14 @@ public class DietController {
     private final ObjectMapper objectMapper;
 
     @GetMapping
-    public ResponseEntity<List<DietResponseDto>> getDietByDate(@RequestParam LocalDate date) {
+    public ResponseEntity<List<DietResponseDto>> getDietByDate(@RequestParam("date") LocalDate date) {
         List<DietResponseDto> response = dietService.getDietByDate(date);
+        return ResponseEntity.status(HttpStatus.OK).body(response);
+    }
+
+    @GetMapping("/all")
+    public ResponseEntity<List<DietResponseDto>> getAllDiets() {
+        List<DietResponseDto> response = dietService.getAllDiets();
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 

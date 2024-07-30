@@ -6,6 +6,7 @@ import java.time.LocalDate;
 import java.util.List;
 
 @AllArgsConstructor
+@NoArgsConstructor
 @Builder
 @Getter
 @Setter
@@ -16,6 +17,7 @@ public class DietCreateRequestDto {
     private List<FoodQuantity> foodQuantities;
 
     @AllArgsConstructor
+    @NoArgsConstructor
     @Builder
     @Getter
     @Setter

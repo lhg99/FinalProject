@@ -14,5 +14,5 @@ public interface DietRepository extends JpaRepository<Diet, Long> {
 
     List<Diet> findByMemberAndDietDate(Member member, LocalDate date);
 
-    List<Diet> findByDietDate(LocalDate date);
+    List<Diet> findByDietDate(LocalDate dietDate);
 }
