@@ -26,7 +26,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -38,7 +37,6 @@ public class BoardServiceImpl implements BoardService {
 
     private final BoardRepository boardRepository;
     private final CustomBoardRepository customBoardRepository;
-    private final CommentRepository commentRepository;
     private final BoardLikesRepository boardLikesRepository;
     private final BoardImageRepository boardImageRepository;
 
@@ -64,28 +62,29 @@ public class BoardServiceImpl implements BoardService {
                 .boardDeleted(false)
                 .reportsCnt(0)
                 .viewCnt(0)
-                .likesCnt(9)
+                .likesCnt(0)
                 .boardType(saveRequest.getBoardType())
                 .boardCategory(saveRequest.getBoardCategory())
                 .build();
 
         Board saveBoard = boardRepository.save(board);
 
-        for(String url : saveRequest.getImageUrls()){
-            BoardImages boardImage = BoardImages.builder()
-                    .boardId(saveBoard.getBoardId())
-                    .imageUrl(url)
-                    .build();
-            boardImageRepository.save(boardImage);
+        if(saveRequest.getImageUrls() != null){
+            for(String url : saveRequest.getImageUrls()){
+                BoardImages boardImage = BoardImages.builder()
+                        .boardId(saveBoard.getBoardId())
+                        .imageUrl(url)
+                        .build();
+                boardImageRepository.save(boardImage);
+            }
         }
-
     }
 
     @Override
-    public BoardListResponse getBoardList(BoardType type, int page, BoardSortType sortType, List<BoardCategory> categories) {
+    public BoardListResponse getBoardList(BoardType type, int page, BoardSortType sortType, List<BoardCategory> categories, String keyword) {
 
         Pageable pageable = PageRequest.of(page - 1, pageSize);
-        Page<Board> boards = customBoardRepository.getBoardList(type, categories, sortType, pageable);
+        Page<Board> boards = customBoardRepository.getBoardList(type, categories, sortType, keyword, pageable);
 
         List<BoardListItem> boardItems = boards.stream()
                 .map(this::convertToBoardListItem)

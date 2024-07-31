@@ -8,6 +8,8 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 @Setter
@@ -50,6 +52,10 @@ public class Board {
 
     @Enumerated(EnumType.STRING)
     BoardCategory boardCategory;
+
+    @OneToMany(mappedBy = "boardId", fetch = FetchType.LAZY)
+    private List<Comment> comments = new ArrayList<>();
+
 
     public void increaseViewCnt() {
         this.viewCnt++;
