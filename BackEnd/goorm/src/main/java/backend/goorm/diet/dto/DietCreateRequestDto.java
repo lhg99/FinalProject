@@ -5,6 +5,7 @@ import lombok.*;
 import java.time.LocalDate;
 import java.util.List;
 
+@NoArgsConstructor
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
@@ -16,6 +17,7 @@ public class DietCreateRequestDto {
     private String mealTime;
     private List<FoodQuantity> foodQuantities;
 
+    @NoArgsConstructor
     @AllArgsConstructor
     @NoArgsConstructor
     @Builder

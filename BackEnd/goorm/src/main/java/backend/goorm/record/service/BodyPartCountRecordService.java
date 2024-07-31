@@ -1,7 +1,5 @@
 package backend.goorm.record.service;
 
-import backend.goorm.common.exception.CustomException;
-import backend.goorm.common.exception.CustomExceptionType;
 import backend.goorm.record.entity.Record;
 import backend.goorm.record.entity.WeeklyRecord;
 import backend.goorm.record.repository.BodyPartCountRecordRepository;
@@ -53,6 +51,19 @@ public class BodyPartCountRecordService {
         log.info("Body part count record saved or updated for record: {}", record.getRecordId());
     }
 
+    public Map<TrainingCategoryType, BodyPartCountInfo> getBodyPartCountInfoMap(List<Record> records) {
+        Map<TrainingCategoryType, Double> countMap = getCountMapByRecords(records);
+        double totalExercises = records.size();
+
+        Map<TrainingCategoryType, BodyPartCountInfo> infoMap = new HashMap<>();
+        for (Map.Entry<TrainingCategoryType, Double> entry : countMap.entrySet()) {
+            double percentage = (entry.getValue() / totalExercises) * 100;
+            infoMap.put(entry.getKey(), new BodyPartCountInfo(entry.getValue(), percentage));
+        }
+
+        return infoMap;
+    }
+
     public Map<TrainingCategoryType, Double> getCountMapByRecords(List<Record> records) {
         Map<TrainingCategoryType, Double> countMap = new HashMap<>();
         for (Record record : records) {
@@ -60,6 +71,18 @@ public class BodyPartCountRecordService {
             countMap.put(category, countMap.getOrDefault(category, 0.0) + 1);
         }
         return countMap;
+    }
+
+    public List<Record> getRecordsByDate(LocalDate date) {
+        return recordRepository.findAll().stream()
+                .filter(record -> record.getExerciseDate().equals(date))
+                .collect(Collectors.toList());
+    }
+
+    public List<Record> getRecordsByDateRange(LocalDate start, LocalDate end) {
+        return recordRepository.findAll().stream()
+                .filter(record -> !record.getExerciseDate().isBefore(start) && !record.getExerciseDate().isAfter(end))
+                .collect(Collectors.toList());
     }
 
     private void setBodyPartCountRecordFieldsFromMap(WeeklyRecord weeklyRecord, Map<TrainingCategoryType, Double> countMap) {
@@ -74,15 +97,22 @@ public class BodyPartCountRecordService {
         weeklyRecord.setEtc(countMap.getOrDefault(TrainingCategoryType.기타, 0.0));
     }
 
-    public List<Record> getRecordsByDate(LocalDate date) {
-        return recordRepository.findAll().stream()
-                .filter(record -> record.getExerciseDate().equals(date))
-                .collect(Collectors.toList());
-    }
 
-    public List<Record> getRecordsByDateRange(LocalDate start, LocalDate end) {
-        return recordRepository.findAll().stream()
-                .filter(record -> !record.getExerciseDate().isBefore(start) && !record.getExerciseDate().isAfter(end))
-                .collect(Collectors.toList());
+    public static class BodyPartCountInfo {
+        private double count;
+        private double percentage;
+
+        public BodyPartCountInfo(double count, double percentage) {
+            this.count = count;
+            this.percentage = percentage;
+        }
+
+        public double getCount() {
+            return count;
+        }
+
+        public double getPercentage() {
+            return percentage;
+        }
     }
 }

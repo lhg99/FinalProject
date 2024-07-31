@@ -52,7 +52,7 @@ public class DietController {
 
     @PutMapping("{dietId}")
     public ResponseEntity<DietResponseDto> updateDiet(
-            @PathVariable Long dietId,
+            @PathVariable("dietId") Long dietId,
             @RequestPart("diet") String dietJson,
             @RequestPart(value = "images", required = false) MultipartFile[] images) {
         try {
@@ -66,7 +66,7 @@ public class DietController {
     }
 
     @DeleteMapping("{dietId}")
-    public ResponseEntity<Boolean> deleteDiet(@PathVariable Long dietId) {
+    public ResponseEntity<Boolean> deleteDiet(@PathVariable("dietId") Long dietId) {
         boolean response = dietService.deleteDiet(dietId);
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
