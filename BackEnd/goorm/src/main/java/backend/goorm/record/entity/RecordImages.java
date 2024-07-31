@@ -1,12 +1,14 @@
 package backend.goorm.record.entity;
 
+import backend.goorm.record.entity.Record;
 import jakarta.persistence.*;
 import lombok.*;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 
 @Getter
 @Setter
-@NoArgsConstructor
 @AllArgsConstructor
+@NoArgsConstructor
 @Builder
 @Entity
 @Table(name = "record_images")
@@ -18,14 +20,10 @@ public class RecordImages {
     private Long recordImageId;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "record_id", nullable = false)
+    @JoinColumn(name = "record_id")
+    @JsonBackReference
     private Record record;
 
     @Column(name = "image_url", nullable = false)
     private String imageUrl;
-
-    public RecordImages(Record record, String imageUrl) {
-        this.record = record;
-        this.imageUrl = imageUrl;
-    }
 }

@@ -34,7 +34,7 @@ public class QTraining extends EntityPathBase<Training> {
 
     public final StringPath trainingName = createString("trainingName");
 
-    public final ListPath<backend.goorm.record.entity.TrainingRecord, backend.goorm.record.entity.QTrainingRecord> trainingRecords = this.<backend.goorm.record.entity.TrainingRecord, backend.goorm.record.entity.QTrainingRecord>createList("trainingRecords", backend.goorm.record.entity.TrainingRecord.class, backend.goorm.record.entity.QTrainingRecord.class, PathInits.DIRECT2);
+    public final ListPath<backend.goorm.record.entity.Record, backend.goorm.record.entity.QRecord> trainingRecords = this.<backend.goorm.record.entity.Record, backend.goorm.record.entity.QRecord>createList("trainingRecords", backend.goorm.record.entity.Record.class, backend.goorm.record.entity.QRecord.class, PathInits.DIRECT2);
 
     public final BooleanPath userCustom = createBoolean("userCustom");
 

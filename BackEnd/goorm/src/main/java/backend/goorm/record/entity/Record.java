@@ -3,6 +3,7 @@ package backend.goorm.record.entity;
 import backend.goorm.training.model.entity.Training;
 import jakarta.persistence.*;
 import lombok.*;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import java.time.LocalDateTime;
 import java.time.LocalDate;
@@ -48,7 +49,7 @@ public class Record {
     @Column(name = "sets")
     private Integer sets;
 
-    @Column(name = "reps") // 횟수 필드 추가
+    @Column(name = "reps")
     private Integer reps;
 
     @Column(name = "weight")
@@ -67,9 +68,8 @@ public class Record {
     private Integer satisfaction;
 
     @OneToMany(mappedBy = "record", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<RecordImages> recordImages = new ArrayList<>(); // 초기화
-
-   
+    @JsonManagedReference
+    private List<RecordImages> recordImages = new ArrayList<>();
 
     public void setRecordImages(List<RecordImages> recordImages) {
         this.recordImages = (recordImages != null) ? recordImages : new ArrayList<>();
