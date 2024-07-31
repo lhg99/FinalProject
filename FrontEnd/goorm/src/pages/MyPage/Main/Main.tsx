@@ -12,7 +12,7 @@ const MainPage: React.FC = () => {
           <button>Button 1</button>
           <button>Button 2</button>
         </div>
-        <div className={styles.extraPane}>
+        <div className={styles.calPane}>
           <h2>달력</h2>
         </div>
       </div>
