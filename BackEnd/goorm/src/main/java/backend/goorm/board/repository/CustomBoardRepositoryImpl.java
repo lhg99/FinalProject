@@ -2,6 +2,7 @@ package backend.goorm.board.repository;
 
 import backend.goorm.board.model.entity.Board;
 import backend.goorm.board.model.entity.QBoard;
+import backend.goorm.board.model.entity.QComment;
 import backend.goorm.board.model.enums.BoardCategory;
 import backend.goorm.board.model.enums.BoardSortType;
 import backend.goorm.board.model.enums.BoardType;
@@ -24,15 +25,22 @@ public class CustomBoardRepositoryImpl implements CustomBoardRepository{
     private final JPAQueryFactory queryFactory;
 
     @Override
-    public Page<Board> getBoardList(BoardType type, List<BoardCategory> categories, BoardSortType sortType, Pageable pageable) {
+    public Page<Board> getBoardList(BoardType type, List<BoardCategory> categories, BoardSortType sortType, String keyword, Pageable pageable) {
         QBoard board = QBoard.board;
         QMember member = QMember.member;
+        QComment comment = QComment.comment;
 
         JPQLQuery<Board> query = queryFactory.selectFrom(board)
                 .join(board.memberId, member).fetchJoin()
+                .leftJoin(board.comments, comment).fetchJoin()
                 .where(board.boardType.eq(type)
                         .and(categories.isEmpty() ? null : board.boardCategory.in(categories))
                         .and(board.boardDeleted.eq(false))
+                        .and(keyword.isEmpty() ? null :(
+                            board.boardTitle.containsIgnoreCase(keyword)
+                                    .or(board.boardContent.containsIgnoreCase(keyword))
+                                    .or(comment.commentContent.containsIgnoreCase(keyword))
+                        ))
                 );
 
         switch (sortType) {
@@ -61,6 +69,6 @@ public class CustomBoardRepositoryImpl implements CustomBoardRepository{
                 .limit(pageable.getPageSize())
                 .fetch();
 
-        return new PageImpl<>(results, pageable, total);
+        return new PageImpl<>(results, pageable, results.size());
     }
 }
