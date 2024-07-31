@@ -6,7 +6,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class EditTrainingInput {
+public class EditTrainingRequest {
     private Long id;
     private String trainingName;
     private TrainingCategory category;

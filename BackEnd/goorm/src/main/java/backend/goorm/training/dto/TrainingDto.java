@@ -8,16 +8,20 @@ import lombok.Setter;
 @Setter
 public class TrainingDto {
     private Long id;
-    private String trainingName;
-    private String category;
-    private Boolean userCustom;
+    private String name;
+    private String categoryName;
 
     public static TrainingDto fromEntity(Training training) {
         TrainingDto dto = new TrainingDto();
         dto.setId(training.getTrainingId());
-        dto.setTrainingName(training.getTrainingName());
-        dto.setCategory(training.getCategory().getCategoryName().name());
-        dto.setUserCustom(training.getUserCustom());
+        dto.setName(training.getTrainingName());
+        if (training.getCategory() != null) {
+            dto.setCategoryName(training.getCategory().getCategoryName().name());
+        } else {
+            dto.setCategoryName("Unknown"); // 또는 기본 값을 설정
+        }
         return dto;
     }
 }
+
+
