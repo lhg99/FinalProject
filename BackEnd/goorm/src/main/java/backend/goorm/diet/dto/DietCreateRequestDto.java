@@ -7,7 +7,6 @@ import java.util.List;
 
 @NoArgsConstructor
 @AllArgsConstructor
-@NoArgsConstructor
 @Builder
 @Getter
 @Setter
@@ -19,7 +18,6 @@ public class DietCreateRequestDto {
 
     @NoArgsConstructor
     @AllArgsConstructor
-    @NoArgsConstructor
     @Builder
     @Getter
     @Setter
