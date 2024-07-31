@@ -18,7 +18,9 @@ public enum CustomExceptionType {
     NO_AUTHORITY_TO_UPDATE(HttpStatus.FORBIDDEN, "E009", "수정 권한이 존재하지 않습니다"),
     NO_AUTHORITY_TO_DELETE(HttpStatus.FORBIDDEN, "E10", "삭제 권한이 존재하지 않습니다"),
     COMMENT_NOT_FOUND(HttpStatus.BAD_REQUEST, "E011", "존재하지 않는 댓글입니다"),
-    COMMENT_DELETED_BOARD(HttpStatus.BAD_REQUEST, "E012", "이미 삭제된 댓글입니다");
+    COMMENT_DELETED_BOARD(HttpStatus.BAD_REQUEST, "E012", "이미 삭제된 댓글입니다"),
+    // RECORD EXCEPTION
+    RECORD_NOT_FOUND(HttpStatus.NOT_FOUND, "E013", "운동 기록을 찾을 수 없습니다");
 
     private final HttpStatus httpStatus;
     private final String code;

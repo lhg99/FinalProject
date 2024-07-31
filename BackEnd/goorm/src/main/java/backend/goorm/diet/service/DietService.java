@@ -34,6 +34,11 @@ public class DietService {
         return DietResponseDto.fromEntityList(diets);
     }
 
+    public List<DietResponseDto> getAllDiets() {
+        List<Diet> diets = dietRepository.findAll();
+        return DietResponseDto.fromEntityList(diets);
+    }
+
     public List<DietResponseDto> createDiet(DietCreateRequestDto dto, MultipartFile[] images) {
         List<DietResponseDto> responses = dto.getFoodQuantities().stream().map(foodQuantity -> {
             Food food = foodRepository.findById(foodQuantity.getFoodId())

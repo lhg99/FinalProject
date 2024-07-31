@@ -25,8 +25,14 @@ public class DietController {
     private final ObjectMapper objectMapper;
 
     @GetMapping
-    public ResponseEntity<List<DietResponseDto>> getDietByDate(@RequestParam LocalDate date) {
+    public ResponseEntity<List<DietResponseDto>> getDietByDate(@RequestParam("date") LocalDate date) {
         List<DietResponseDto> response = dietService.getDietByDate(date);
+        return ResponseEntity.status(HttpStatus.OK).body(response);
+    }
+
+    @GetMapping("/all")
+    public ResponseEntity<List<DietResponseDto>> getAllDiets() {
+        List<DietResponseDto> response = dietService.getAllDiets();
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
@@ -46,7 +52,7 @@ public class DietController {
 
     @PutMapping("{dietId}")
     public ResponseEntity<DietResponseDto> updateDiet(
-            @PathVariable Long dietId,
+            @PathVariable("dietId") Long dietId,
             @RequestPart("diet") String dietJson,
             @RequestPart(value = "images", required = false) MultipartFile[] images) {
         try {
@@ -60,7 +66,7 @@ public class DietController {
     }
 
     @DeleteMapping("{dietId}")
-    public ResponseEntity<Boolean> deleteDiet(@PathVariable Long dietId) {
+    public ResponseEntity<Boolean> deleteDiet(@PathVariable("dietId") Long dietId) {
         boolean response = dietService.deleteDiet(dietId);
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
