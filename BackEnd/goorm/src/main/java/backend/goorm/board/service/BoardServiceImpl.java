@@ -37,7 +37,6 @@ public class BoardServiceImpl implements BoardService {
 
     private final BoardRepository boardRepository;
     private final CustomBoardRepository customBoardRepository;
-    private final CommentRepository commentRepository;
     private final BoardLikesRepository boardLikesRepository;
     private final BoardImageRepository boardImageRepository;
 
