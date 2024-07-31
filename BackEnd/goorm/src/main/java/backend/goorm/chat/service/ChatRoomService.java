@@ -54,9 +54,13 @@ public class ChatRoomService {
     }
 
     //loginId로 오픈채팅방 목록 조회
-    public List<ChatRoomResponse> getPublicChatRoomsByLoginId(String loginId) {
-        Member member = memberRepository.findByLoginId(loginId)
+    public List<ChatRoomResponse> getPublicChatRoomsByLoginId(String loginId, Authentication authentication) {
+        PrincipalDetails principalDetails = (PrincipalDetails) authentication.getPrincipal();
+        Member findMember = principalDetails.member();
+
+        Member member = memberRepository.findByLoginId(findMember.getLoginId())
                 .orElseThrow(() -> new CustomException(CustomExceptionType.CHAT_ROOM_NOT_FOUND));
+
 
         return member.getChatRooms()
                 .stream()

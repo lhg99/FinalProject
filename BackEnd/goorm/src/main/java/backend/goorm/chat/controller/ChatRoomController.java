@@ -27,8 +27,8 @@ public class ChatRoomController {
 
     //참여중인 오픈채팅방 목록
     @GetMapping("/public/{loginId}")
-    public List<ChatRoomResponse> getPublicChatRoomsByLoginId(@PathVariable String loginId) {
-        return chatRoomService.getPublicChatRoomsByLoginId(loginId);
+    public List<ChatRoomResponse> getPublicChatRoomsByLoginId(@PathVariable String loginId, Authentication authentication) {
+        return chatRoomService.getPublicChatRoomsByLoginId(loginId, authentication);
     }
 
     //개설된 모든 오픈채팅방 목록
