@@ -15,7 +15,7 @@ import java.util.List;
 public interface BoardService {
     void saveBoard(BoardSaveRequest saveRequest, Member member);
 
-    BoardListResponse getBoardList(BoardType type, int page, BoardSortType sortType, List<BoardCategory> categories);
+    BoardListResponse getBoardList(BoardType type, int page, BoardSortType sortType, List<BoardCategory> categories, String keyword);
 
     BoardDetailResponse getBoardDetail(Long number, Member member);
 

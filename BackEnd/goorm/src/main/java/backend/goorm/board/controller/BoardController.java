@@ -55,9 +55,10 @@ public class BoardController {
     public ResponseEntity getBoardList(@PathVariable int page,
                                        @RequestParam BoardType boardType,
                                        @RequestParam(defaultValue = "DATE_DESC")BoardSortType sortType,
-                                       @RequestParam(defaultValue = "")List<BoardCategory> categories){
+                                       @RequestParam(defaultValue = "")List<BoardCategory> categories,
+                                       @RequestParam(defaultValue = "")String keyword){
 
-        BoardListResponse boardList = boardService.getBoardList(boardType, page, sortType, categories);
+        BoardListResponse boardList = boardService.getBoardList(boardType, page, sortType, categories, keyword);
 
         return ResponseEntity.ok(boardList);
     }
