@@ -19,16 +19,17 @@ public class AddStrengthRecordRequest {
     private Integer durationMinutes;
     private String intensity;
     private Integer sets;
-    private Integer reps;
+    private Integer reps; // 횟수 추가
     private Integer weight;
     private String memo;
     private Integer satisfaction;
-    private LocalDate exerciseDate;
+    private LocalDate exerciseDate; // 운동 날짜 추가
+
 
     public static Record toEntity(AddStrengthRecordRequest request, Training training) {
         return Record.builder()
                 .training(training)
-                .caloriesBurned(0f)  // Set default value for caloriesBurned
+                .caloriesBurned(0f)
                 .durationMinutes(request.getDurationMinutes())
                 .intensity(request.getIntensity())
                 .sets(request.getSets())
