@@ -1,14 +1,17 @@
 package backend.goorm.diet.entity;
 
+import backend.goorm.member.model.entity.Member;
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import java.util.List;
 
 @Getter
 @Setter
 @Entity
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 @Table(name = "food")
 public class Food {
 
@@ -20,8 +23,14 @@ public class Food {
     @Column(name = "food_name", nullable = false)
     private String foodName;
 
+    private String foodType;
+
     @Column(nullable = false)
     private Double amount;
+
+    @ManyToOne(cascade = CascadeType.PERSIST, fetch = FetchType.LAZY)
+    @JoinColumn(name = "member_id")
+    private Member member;
 
     @Column(name = "calories")
     private Float calories;
@@ -34,6 +43,15 @@ public class Food {
 
     @Column(name = "fat")
     private Float fat;
+
+    private Float sugar;
+    private Float salt;
+    private Float cholesterol;
+    private Float saturatedFat;
+    private Float transFat;
+
+    @Column
+    private String imageUrl;
 
     @Column(name = "user_register", nullable = false)
     private Boolean userRegister = false;

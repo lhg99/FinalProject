@@ -1,4 +1,4 @@
-package backend.goorm.chat.model.listener;
+package backend.goorm.chat.listener;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
