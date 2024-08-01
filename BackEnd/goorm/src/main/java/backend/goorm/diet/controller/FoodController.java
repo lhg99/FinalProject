@@ -1,17 +1,17 @@
 package backend.goorm.diet.controller;
 
+import backend.goorm.diet.api.FoodDataApiService;
 import backend.goorm.diet.dto.FoodResponseDto;
 import backend.goorm.diet.dto.FoodUpdateRequestDto;
 import backend.goorm.diet.dto.FoodUserDto;
 import backend.goorm.diet.service.FoodService;
-import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
+
 
 import java.util.Collection;
 
@@ -22,11 +22,29 @@ import java.util.Collection;
 public class FoodController {
 
     private final FoodService foodService;
+    private final FoodDataApiService foodDataApiService;
+
+    @PostMapping("/SaveApiData")
+    public ResponseEntity<String> initializeFoodData() {
+        try {
+            foodDataApiService.fetchAndSaveFoodData();
+            return ResponseEntity.status(HttpStatus.OK).body("Food data initialized successfully");
+        } catch (Exception e) {
+            log.error("Error initializing food data", e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to initialize food data");
+        }
+    }
 
     @GetMapping
     public ResponseEntity<Collection<FoodResponseDto>> getFoodByName(
             @RequestParam(required = true) String name) {
         Collection<FoodResponseDto> response = foodService.getFoodByName(null, name);
+        return ResponseEntity.status(HttpStatus.OK).body(response);
+    }
+
+    @GetMapping("/all")
+    public ResponseEntity<Collection<FoodResponseDto>> getAllFoods() {
+        Collection<FoodResponseDto> response = foodService.getAllFoods();
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 

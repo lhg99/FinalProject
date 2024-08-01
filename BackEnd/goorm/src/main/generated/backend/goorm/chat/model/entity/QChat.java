@@ -26,6 +26,8 @@ public class QChat extends EntityPathBase<Chat> {
 
     public final QChatRoom chatRoom;
 
+    public final EnumPath<backend.goorm.chat.model.entity.enums.ChatType> chatType = createEnum("chatType", backend.goorm.chat.model.entity.enums.ChatType.class);
+
     public final StringPath message = createString("message");
 
     public final DateTimePath<java.time.LocalDateTime> sendDate = createDateTime("sendDate", java.time.LocalDateTime.class);

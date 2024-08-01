@@ -36,6 +36,11 @@ public class FoodService {
         return FoodResponseDto.fromEntityList(foods);
     }
 
+    public List<FoodResponseDto> getAllFoods() {
+        List<Food> foods = foodRepository.findAll();
+        return FoodResponseDto.fromEntityList(foods);
+    }
+
     public List<FoodResponseDto> getRecentFood(Long id) {
         Pageable pageRequest = PageRequest.of(0, 20, Sort.Direction.DESC, "createdAt");
         List<Food> foods = dietRepository.findDistinctFoodByMember(null, pageRequest);

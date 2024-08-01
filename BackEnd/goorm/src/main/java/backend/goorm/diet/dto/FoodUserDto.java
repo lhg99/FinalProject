@@ -43,7 +43,6 @@ public class FoodUserDto {
                 .cholesterol(this.cholesterol)
                 .saturatedFat(this.saturatedFat)
                 .transFat(this.transFat)
-                .imageUrl(this.imageUrl) // 이미지 URL 설정
                 .useCount(this.useCount) // 기본값 설정
                 .userRegister(this.userRegister) // 유저가 등록한 음식인지 여부 설정
                 .build();
@@ -66,7 +65,6 @@ public class FoodUserDto {
         food.setCholesterol(this.cholesterol);
         food.setSaturatedFat(this.saturatedFat);
         food.setTransFat(this.transFat);
-        food.setImageUrl(this.imageUrl); // 이미지 URL 설정
         food.setUseCount(this.useCount); // 기본값 설정
         food.setUserRegister(this.userRegister);
     }

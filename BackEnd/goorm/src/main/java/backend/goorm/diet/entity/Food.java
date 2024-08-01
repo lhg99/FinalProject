@@ -31,6 +31,8 @@ public class Food {
     @JoinColumn(name = "member_id")
     private Member member;
 
+    private Float gram;
+
     @Column(name = "calories")
     private Float calories;
 
@@ -49,14 +51,10 @@ public class Food {
     private Float saturatedFat;
     private Float transFat;
 
-    @Column
-    private String imageUrl;
 
     @Column(name = "user_register", nullable = false)
     private Boolean userRegister = false;
 
-    @Column(name = "serving_size")
-    private Float servingSize;
 
     @Column(name = "use_count", nullable = false)
     private Integer useCount = 0;

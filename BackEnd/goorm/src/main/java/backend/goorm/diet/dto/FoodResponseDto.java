@@ -16,6 +16,7 @@ public class FoodResponseDto {
     private String foodType;
     private String foodName;
     private Double amount;
+    private Float gram;
     private Float calories;
     private Float carbohydrate;
     private Float protein;
@@ -34,6 +35,7 @@ public class FoodResponseDto {
                 .foodType(food.getFoodType())
                 .foodName(food.getFoodName())
                 .amount(food.getAmount())
+                .gram(food.getGram())
                 .calories(food.getCalories())
                 .carbohydrate(food.getCarbohydrate())
                 .protein(food.getProtein())
