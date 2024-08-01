@@ -1,7 +1,9 @@
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import styled from "styled-components";
 import { useExercise } from "../../../../contexts/exerciseContext";
 import { ExerciseRecords } from "../../ExerciseTypes";
+import DeleteModal from "../Modal/DeleteModal";
+import { deleteRecord } from "../../api/exerciseApi";
 
 interface ExerciseDetailProps {
     exercise: ExerciseRecords;
@@ -14,12 +16,13 @@ interface ExerciseDetailProps {
 const ExerciseDetails: React.FC<ExerciseDetailProps> = ({ exercise, isAddingExercise, details, onExerciseNameChange }) => {
     const [exerciseName, setExerciseName] = useState<string>(exercise.trainingName || "");
     const [distance, setDistance] = useState<string>(details.distance?.toString() || "");
-    const [duration, setDuration] = useState<string>(details.durationMinutes?.toString() || "");
-    const [slope, setSlope] = useState<string>(details.incline?.toString() || "");
-    const [calorie, setCalorie] = useState<string>(details.caloriesBurned?.toString() || "");
-    const [sets, setSets] = useState<string>(details.sets?.toString() || "");
-    const [weight, setWeight] = useState<string>(details.weight?.toString() || "");
-    const [count, setCount] = useState<string>(details.reps?.toString() || "");
+    const [duration, setDuration] = useState<string>(details.durationMinutes?.toString() || "0");
+    const [slope, setSlope] = useState<string>(details.incline?.toString() || "0");
+    const [calorie, setCalorie] = useState<string>(details.caloriesBurned?.toString() || "0");
+    const [sets, setSets] = useState<string>(details.sets?.toString() || "0");
+    const [weight, setWeight] = useState<string>(details.weight?.toString() || "0");
+    const [count, setCount] = useState<string>(details.reps?.toString() || "0");
+    const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
     const prevDetailsRef = useRef(details);
 
     const { updateExerciseDetails, removeExercise } = useExercise();
@@ -28,16 +31,17 @@ const ExerciseDetails: React.FC<ExerciseDetailProps> = ({ exercise, isAddingExer
         const updatedDetails = {
             ...details,
             trainingName: exerciseName,
-            distance: distance ? parseFloat(distance) : null,
+            distance: distance ? parseFloat(distance) : 0,
             durationMinutes: duration ? parseInt(duration) : 0,
-            incline: slope ? parseFloat(slope) : null,
+            incline: slope ? parseFloat(slope) : 0,
             caloriesBurned: calorie ? parseInt(calorie) : 0,
-            sets: sets ? parseInt(sets) : null,
-            weight: weight ? parseFloat(weight) : null,
-            reps: count ? parseInt(count) : null,
+            sets: sets ? parseInt(sets) : 0,
+            weight: weight ? parseFloat(weight) : 0,
+            reps: count ? parseInt(count) : 0,
         };
-
+    
         const prevDetails = prevDetailsRef.current;
+        // Check if updatedDetails differ from previous details
         if (JSON.stringify(updatedDetails) !== JSON.stringify(prevDetails)) {
             updateExerciseDetails(updatedDetails);
             console.log('Details Updated:', updatedDetails);
@@ -45,17 +49,21 @@ const ExerciseDetails: React.FC<ExerciseDetailProps> = ({ exercise, isAddingExer
         prevDetailsRef.current = updatedDetails;
     }, [exerciseName, distance, duration, slope, calorie, sets, weight, count, details, updateExerciseDetails]);
 
+    const handleDeleteClick = () => {
+        setIsModalOpen(true);
+    };
 
-    const handleBlur = (field: keyof ExerciseRecords, value: string) => {
-        const updatedValue = field === "distance" || field === "weight" || field === "incline"
-            ? parseFloat(value)
-            : parseInt(value);
+    const handleModalClose = () => {
+        setIsModalOpen(false);
+    };
 
-        if (details[field] !== updatedValue) {
-            updateExerciseDetails({
-                ...details,
-                [field]: updatedValue
-            } as ExerciseRecords);
+    const handleModalConfirm = async () => {
+        try {
+            await deleteRecord(details.recordId);
+            removeExercise(details.trainingName); // 상태에서 운동 삭제
+            setIsModalOpen(false); // 모달 닫기
+        } catch (err) {
+            throw err;
         }
     };
 
@@ -63,27 +71,9 @@ const ExerciseDetails: React.FC<ExerciseDetailProps> = ({ exercise, isAddingExer
         <ExerciseDetailsContainer>
             <ExerciseInfo>
                 <CategoryBadge>{exercise.categoryName}</CategoryBadge>
-                <ExerciseTitle>{isAddingExercise ? "새로운 운동 추가" : exercise.trainingName}</ExerciseTitle>
+                <ExerciseTitle>{exercise.trainingName}</ExerciseTitle>
             </ExerciseInfo>
             <InputContainer>
-                {isAddingExercise && (
-                    <ExerciseLabel>
-                        <ExerciseInput
-                            type="text"
-                            placeholder="운동 이름 입력"
-                            value={exerciseName}
-                            onChange={(e) => {
-                                setExerciseName(e.target.value);
-                                if (onExerciseNameChange) {
-                                    onExerciseNameChange(e.target.value); // 부모 컴포넌트로 운동 이름 전달
-                                }
-                                if (exercise.categoryName !== "유산소") {
-                                    updateExerciseDetails({ ...details, trainingName: e.target.value });
-                                }
-                            }}
-                        />
-                </ExerciseLabel>
-                )}
                 {details.categoryName === "유산소" ? (
                     <>
                         <ExerciseLabel>
@@ -91,8 +81,10 @@ const ExerciseDetails: React.FC<ExerciseDetailProps> = ({ exercise, isAddingExer
                                 type='text'
                                 placeholder="거리"
                                 value={distance}
-                                onBlur={(e) => handleBlur("distance", e.target.value)}
-                                onChange={(e) => setDistance(e.target.value)}
+                                onChange={(e) => {
+                                    setDistance(e.target.value);
+                                    updateExerciseDetails({...details, distance: parseFloat(e.target.value)});
+                                }}
                             />
                         </ExerciseLabel>
                         <ExerciseText>km</ExerciseText>
@@ -153,8 +145,10 @@ const ExerciseDetails: React.FC<ExerciseDetailProps> = ({ exercise, isAddingExer
                                     type="number"
                                     placeholder='세트'
                                     value={sets}
-                                    onBlur={(e) => handleBlur("sets", e.target.value)}
-                                    onChange={(e) => setSets(e.target.value)}
+                                    onChange={(e) => {
+                                        setSets(e.target.value);
+                                        updateExerciseDetails({...details, sets: parseInt(e.target.value)});
+                                    }}
                                 />
                             </ExerciseLabel>
                             <ExerciseText>세트</ExerciseText>
@@ -164,8 +158,10 @@ const ExerciseDetails: React.FC<ExerciseDetailProps> = ({ exercise, isAddingExer
                                     placeholder='중량(kg)'
                                     value={weight}
                                     step="5"
-                                    onBlur={(e) => handleBlur("weight", e.target.value)}
-                                    onChange={(e) => setWeight(e.target.value)}
+                                    onChange={(e) => {
+                                        setWeight(e.target.value);
+                                        updateExerciseDetails({...details, weight: parseFloat(e.target.value)});
+                                    }}
                                 />
                             </ExerciseLabel>
                             <ExerciseText>kg</ExerciseText>
@@ -174,16 +170,23 @@ const ExerciseDetails: React.FC<ExerciseDetailProps> = ({ exercise, isAddingExer
                                     type="number"
                                     placeholder='횟수'
                                     value={count}
-                                    onBlur={(e) => handleBlur("reps", e.target.value)}
-                                    onChange={(e) => setCount(e.target.value)}
+                                    onChange={(e) => {
+                                        setCount(e.target.value);
+                                        updateExerciseDetails({...details, reps: parseInt(e.target.value)});
+                                    }}
                                 />
                             </ExerciseLabel>
                             <ExerciseText>회</ExerciseText>
                         </SetContainer>
                     </>
                 )}
-                <DeleteButton onClick={() => removeExercise(exercise.trainingName)}>삭제</DeleteButton>
+                <DeleteButton onClick={handleDeleteClick}>삭제</DeleteButton>
             </InputContainer>
+            <DeleteModal
+                isOpen={isModalOpen}
+                onClose={handleModalClose}
+                onConfirm={handleModalConfirm}
+            />
         </ExerciseDetailsContainer>
     );
 }
@@ -218,7 +221,8 @@ const CategoryBadge = styled.span`
 `;
 
 const ExerciseTitle = styled.h3`
-    font-size: 1.25rem;
+    font-size: 1.125rem;
+    font-weight: bold;
     margin-left: 0.625rem;
 `;
 

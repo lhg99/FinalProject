@@ -10,13 +10,12 @@ export const getExerciseData = async (): Promise<ExerciseData[]> => {
         console.error("failed to get exercise Data: ", err);
         throw err;
     }
-    // return exercises;
 };
 
 export const getExerciseRecords = async (): Promise<ExerciseRecords[]> => {
     try {
         const response = await axiosInstance.get<ExerciseRecords[]>('/record/all');
-        // console.log(response.data);
+        console.log("운동기록 가져오기 성공: ", response.data);
         return response.data;
     } catch(err) {
         console.error("failed to get exercise records: ", err);
@@ -24,7 +23,27 @@ export const getExerciseRecords = async (): Promise<ExerciseRecords[]> => {
     }
 }
 
-export const postCustomExerciseData = async (exercise: { trainingName: string; category: {categoryId: number; categoryName: string} }): Promise<number> => {
+const formatDate = (date: Date) => {
+    // 'yyyy-MM-dd' 형식으로 날짜를 포맷
+    return date.toISOString().split('T')[0];
+}
+
+export const getExercisePercentage = async (startDate: Date, endDate: Date) => {
+    const params = {
+        startDate: formatDate(startDate),
+        endDate: formatDate(endDate)
+    };
+    try {
+        const response = await axiosInstance.get('/bodyPartCount/range', { params });
+        console.log("운동 퍼센트 가져오기 성공", response.data);
+        return response.data;
+    } catch (err) {
+        console.error("운동 퍼센트 가져오기 실패", err);
+        throw err;
+    }
+}
+
+export const postCustomExerciseData = async (exercise: { name: string; category: {categoryId: number; categoryName: string} }): Promise<number> => {
     try {
         // console.log("trainingName: ", exercise.trainingName);
         const response = await axiosInstance.post<{id: number}>(`/user/custom-trainings`, exercise);
@@ -88,5 +107,14 @@ export const postStrengthRecord = async (trainingId: number, exerciseRecord: Exe
     } catch(err) {
         console.error("근력운동 기록 post 실패", err);
         throw err;
+    }
+}
+
+export const deleteRecord = async(recordId: number) => {
+    try {
+        const response = await axiosInstance.delete(`/record/training/${recordId}/delete`);
+        console.log("운동 기록 삭제 성공", response.data);
+    } catch(err) {
+        console.error("운동 기록 삭제 실패: ", err);
     }
 }

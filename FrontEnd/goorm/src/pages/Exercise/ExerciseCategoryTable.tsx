@@ -1,24 +1,28 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import styled from 'styled-components';
-import { Category, ExerciseData } from './ExerciseTypes';
+import { ExerciseCount } from './ExerciseTypes';
+import { useExercise } from '../../contexts/exerciseContext';
+import { getExercisePercentage } from './api/exerciseApi';
 
-interface ExerciseCategoryTableProps {
-  exercises: ExerciseData[];
-  categories: Category[];
-}
+const ExerciseCategoryTable: React.FC = () => {
+  const [data, setData] = useState<ExerciseCount | null>(null);
 
-const ExerciseCategoryTable: React.FC<ExerciseCategoryTableProps> = ({exercises, categories}) => {
-  // 각 카테고리별 운동 개수 계산
-  const categoryCounts = exercises.reduce((acc, exercise) => {
-    if(!acc[exercise.id]) {
-      acc[exercise.categoryName] = 0;
-    }
-    acc[exercise.categoryName] += 1;
-    return acc;
-  }, {} as {[key: string]: number});
+  const { 
+    state: { startDate, endDate }
+} = useExercise();
 
-  // 전체운동 계산
-  const totalExercises = exercises.length;
+useEffect(() => {
+  const fetchData = async () => {
+      try {
+        const response = await getExercisePercentage(startDate, endDate);
+        setData(response);
+      } catch (err) {
+        console.error("데이터를 가져오는 데 실패했습니다.", err);
+      }
+  };
+
+  fetchData();
+}, [startDate, endDate]);
 
   return (
     <Table>
@@ -29,18 +33,18 @@ const ExerciseCategoryTable: React.FC<ExerciseCategoryTableProps> = ({exercises,
         </tr>
       </thead>
       <tbody>
-        {categories.filter(category => category.categoryName !== "전체")
-          .map((category, index) => {
-            const count = categoryCounts[category.categoryName] || 0;
-            const percentage = totalExercises > 0 ? (count / totalExercises * 100).toFixed(2) : '0.00';
-            return (
-              <tr key={index}>
-                <td>{category.categoryName}</td>
-                <PercentageTd>{percentage} %</PercentageTd>
-              </tr>
-            )}
-          )
-        }
+        {data ? (
+          Object.entries(data).map(([categoryName, { percentage }]) => (
+            <tr key={categoryName}>
+              <td>{categoryName}</td>
+              <PercentageTd>{percentage.toFixed(2)} %</PercentageTd>
+            </tr>
+          ))
+        ) : (
+          <tr>
+            <td colSpan={2}>위에 날짜를 선택해주세요</td>
+          </tr>
+        )}
       </tbody>
     </Table>
   )

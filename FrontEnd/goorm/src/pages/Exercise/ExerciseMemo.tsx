@@ -81,9 +81,9 @@ export default ExerciseMemo
 const MemoContainer = styled.div`
   display: flex;
   margin-top: 20px;
-  width: 74%;
+  width: 76%;
   height: 31.25rem;
-  margin-left: 410px;
+  margin-left: 23.75rem;
   flex-direction: column;
 `;
 
@@ -106,7 +106,7 @@ const DetailsText = styled.p `
 
 const MemoDetailsTextArea = styled.textarea`
   width: 100%;
-  height: 97%;
+  height: 98%;
   font-size: 0.875rem;
   resize: none;
   border: none;
@@ -121,7 +121,7 @@ const ImageWrapper = styled.div`
   display: flex;
   width: 100%;
   height: 50%;
-  margin-top: 1.25rem;
+  margin-top: 0.625rem;
 `
 
 const ImageContainer = styled.div`
@@ -130,17 +130,6 @@ const ImageContainer = styled.div`
   height: 100%;
   border: 1.5px solid black;
   border-radius: 0.3125rem;
-`;
-
-const ImageInputContainer = styled.div`
-  display: flex;
-  align-items: center;
-  margin-left: 0.625rem;
-`
-
-const ImageInput = styled.input`
-  margin-top: 0.625rem;
-  margin-left: 0.625rem;
 `;
 
 const ImagePreview = styled.img`

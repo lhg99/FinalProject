@@ -4,13 +4,16 @@ import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 import { ExerciseProvider } from './contexts/exerciseContext';
+import { FoodProvider } from './contexts/foodContext';
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
 );
 root.render(
   <ExerciseProvider>
-    <App />
+    <FoodProvider>
+      <App />
+    </FoodProvider>
   </ExerciseProvider>
 );
 

@@ -1,5 +1,5 @@
 import React, { useCallback, useState } from 'react';
-import MyCalendar from '../Exercise/components/Calendar/Calendar';
+import MyCalendar from '../Exercise/components/Date/Calendar';
 import styles from './Food.module.scss';
 
 const Food: React.FC = () => {

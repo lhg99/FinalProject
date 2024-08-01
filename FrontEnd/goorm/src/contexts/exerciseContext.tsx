@@ -10,6 +10,8 @@ interface ExerciseState {
     exerciseRecords: ExerciseRecords[];
     imageFile: File | null;
     isAddingExercise: boolean;
+    startDate: Date;
+    endDate: Date;
 }
 
 const initialState: ExerciseState = {
@@ -21,6 +23,8 @@ const initialState: ExerciseState = {
     exerciseRecords: [],
     imageFile: null,
     isAddingExercise: false,
+    startDate: new Date(),
+    endDate: new Date(),
 };
 
 interface ExerciseContextProps {
@@ -33,9 +37,11 @@ interface ExerciseContextProps {
     setCategories: (categories: Category[]) => void;
     setImageFile: (file: File | null) => void;
     setExerciseRecords: (records: ExerciseRecords[]) => void;
+    setIsAddingExercise: (adding: boolean) => void;
+    setStartDate: (date: Date) => void;
+    setEndDate: (date: Date) => void;
     removeExercise: (exerciseName: string) => void;
     updateExerciseDetails: (details: ExerciseRecords) => void;
-    setIsAddingExercise: (adding: boolean) => void;
 }
 
 const ExerciseContext = createContext<ExerciseContextProps | undefined>(undefined);
@@ -91,10 +97,23 @@ export const ExerciseProvider: React.FC<{ children: ReactNode }> = ({ children }
         setState(prevState => ({ ...prevState, exerciseRecords: records }));
     };
 
+    const setIsAddingExercise = (adding: boolean) => {
+        setState(prevState => ({ ...prevState, addingNewExercise: adding }));
+    };
+
+    const setStartDate = (date: Date) => {
+        setState(prevState => ({...prevState, startDate: date}));
+    }
+
+    const setEndDate = (date: Date) => {
+        setState(prevState => ({...prevState, endDate: date}));
+    }
+
     const removeExercise = (exerciseName: string) => {
         setState(prevState => ({
             ...prevState,
-            selectedExercises: prevState.selectedExercises.filter((ex) => ex.name !== exerciseName)
+            selectedExercises: prevState.selectedExercises.filter(ex => ex.name !== exerciseName),
+            exerciseRecords: prevState.exerciseRecords.filter(rec => rec.trainingName !== exerciseName)
         }));
     };
 
@@ -109,9 +128,7 @@ export const ExerciseProvider: React.FC<{ children: ReactNode }> = ({ children }
         }));
     };
 
-    const setIsAddingExercise = (adding: boolean) => {
-        setState(prevState => ({ ...prevState, addingNewExercise: adding }));
-    };
+    
 
     return (
         <ExerciseContext.Provider value={{
@@ -124,9 +141,11 @@ export const ExerciseProvider: React.FC<{ children: ReactNode }> = ({ children }
             setCategories,
             setImageFile,
             setExerciseRecords,
+            setIsAddingExercise,
+            setStartDate,
+            setEndDate,
             removeExercise,
             updateExerciseDetails,
-            setIsAddingExercise
         }}>
             {children}
         </ExerciseContext.Provider>

@@ -65,13 +65,13 @@ const ExerciseList: React.FC<ExerciseListProps> = ({ exercises, dateInfo, onExer
       recordId: maxRecordId + 1, // 기존 maxRecordId에 index를 더해 recordId를 증가
       trainingName: exercise.name,
       exerciseDate: new Date().toISOString(), // 현재 날짜로 설정
-      sets: null,
-      weight: null,
-      distance: null,
+      sets: 0,
+      weight: 0,
+      distance: 0,
       durationMinutes: 0,
-      caloriesBurned: null,
-      incline: null,
-      reps: null,
+      caloriesBurned: 0,
+      incline: 0,
+      reps: 0,
       satisfaction: 0, // 기본값 설정, 실제 값을 설정해야 할 수 있음
       intensity: '',
       categoryName: exercise.categoryName,
@@ -112,8 +112,7 @@ export default ExerciseList;
 
 const ExerciseListWrapper = styled.div`
   width: 100%;
-  height: 32.5rem;
-  max-height: 32.5rem;
+  max-height: 34.6875rem;
   overflow-y: auto;
   border: 1px solid #AFAFAF;
   border-radius: 5px;

@@ -4,6 +4,7 @@ import styled from 'styled-components';
 import { SearchIcon } from '../../image/SearchIcon';
 import { useExercise } from '../../contexts/exerciseContext';
 import { Category, ExerciseData } from './ExerciseTypes';
+import CustomExerciseModal from './components/Modal/CusomExerciseModal';
 
 interface ExerciseSearchProps {
     onAddExercise: (exercise: ExerciseData) => void;
@@ -15,7 +16,7 @@ const ExerciseSearch: React.FC<ExerciseSearchProps> = ({ onAddExercise, onAddCus
     const [searchQuery, setSearchQuery] = useState<string>("");
     const [filteredData, setFilteredData] = useState<ExerciseData[]>([]);
     const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
-    const [customExerciseName, setCustomExerciseName] = useState<string>("");
+    const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
 
     const {
         state: { exercises, categories, selectedExercises }, 
@@ -91,7 +92,11 @@ const ExerciseSearch: React.FC<ExerciseSearchProps> = ({ onAddExercise, onAddCus
         }
     };
 
-    const handleAddCustomExerciseClick = async () => {
+    const handleModalClose = () => {
+        setIsModalOpen(false);
+    };
+
+    const handleModalSave = (exerciseName: string) => {
         if (selectedCategories.length === 0) {
             alert("카테고리를 선택해주세요");
             return;
@@ -107,7 +112,7 @@ const ExerciseSearch: React.FC<ExerciseSearchProps> = ({ onAddExercise, onAddCus
         const maxId = Math.max(0, ...exercises.map(exercise => exercise.id));
 
         const newCustomExercise: ExerciseData = { 
-            name: customExerciseName,
+            name: exerciseName,
             id: maxId + 1,
             categoryId: category.categoryId,
             categoryName: category.categoryName,
@@ -148,13 +153,18 @@ const ExerciseSearch: React.FC<ExerciseSearchProps> = ({ onAddExercise, onAddCus
                 </SearchButton>
             </SearchForm>
             <ExerciseListContainer>
-                <ExerciseItemButton onClick={handleAddCustomExerciseClick}>직접 입력하기</ExerciseItemButton>
+                <ExerciseItemButton onClick={() => setIsModalOpen(true)}>직접 입력하기</ExerciseItemButton>
                 {filteredData.map(data => (
                     <ExerciseItemButton key={data.id} onClick={() => handleAddExerciseClick(data)}>
                         {data.name}
                     </ExerciseItemButton>
                 ))}
             </ExerciseListContainer>
+            <CustomExerciseModal
+                isOpen={isModalOpen}
+                onClose={handleModalClose}
+                onSave={handleModalSave}
+            />
         </ExerciseSearchContainer>
     );
 };
@@ -166,8 +176,7 @@ const ExerciseSearchContainer = styled.div`
     flex-direction: column;
     padding: .625rem;
     width: 22%;
-    height: 500px;
-    max-height: 500px;
+    max-height: 33.4375rem;
     overflow-y: auto;
     border: 1px solid #AFAFAF;
     border-radius: 5px;

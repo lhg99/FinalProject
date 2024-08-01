@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import MyCalendar from './components/Calendar/Calendar';
+import MyCalendar from './components/Date/Calendar';
 import ExerciseMemo from './ExerciseMemo';
 import ExerciseSearch from './ExerciseSearch';
 import ExerciseList from './components/Records/ExerciseList';
@@ -8,6 +8,7 @@ import styles from './Exercise.module.scss';
 import ExerciseCategoryTable from './ExerciseCategoryTable';
 import { useExercise } from '../../contexts/exerciseContext';
 import { ExerciseData, ExerciseRecords } from './ExerciseTypes';
+import DateSelector from './components/Date/DateSelector';
 
 const Exercise: React.FC = () => {
 
@@ -15,9 +16,11 @@ const Exercise: React.FC = () => {
     const [customExerciseName, setCustomExerciseName] = useState<string>("");
     
     const { 
-        state: { categories, selectedExercises, exerciseRecords, exerciseDetails, imageFile },
+        state: { categories, selectedExercises, exerciseRecords, exerciseDetails, imageFile, startDate, endDate },
         addSelectedExercises,
-        addCustomExercises
+        addCustomExercises,
+        setStartDate,
+        setEndDate
     } = useExercise();
 
     const handleAddExercise = useCallback((exercise: ExerciseData) => {
@@ -25,11 +28,8 @@ const Exercise: React.FC = () => {
     }, [addSelectedExercises]);
 
     const handleAddCustomExercise = useCallback((exercise: ExerciseData) => {
-        console.log('Handling Add Custom Exercise:', exercise); // 디버깅용 로그 추가
         addCustomExercises(exercise);
         addSelectedExercises(exercise);
-        console.log('Custom Exercise Added:', exercise);
-        console.log('Exercise Name:', exercise.name); // Exercise name 확인
     }, [addCustomExercises, addSelectedExercises]);
 
     const handleExerciseNameChange = (name: string) => {
@@ -40,6 +40,14 @@ const Exercise: React.FC = () => {
         setDateInfo(info);
     }, []);
 
+    const handleStartDate = (date: Date) => {
+        setStartDate(date);
+    }
+
+    const handleEndDate = (date: Date) => {
+        setEndDate(date);
+    }
+
     const handleFileUpload = (file: File) => {
         console.log('업로드 파일', file);
     };
@@ -48,11 +56,10 @@ const Exercise: React.FC = () => {
         const maxRecordId = Math.max(0, ...exerciseRecords.map(record => record.recordId));
         try {
             const customExercises = selectedExercises.filter(ex => ex.isAddingExercise);
-            console.log("customExercise :", customExercises);
     
             for (const customExercise of customExercises) {
                 const customExercisePayload = {
-                    trainingName: customExercise.name,
+                    name: customExercise.name,
                     category: {
                         categoryId: customExercise.categoryId,
                         categoryName: customExercise.categoryName
@@ -62,7 +69,6 @@ const Exercise: React.FC = () => {
                 console.log('Payload to send:', customExercisePayload); // Payload 확인
                 const newExerciseId: number = await postCustomExerciseData(customExercisePayload);
                 customExercise.id = newExerciseId; // 서버로부터 받은 새 ID로 업데이트
-                console.log("exerciseName: ", customExercise.name);
             }
 
             const combinedRecords: ExerciseRecords[] = selectedExercises.map((exercise) => {
@@ -71,13 +77,13 @@ const Exercise: React.FC = () => {
                     recordId: maxRecordId + 1,
                     trainingName: exercise.name,
                     exerciseDate: new Date().toISOString(),
-                    sets: details.sets || null,
-                    weight: details.weight || null,
-                    distance: details.distance || null,
+                    sets: details.sets || 0,
+                    weight: details.weight || 0,
+                    distance: details.distance,
                     durationMinutes: details.durationMinutes || 0,
-                    caloriesBurned: details.caloriesBurned || null,
-                    incline: details.incline || null,
-                    reps: details.reps || null,
+                    caloriesBurned: details.caloriesBurned || 0,
+                    incline: details.incline || 0,
+                    reps: details.reps || 0,
                     satisfaction: details.satisfaction || 0,
                     intensity: details.intensity || "",
                     memo: details.memo || "",
@@ -98,20 +104,19 @@ const Exercise: React.FC = () => {
         }
     };
 
-    useEffect(() => {
-        console.log('Selected Exercises:', selectedExercises); // selectedExercises가 제대로 설정되었는지 확인
-    }, [selectedExercises]);
-
     return (
         <div className={styles.exercise}>
             <div className={styles.exerciseContainer}>
                 <div className={styles.leftColumn}>
                     <div className='calendar'>
                         <MyCalendar onDateChange={handleDateChange} />
-                        {dateInfo && (
-                            <p>{`${dateInfo.month}월 운동`}</p>
-                        )}
-                        <ExerciseCategoryTable exercises={selectedExercises} categories={categories} />
+                        <DateSelector 
+                            startDate={startDate} 
+                            endDate={endDate} 
+                            onHandleStartDate={handleStartDate} 
+                            onHandleEndDate={handleEndDate}
+                        ></DateSelector>
+                        <ExerciseCategoryTable />
                     </div>
                 </div>
                 <div className={styles.rightColumn}>
