@@ -7,6 +7,7 @@ import Exercise from './pages/Exercise/Exercise';
 import Map from './pages/FindGym/Map/Map';
 import Login from './pages/Login/Login';
 import SignUp from './pages/SignUp/SignUp';
+import Main from './pages/MyPage/Main/Main';
 
 const Layout: React.FC = () => (
   <>
@@ -27,9 +28,10 @@ const App: React.FC = () => {
 
         <Route element={<Layout />}>
           <Route path="/" element={<h1>Welcome to MyWebsite</h1>} />
-          <Route path="/Chat" element={<Chat />} />
+          <Route path="/chat" element={<Chat />} />
           <Route path="/exercise" element={<Exercise />} />
           <Route path="/findgym" element={<Map />} />
+          <Route path="/main" element={<Main />} />
         </Route>
       </Routes>
     </BrowserRouter>

@@ -24,7 +24,7 @@ const Login: React.FC = () => {
       const response: LoginRequest = await postLoginData(loginData);
       console.log('로그인에 성공했습니다:', response);
       alert(response.message);
-      navigate('/');
+      navigate('/Main');
     } catch (err) {
       console.log('로그인에 실패했습니다:', err);
       alert('로그인에 실패했습니다. 아이디와 비밀번호를 확인해 주세요.');
