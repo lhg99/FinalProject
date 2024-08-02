@@ -58,6 +58,7 @@ public class BoardServiceImpl implements BoardService {
 
         Board board = Board.builder()
                 .memberId(member)
+                .boardWriter(member.getMemberNickname())
                 .boardTitle(saveRequest.getBoardTitle())
                 .boardContent(saveRequest.getBoardContent())
                 .boardRegDate(LocalDateTime.now())
@@ -70,7 +71,7 @@ public class BoardServiceImpl implements BoardService {
                 .build();
 
         Board saveBoard = boardRepository.save(board);
-        saveImage(saveRequest.getImageUrls(), saveBoard.getBoardId());
+        //saveImage(saveRequest.getImageUrls(), saveBoard.getBoardId());
 
     }
 
@@ -181,16 +182,16 @@ public class BoardServiceImpl implements BoardService {
             throw new CustomException(CustomExceptionType.NO_AUTHORITY_TO_UPDATE);
         }
 
-        List<String> findImageUrls = boardImageRepository.findImageUrlsByBoardId(updateRequest.getBoardId());
+        //List<String> findImageUrls = boardImageRepository.findImageUrlsByBoardId(updateRequest.getBoardId());
 
-        for(String addr : findImageUrls){
+//        for(String addr : findImageUrls){
+//
+//            s3ImageService.deleteImageFromS3(addr);
+//        }
 
-            s3ImageService.deleteImageFromS3(addr);
-        }
+        //boardImageRepository.deleteByBoardId(updateRequest.getBoardId());
 
-        boardImageRepository.deleteByBoardId(updateRequest.getBoardId());
-
-        saveImage(updateRequest.getUpdateImageUrls(), updateRequest.getBoardId());
+        //saveImage(updateRequest.getUpdateImageUrls(), updateRequest.getBoardId());
 
         findBoard.get().updateBoard(updateRequest);
     }
@@ -230,7 +231,7 @@ public class BoardServiceImpl implements BoardService {
 
         return BoardListItem.builder()
                 .boardId(board.getBoardId())
-                .writer(board.getMemberId().getMemberNickname())
+                .writer(board.getBoardWriter())
                 .boardTitle(board.getBoardTitle())
                 .boardRegDate(dateConvertUtil.convertDateToString(board.getBoardRegDate()))
                 .boardCategory(board.getBoardCategory())

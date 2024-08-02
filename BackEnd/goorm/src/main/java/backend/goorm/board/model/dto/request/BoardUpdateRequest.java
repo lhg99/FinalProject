@@ -22,6 +22,6 @@ public class BoardUpdateRequest {
 
     private BoardCategory boardCategory;
 
-    List<String> updateImageUrls;
+    //List<String> updateImageUrls;
 
 }
