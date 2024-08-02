@@ -78,7 +78,7 @@ public class BoardServiceImpl implements BoardService {
     @Override
     public BoardListResponse getBoardList(BoardType type, int page, BoardSortType sortType, List<BoardCategory> categories, String keyword) {
 
-        Pageable pageable = PageRequest.of(page - 1, pageSize);
+        Pageable pageable = PageRequest.of(page, pageSize);
         Page<Board> boards = customBoardRepository.getBoardList(type, categories, sortType, keyword, pageable);
 
         List<BoardListItem> boardItems = boards.stream()

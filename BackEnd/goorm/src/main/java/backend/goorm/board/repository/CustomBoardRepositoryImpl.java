@@ -65,10 +65,11 @@ public class CustomBoardRepositoryImpl implements CustomBoardRepository{
         }
 
         long total = query.fetchCount();
+
         List<Board> results = query.offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .fetch();
 
-        return new PageImpl<>(results, pageable, results.size());
+        return new PageImpl<>(results, pageable, total);
     }
 }
