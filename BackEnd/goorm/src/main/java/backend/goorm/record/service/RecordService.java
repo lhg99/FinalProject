@@ -42,6 +42,7 @@ public class RecordService {
         }
 
         Record record = AddCardioRecordRequest.toEntity(request, training);
+        record.setMember(member); // Member 설정
         if (!imageUrls.isEmpty()) {
             List<RecordImages> recordImages = imageUrls.stream()
                     .map(url -> RecordImages.builder().record(record).imageUrl(url).build())
@@ -67,6 +68,7 @@ public class RecordService {
         }
 
         Record record = AddStrengthRecordRequest.toEntity(request, training);
+        record.setMember(member); // Member 설정
         if (!imageUrls.isEmpty()) {
             List<RecordImages> recordImages = imageUrls.stream()
                     .map(url -> RecordImages.builder().record(record).imageUrl(url).build())
@@ -79,7 +81,6 @@ public class RecordService {
         Record saved = recordRepository.save(record);
         return RecordDto.fromEntity(saved);
     }
-
 
     @Transactional
     public RecordDto editRecord(Long recordId, EditRecordRequest request, Member member, MultipartFile[] images) {
@@ -124,6 +125,11 @@ public class RecordService {
         Record record = recordRepository.findById(recordId)
                 .orElseThrow(() -> new IllegalArgumentException("Record not found with id: " + recordId));
 
+        // 추가: Record의 소유자 확인
+        if (!record.getMember().getMemberId().equals(member.getMemberId())) {
+            throw new IllegalArgumentException("해당 기록을 삭제할 권한이 없습니다.");
+        }
+
         if (record.getRecordImages() != null) {
             record.getRecordImages().forEach(image -> s3ImageService.deleteImageFromS3(image.getImageUrl()));
         }
@@ -133,7 +139,7 @@ public class RecordService {
 
     @Transactional(readOnly = true)
     public List<RecordDto> getAllRecords(Member member) {
-        List<Record> records = recordRepository.findAll();
+        List<Record> records = recordRepository.findAllByMember(member);
         return records.stream().map(RecordDto::fromEntity).collect(Collectors.toList());
     }
 }

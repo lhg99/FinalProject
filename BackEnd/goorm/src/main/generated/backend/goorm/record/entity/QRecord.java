@@ -34,6 +34,8 @@ public class QRecord extends EntityPathBase<Record> {
 
     public final StringPath intensity = createString("intensity");
 
+    public final backend.goorm.member.model.entity.QMember member;
+
     public final StringPath memo = createString("memo");
 
     public final DateTimePath<java.time.LocalDateTime> modifiedDate = createDateTime("modifiedDate", java.time.LocalDateTime.class);
@@ -72,6 +74,7 @@ public class QRecord extends EntityPathBase<Record> {
 
     public QRecord(Class<? extends Record> type, PathMetadata metadata, PathInits inits) {
         super(type, metadata, inits);
+        this.member = inits.isInitialized("member") ? new backend.goorm.member.model.entity.QMember(forProperty("member")) : null;
         this.training = inits.isInitialized("training") ? new backend.goorm.training.model.entity.QTraining(forProperty("training"), inits.get("training")) : null;
     }
 

@@ -1,5 +1,6 @@
 package backend.goorm.training.model.entity;
 
+import backend.goorm.member.model.entity.Member;
 import backend.goorm.record.entity.Record;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
@@ -31,8 +32,9 @@ public class Training {
     @Column(name = "user_register", nullable = false)
     private Boolean userCustom = false;
 
-    @Column(name = "description")
-    private String description;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "member_id")
+    private Member member;
 
     @Column(name = "calories_burned_per_minute")
     private Float caloriesBurnedPerMinute;
