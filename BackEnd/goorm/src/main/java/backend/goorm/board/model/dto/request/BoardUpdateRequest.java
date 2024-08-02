@@ -1,6 +1,7 @@
 package backend.goorm.board.model.dto.request;
 
 import backend.goorm.board.model.enums.BoardCategory;
+import jakarta.persistence.Lob;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -18,6 +19,7 @@ public class BoardUpdateRequest {
 
     private String boardTitle;
 
+    @Lob
     private String boardContent;
 
     private BoardCategory boardCategory;
