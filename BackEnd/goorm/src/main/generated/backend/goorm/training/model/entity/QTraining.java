@@ -26,9 +26,9 @@ public class QTraining extends EntityPathBase<Training> {
 
     public final QTrainingCategory category;
 
-    public final StringPath description = createString("description");
-
     public final StringPath imageUrl = createString("imageUrl");
+
+    public final backend.goorm.member.model.entity.QMember member;
 
     public final NumberPath<Long> trainingId = createNumber("trainingId", Long.class);
 
@@ -57,6 +57,7 @@ public class QTraining extends EntityPathBase<Training> {
     public QTraining(Class<? extends Training> type, PathMetadata metadata, PathInits inits) {
         super(type, metadata, inits);
         this.category = inits.isInitialized("category") ? new QTrainingCategory(forProperty("category")) : null;
+        this.member = inits.isInitialized("member") ? new backend.goorm.member.model.entity.QMember(forProperty("member")) : null;
     }
 
 }
