@@ -36,6 +36,8 @@ public class QBoard extends EntityPathBase<Board> {
 
     public final EnumPath<backend.goorm.board.model.enums.BoardType> boardType = createEnum("boardType", backend.goorm.board.model.enums.BoardType.class);
 
+    public final ListPath<Comment, QComment> comments = this.<Comment, QComment>createList("comments", Comment.class, QComment.class, PathInits.DIRECT2);
+
     public final NumberPath<Integer> likesCnt = createNumber("likesCnt", Integer.class);
 
     public final backend.goorm.member.model.entity.QMember memberId;

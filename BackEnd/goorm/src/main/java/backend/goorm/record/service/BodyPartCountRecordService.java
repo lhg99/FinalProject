@@ -1,5 +1,6 @@
 package backend.goorm.record.service;
 
+import backend.goorm.member.model.entity.Member;
 import backend.goorm.record.entity.Record;
 import backend.goorm.record.entity.WeeklyRecord;
 import backend.goorm.record.repository.BodyPartCountRecordRepository;
@@ -73,15 +74,16 @@ public class BodyPartCountRecordService {
         return countMap;
     }
 
-    public List<Record> getRecordsByDate(LocalDate date) {
+    public List<Record> getRecordsByDate(LocalDate date, Member member) {
         return recordRepository.findAll().stream()
-                .filter(record -> record.getExerciseDate().equals(date))
+                .filter(record -> record.getExerciseDate().equals(date) && record.getMember().getMemberId().equals(member.getMemberId()))
                 .collect(Collectors.toList());
     }
 
-    public List<Record> getRecordsByDateRange(LocalDate start, LocalDate end) {
+    public List<Record> getRecordsByDateRange(LocalDate start, LocalDate end, Member member) {
         return recordRepository.findAll().stream()
-                .filter(record -> !record.getExerciseDate().isBefore(start) && !record.getExerciseDate().isAfter(end))
+                .filter(record -> !record.getExerciseDate().isBefore(start) && !record.getExerciseDate().isAfter(end)
+                        && record.getMember().getMemberId().equals(member.getMemberId()))
                 .collect(Collectors.toList());
     }
 

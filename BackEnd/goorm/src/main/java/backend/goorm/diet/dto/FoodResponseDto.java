@@ -13,6 +13,7 @@ import java.util.stream.Collectors;
 @Builder
 public class FoodResponseDto {
     private Long foodId;
+    private String userName;
     private String foodType;
     private String foodName;
     private Double amount;
@@ -32,6 +33,7 @@ public class FoodResponseDto {
     public static FoodResponseDto fromEntity(Food food) {
         return FoodResponseDto.builder()
                 .foodId(food.getFoodId())
+                .userName(food.getMember().getMemberNickname())
                 .foodType(food.getFoodType())
                 .foodName(food.getFoodName())
                 .amount(food.getAmount())
