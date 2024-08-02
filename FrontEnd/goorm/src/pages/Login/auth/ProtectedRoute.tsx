@@ -7,10 +7,11 @@ interface ProtectedRouteProps {
 }
 
 const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children }) => {
-  const { user } = useAuth();
+  const { user, isLoggedIn } = useAuth();
   const location = useLocation();
 
-  if (!user) {
+  if (!isLoggedIn()) {
+    console.log("유저", user);
     return <Navigate to="/login" state={{ from: location }} replace />;
   }
 
