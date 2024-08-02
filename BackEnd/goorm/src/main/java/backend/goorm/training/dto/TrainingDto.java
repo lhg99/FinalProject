@@ -10,11 +10,13 @@ public class TrainingDto {
     private Long id;
     private String name;
     private String categoryName;
+    private Long categoryId;
 
     public static TrainingDto fromEntity(Training training) {
         TrainingDto dto = new TrainingDto();
         dto.setId(training.getTrainingId());
         dto.setName(training.getTrainingName());
+        dto.setCategoryId(training.getCategory().getCategoryId());
         if (training.getCategory() != null) {
             dto.setCategoryName(training.getCategory().getCategoryName().name());
         } else {

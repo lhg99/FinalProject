@@ -1,18 +1,23 @@
 package backend.goorm.diet.entity;
 
-import backend.goorm.diet.enums.MealType;
+import backend.goorm.diet.enums.MealTime;
 import backend.goorm.member.model.entity.Member;
-import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
+import jakarta.persistence.*;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Getter
 @Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 @Entity
+@EntityListeners(AuditingEntityListener.class)
 @Table(name = "diet")
 public class Diet {
 
@@ -21,27 +26,28 @@ public class Diet {
     @Column(name = "diet_id")
     private Long dietId;
 
-    @ManyToOne(cascade = CascadeType.PERSIST, fetch = FetchType.LAZY)
-    @JoinColumn(name = "member_id")
-    private Member member;
-
-    @ManyToOne(cascade = CascadeType.PERSIST, fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "food_id")
     private Food food;
 
-    private Float count;
+    @ManyToOne
+    @JoinColumn(name = "member_id")
+    private Member member;
 
-    @Column(name = "meal_time")
-    @Enumerated(EnumType.STRING)
-    private MealType mealType;
-
-    @Column(name = "diet_date")
-    private LocalDate dietDate;
-
-    @Column(name = "quantity")
+    @Column(name = "quantity", nullable = false)
     private Float quantity;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "meal_time", nullable = false)
+    private MealTime mealTime;
+
+    @Column(name = "diet_date", nullable = false)
+    private LocalDate dietDate;
 
     @CreatedDate
     @Column(name = "created_at", updatable = false, nullable = false)
     private LocalDateTime createdAt;
+
+    @OneToMany(mappedBy = "diet", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<DietImages> dietImages;
 }

@@ -1,6 +1,6 @@
 package backend.goorm.diet.enums;
 
-public enum MealType {
+public enum MealTime {
     BREAKFAST,
     LUNCH,
     DINNER,

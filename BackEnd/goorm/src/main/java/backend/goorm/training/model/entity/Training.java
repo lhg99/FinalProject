@@ -1,14 +1,17 @@
 package backend.goorm.training.model.entity;
 
-import backend.goorm.record.entity.TrainingRecord;
+import backend.goorm.record.entity.Record;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import java.util.List;
 
 @Getter
 @Setter
+@NoArgsConstructor
+@AllArgsConstructor
 @Entity
 @Table(name = "training")
 public class Training {
@@ -25,7 +28,6 @@ public class Training {
     @Column(name = "training_name", nullable = false)
     private String trainingName;
 
-
     @Column(name = "user_register", nullable = false)
     private Boolean userCustom = false;
 
@@ -39,5 +41,6 @@ public class Training {
     private String imageUrl;
 
     @OneToMany(mappedBy = "training")
-    private List<TrainingRecord> trainingRecords;
+    @JsonIgnore
+    private List<Record> trainingRecords;
 }

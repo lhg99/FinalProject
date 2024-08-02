@@ -25,26 +25,25 @@ public class RecordController {
 
     @PostMapping("/training/{id}/add/cardio")
     public ResponseEntity<RecordDto> addCardioRecord(@PathVariable("id") Long trainingId,
-                                                     @Valid @ModelAttribute  AddCardioRecordRequest request,
-                                                     @RequestParam(value = "image", required = false) MultipartFile image)
-    {
-        RecordDto result = recordService.addCardioRecord(trainingId, request, null, image); // Member 정보를 null로 설정
+                                                     @Valid @ModelAttribute AddCardioRecordRequest request,
+                                                     @RequestParam(value = "images", required = false) MultipartFile[] images) {
+        RecordDto result = recordService.addCardioRecord(trainingId, request, null, images); // Member 정보를 null로 설정
         return ResponseEntity.ok(result);
     }
 
     @PostMapping("/training/{id}/add/strength")
     public ResponseEntity<RecordDto> addStrengthRecord(@PathVariable("id") Long trainingId,
-                                                       @Valid @ModelAttribute  AddStrengthRecordRequest request,
-                                                       @RequestParam(value = "image", required = false) MultipartFile image) {
-        RecordDto result = recordService.addStrengthRecord(trainingId, request, null, image); // Member 정보를 null로 설정
+                                                       @Valid @ModelAttribute AddStrengthRecordRequest request,
+                                                       @RequestParam(value = "images", required = false) MultipartFile[] images) {
+        RecordDto result = recordService.addStrengthRecord(trainingId, request, null, images); // Member 정보를 null로 설정
         return ResponseEntity.ok(result);
     }
 
     @PutMapping("/training/{id}/edit")
     public ResponseEntity<RecordDto> editRecord(@PathVariable("id") Long recordId,
-                                                @Valid @ModelAttribute  EditRecordRequest request,
-                                                @RequestParam(value = "image", required = false) MultipartFile image) {
-        RecordDto result = recordService.editRecord(recordId, request, null, image); // Member 정보를 null로 설정
+                                                @Valid @ModelAttribute EditRecordRequest request,
+                                                @RequestParam(value = "images", required = false) MultipartFile[] images) {
+        RecordDto result = recordService.editRecord(recordId, request, null, images); // Member 정보를 null로 설정
         return ResponseEntity.ok(result);
     }
 
