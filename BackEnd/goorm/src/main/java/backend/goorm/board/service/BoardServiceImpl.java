@@ -16,6 +16,7 @@ import backend.goorm.common.exception.CustomException;
 import backend.goorm.common.exception.CustomExceptionType;
 import backend.goorm.common.util.DateConvertUtil;
 import backend.goorm.member.model.entity.Member;
+import backend.goorm.s3.service.S3ImageService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -41,6 +42,7 @@ public class BoardServiceImpl implements BoardService {
     private final BoardImageRepository boardImageRepository;
 
     private final DateConvertUtil dateConvertUtil;
+    private final S3ImageService s3ImageService;
 
     @Value("${board.page.size}")
     private int pageSize;
@@ -68,17 +70,10 @@ public class BoardServiceImpl implements BoardService {
                 .build();
 
         Board saveBoard = boardRepository.save(board);
+        saveImage(saveRequest.getImageUrls(), saveBoard.getBoardId());
 
-        if(saveRequest.getImageUrls() != null){
-            for(String url : saveRequest.getImageUrls()){
-                BoardImages boardImage = BoardImages.builder()
-                        .boardId(saveBoard.getBoardId())
-                        .imageUrl(url)
-                        .build();
-                boardImageRepository.save(boardImage);
-            }
-        }
     }
+
 
     @Override
     public BoardListResponse getBoardList(BoardType type, int page, BoardSortType sortType, List<BoardCategory> categories, String keyword) {
@@ -172,6 +167,8 @@ public class BoardServiceImpl implements BoardService {
     public void updateBoard(BoardUpdateRequest updateRequest, Member member) {
 
         Optional<Board> findBoard = boardRepository.findBoardByIdAndNotDeleted(updateRequest.getBoardId());
+
+
         if(!findBoard.isPresent()) {
             throw new CustomException(CustomExceptionType.BOARD_NOT_FOUND);
         }
@@ -184,6 +181,17 @@ public class BoardServiceImpl implements BoardService {
             throw new CustomException(CustomExceptionType.NO_AUTHORITY_TO_UPDATE);
         }
 
+        List<String> findImageUrls = boardImageRepository.findImageUrlsByBoardId(updateRequest.getBoardId());
+
+        for(String addr : findImageUrls){
+
+            s3ImageService.deleteImageFromS3(addr);
+        }
+
+        boardImageRepository.deleteByBoardId(updateRequest.getBoardId());
+
+        saveImage(updateRequest.getUpdateImageUrls(), updateRequest.getBoardId());
+
         findBoard.get().updateBoard(updateRequest);
     }
 
@@ -192,6 +200,7 @@ public class BoardServiceImpl implements BoardService {
     public String toggleLike(Long boardId, Member member) {
 
         Optional<BoardLikes> boardLike = boardLikesRepository.findByBoardIdAndMemberId(boardId, member.getMemberId());
+        Optional<Board> findBoard = boardRepository.findBoardByIdAndNotDeleted(boardId);
 
         String message = "";
         if(!boardLike.isPresent()) {
@@ -201,9 +210,11 @@ public class BoardServiceImpl implements BoardService {
                             .memberId(member.getMemberId())
                             .build());
             message = "좋아요 처리 되었습니다";
+            findBoard.get().increaseLikesCnt();
         }else{
             boardLikesRepository.delete(boardLike.get());
             message = "좋아요가 해제되었습니다";
+            findBoard.get().decreaseLikesCnt();
         }
 
         return message;
@@ -227,5 +238,19 @@ public class BoardServiceImpl implements BoardService {
                 .viewCnt(board.getViewCnt())
                 .likeCnt(board.getLikesCnt())
                 .build();
+    }
+
+    public void saveImage(List<String> imageUrls, Long boardId) {
+        if(imageUrls == null || imageUrls.isEmpty()) {
+            return;
+        }
+
+        for(String url : imageUrls){
+            BoardImages boardImage = BoardImages.builder()
+                    .boardId(boardId)
+                    .imageUrl(url)
+                    .build();
+            boardImageRepository.save(boardImage);
+        }
     }
 }

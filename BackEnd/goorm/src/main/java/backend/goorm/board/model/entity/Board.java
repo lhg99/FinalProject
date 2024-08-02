@@ -69,5 +69,13 @@ public class Board {
 
     }
 
+    public void increaseLikesCnt() {
+        this.likesCnt++;
+    }
+
+    public void decreaseLikesCnt() {
+        this.likesCnt--;
+    }
+
 
 }
