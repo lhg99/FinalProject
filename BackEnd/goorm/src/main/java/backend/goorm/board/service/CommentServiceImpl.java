@@ -32,6 +32,7 @@ public class CommentServiceImpl implements CommentService {
     private final DateConvertUtil dateConvertUtil;
 
     @Override
+    @Transactional
     public void saveComment(CommentSaveRequest commentSaveRequest, Member member) {
 
         Optional<Board> findBoard = boardRepository.findBoardByIdAndNotDeleted(commentSaveRequest.getBoardId());
@@ -43,6 +44,8 @@ public class CommentServiceImpl implements CommentService {
         if(findBoard.get().isBoardDeleted()){
             throw new CustomException(CustomExceptionType.ALREADY_DELETED_BOARD);
         }
+
+        findBoard.get().addCommentTexts(commentSaveRequest.getCommentContent());
 
         Comment comment = Comment.builder()
                 .boardId(findBoard.get())
