@@ -36,11 +36,18 @@ public class FoodController {
         }
     }
 
+    // 모든 음식을 조회하는 엔드포인트
+    @GetMapping("/all")
+    public ResponseEntity<Collection<FoodResponseDto>> getAllFoods() {
+        Collection<FoodResponseDto> response = foodService.getAllFoods();
+        return ResponseEntity.status(HttpStatus.OK).body(response);
+    }
+
     @GetMapping
     public ResponseEntity<Collection<FoodResponseDto>> getFoodByName(
-            @RequestParam(required = true) String name,
+            @RequestParam(name = "name") String foodName,
             @AuthenticationPrincipal PrincipalDetails principalDetails) {
-        Collection<FoodResponseDto> response = foodService.getFoodByName( principalDetails.member().getMemberId(), name);
+        Collection<FoodResponseDto> response = foodService.getFoodByName( principalDetails.member().getMemberId(), foodName);
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 

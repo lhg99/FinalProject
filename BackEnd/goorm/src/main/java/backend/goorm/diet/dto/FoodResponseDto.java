@@ -33,7 +33,7 @@ public class FoodResponseDto {
     public static FoodResponseDto fromEntity(Food food) {
         return FoodResponseDto.builder()
                 .foodId(food.getFoodId())
-                .userName(food.getMember().getMemberNickname())
+                .userName(food.getMember() != null ? food.getMember().getMemberNickname() : "admin")
                 .foodType(food.getFoodType())
                 .foodName(food.getFoodName())
                 .amount(food.getAmount())

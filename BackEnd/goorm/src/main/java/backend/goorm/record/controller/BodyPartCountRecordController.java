@@ -5,6 +5,9 @@ import backend.goorm.record.entity.Record;
 import backend.goorm.record.service.BodyPartCountRecordService;
 import backend.goorm.training.model.enums.TrainingCategoryType;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
@@ -33,9 +36,11 @@ public class BodyPartCountRecordController {
     public ResponseEntity<Map<TrainingCategoryType, BodyPartCountRecordService.BodyPartCountInfo>> getBodyPartCountByDateRange(
             @RequestParam("startDate") LocalDate start,
             @RequestParam("endDate") LocalDate end,
-            @AuthenticationPrincipal PrincipalDetails principalDetails) {
-        List<Record> records = bodyPartCountRecordService.getRecordsByDateRange(start, end, principalDetails.member());
-        Map<TrainingCategoryType, BodyPartCountRecordService.BodyPartCountInfo> bodyPartCounts = bodyPartCountRecordService.getBodyPartCountInfoMap(records);
+            @AuthenticationPrincipal PrincipalDetails principalDetails,
+            @PageableDefault(size = 20) Pageable pageable) {
+
+        Page<Record> recordsPage = bodyPartCountRecordService.getRecordsByDateRange(start, end, principalDetails.member(), pageable);
+        Map<TrainingCategoryType, BodyPartCountRecordService.BodyPartCountInfo> bodyPartCounts = bodyPartCountRecordService.getBodyPartCountInfoMap(recordsPage.getContent());
         return ResponseEntity.ok(bodyPartCounts);
     }
 }

@@ -13,6 +13,8 @@ import backend.goorm.training.repository.TrainingRepository;
 import backend.goorm.s3.service.S3ImageService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -138,8 +140,8 @@ public class RecordService {
     }
 
     @Transactional(readOnly = true)
-    public List<RecordDto> getAllRecords(Member member) {
-        List<Record> records = recordRepository.findAllByMember(member);
-        return records.stream().map(RecordDto::fromEntity).collect(Collectors.toList());
+    public Page<RecordDto> getAllRecords(Member member, Pageable pageable) {
+        Page<Record> recordsPage = recordRepository.findAllByMember(member, pageable);
+        return recordsPage.map(RecordDto::fromEntity);
     }
 }

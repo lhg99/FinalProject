@@ -8,6 +8,8 @@ import backend.goorm.record.repository.RecordRepository;
 import backend.goorm.training.model.enums.TrainingCategoryType;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -80,11 +82,8 @@ public class BodyPartCountRecordService {
                 .collect(Collectors.toList());
     }
 
-    public List<Record> getRecordsByDateRange(LocalDate start, LocalDate end, Member member) {
-        return recordRepository.findAll().stream()
-                .filter(record -> !record.getExerciseDate().isBefore(start) && !record.getExerciseDate().isAfter(end)
-                        && record.getMember().getMemberId().equals(member.getMemberId()))
-                .collect(Collectors.toList());
+    public Page<Record> getRecordsByDateRange(LocalDate start, LocalDate end, Member member, Pageable pageable) {
+        return recordRepository.findByExerciseDateBetweenAndMember(start, end, member, pageable);
     }
 
     private void setBodyPartCountRecordFieldsFromMap(WeeklyRecord weeklyRecord, Map<TrainingCategoryType, Double> countMap) {

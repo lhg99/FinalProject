@@ -26,16 +26,24 @@ public class FoodService {
     private final MemberRepository memberRepository;
     private final DietRepository dietRepository;
 
-    public List<FoodResponseDto> getFoodByName(Long memberId, String name) {
-        if (name == null) {
+    public List<FoodResponseDto> getFoodByName(Long memberId, String foodName) {
+        if (foodName == null) {
             return null;
         }
 
-        Member member = memberRepository.findById(memberId)
+
+        Member member = memberRepository.findByMemberId(memberId)
                 .orElseThrow(() -> new IllegalArgumentException("Member not found with id: " + memberId));
 
+        log.info("memberId: {}", member);
+        log.info("foodName: {}", foodName);
         Pageable limit = PageRequest.of(0, 20);
-        List<Food> foods = foodRepository.findDistinctFoodNameByMember(name, member, limit);
+        List<Food> foods = foodRepository.findDistinctFoodNameByMember(foodName, member, limit);
+        return FoodResponseDto.fromEntityList(foods);
+    }
+
+    public List<FoodResponseDto> getAllFoods() {
+        List<Food> foods = foodRepository.findAll();
         return FoodResponseDto.fromEntityList(foods);
     }
 

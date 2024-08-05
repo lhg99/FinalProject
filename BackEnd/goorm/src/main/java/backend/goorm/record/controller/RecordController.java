@@ -8,6 +8,9 @@ import backend.goorm.record.dto.RecordDto;
 import backend.goorm.record.service.RecordService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
@@ -60,8 +63,11 @@ public class RecordController {
     }
 
     @GetMapping("/all")
-    public ResponseEntity<List<RecordDto>> getAllRecords(@AuthenticationPrincipal PrincipalDetails principalDetails) {
-        List<RecordDto> records = recordService.getAllRecords(principalDetails.member());
+    public ResponseEntity<Page<RecordDto>> getAllRecords(
+            @AuthenticationPrincipal PrincipalDetails principalDetails,
+            @PageableDefault(size = 20) Pageable pageable) { // 기본 페이지 크기를 20으로 설정
+
+        Page<RecordDto> records = recordService.getAllRecords(principalDetails.member(), pageable);
         return ResponseEntity.ok(records);
     }
 }
