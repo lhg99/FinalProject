@@ -4,6 +4,12 @@
     max-width: 100rem;
 }
 
+.gymText {
+    font-size: 1.25rem;
+    font-weight: bold;
+    text-align: center;
+}
+
 .map_wrap, .map_wrap * {
     margin:0;
     padding:0;
@@ -55,16 +61,16 @@
     margin:3px 0;
 }
 
-#menu_wrap .option{
+.option{
     text-align: center;
-}
 
-#menu_wrap .option p {
-    margin:10px 0;
-}  
+    p {
+        margin: .625rem 0;
+    }
 
-#menu_wrap .option button {
-    margin-left:5px;
+    button {
+        margin-left: .3125rem;
+    }
 }
 
 #placesList li {

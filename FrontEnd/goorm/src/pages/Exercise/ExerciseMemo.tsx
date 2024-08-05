@@ -2,7 +2,8 @@ import React, { useRef, useState } from "react";
 import styled from "styled-components";
 import { useExercise } from "../../contexts/exerciseContext";
 import ImageEditModal from "./components/Modal/ImageEditModal";
-
+import { CKEditor } from '@ckeditor/ckeditor5-react';
+import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 interface ExerciseMemoProps {
   onFileUpload: (file: File) => void;
 }
@@ -10,10 +11,12 @@ interface ExerciseMemoProps {
 const ExerciseMemo: React.FC<ExerciseMemoProps> = ({onFileUpload}) => {
   const [imagePreviewUrl1, setImagePreviewUrl1] = useState<string | null>(null);
   const [imagePreviewUrl2, setImagePreviewUrl2] = useState<string | null>(null);
-  const { state: { imageFile }, setImageFile } = useExercise();
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [selectedImage, setSelectedImage] = useState<number | null>(null);
+  const [editorData, setEditorData] = useState<string>("");
   const fileInputRef = useRef<HTMLInputElement | null>(null);
+
+  const { state: { imageFile }, setImageFile } = useExercise();
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     if(event.target.files && event.target.files.length > 0) {
@@ -48,7 +51,22 @@ const ExerciseMemo: React.FC<ExerciseMemoProps> = ({onFileUpload}) => {
     <MemoContainer>
       <MemoDetails>
         <DetailsText>메모</DetailsText>
-        <MemoDetailsTextArea placeholder='운동 관련 메모 기록하기'></MemoDetailsTextArea>
+        <CKEditor 
+          editor={ClassicEditor} 
+          data="<p>여기에 운동메모를 입력하세요.</p>" 
+          onChange={(event, editor) => {
+            const data = editor.getData();
+            setEditorData(data);
+          }} 
+          config={{
+            toolbar: [
+              'heading', '|', 'bold', 'italic', 'link', 'bulletedList', 'numberedList', 'blockQuote'
+            ],
+            ckfinder: {
+              uploadUrl: '/upload' // 이미지 업로드를 위한 서버 엔드포인트
+            }
+          }}
+          />
       </MemoDetails>
       <ImageWrapper>
         <ImageContainer>
@@ -94,6 +112,13 @@ const MemoDetails = styled.div`
   border: 1px solid black;
   border-right: none;
   height: 50%;
+
+  .ck.ck-editor__main > .ck-editor__editable {
+    width: 68.75rem;
+    height: 11.875rem;
+    border: 1px solid black;
+    font-size: 0.875rem;
+  }
 `;
 
 const DetailsText = styled.p `

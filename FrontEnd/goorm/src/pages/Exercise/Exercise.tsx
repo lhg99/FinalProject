@@ -9,14 +9,16 @@ import ExerciseCategoryTable from './ExerciseCategoryTable';
 import { useExercise } from '../../contexts/exerciseContext';
 import { ExerciseData, ExerciseRecords } from './ExerciseTypes';
 import DateSelector from './components/Date/DateSelector';
+import { useAuth } from '../Login/auth/AuthContext';
 
 const Exercise: React.FC = () => {
 
     const [dateInfo, setDateInfo] = useState<{ year: number, month: number, day: number, weekday: string } | null>(null);
     const [customExerciseName, setCustomExerciseName] = useState<string>("");
+    const { user } = useAuth();
     
     const { 
-        state: { categories, selectedExercises, exerciseRecords, exerciseDetails, imageFile, startDate, endDate },
+        state: { selectedExercises, exerciseRecords, exerciseDetails, imageFile, startDate, endDate },
         addSelectedExercises,
         addCustomExercises,
         setStartDate,
@@ -110,6 +112,7 @@ const Exercise: React.FC = () => {
                 <div className={styles.leftColumn}>
                     <div className='calendar'>
                         <MyCalendar onDateChange={handleDateChange} />
+                        <p>{user?.memberId}</p>
                         <DateSelector 
                             startDate={startDate} 
                             endDate={endDate} 

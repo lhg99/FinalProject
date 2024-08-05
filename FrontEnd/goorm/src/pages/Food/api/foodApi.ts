@@ -1,26 +1,36 @@
 import axiosInstance from '../../../api/axiosInstance';
+import { FoodData, FoodRecord } from '../FoodTypes';
 
-// export const getFoodData = async (): Promise<[]> => {
-//     try {
-//         const response = await axiosInstance.get<[]>('/admin/trainings');
-//         console.log("음식 정보", response.data);
-//         return response.data;
-//     } catch (err) {
-//         console.error("failed to get exercise Data: ", err);
-//         throw err;
-//     }
-// };
+export const getFoodData = async (): Promise<FoodData[]> => {
+    try {
+        const response = await axiosInstance.get<FoodData[]>('/food/all');
+        console.log("음식 정보", response.data);
+        return response.data;
+    } catch (err) {
+        console.error("음식 정보 가져오기 실패", err);
+        throw err;
+    }
+};
 
-// export const getExerciseRecords = async (): Promise<[]> => {
-//     try {
-//         const response = await axiosInstance.get<[]>('/record/all');
-//         console.log("운동기록 가져오기 성공: ", response.data);
-//         return response.data;
-//     } catch(err) {
-//         console.error("failed to get exercise records: ", err);
-//         throw err;
-//     }
-// }
+export const getFoodRecord = async (): Promise<FoodRecord[]> => {
+    try {
+        const response = await axiosInstance.get<FoodRecord[]>('/diet/all');
+        console.log("식단기록 가져오기 성공: ", response.data);
+        return response.data;
+    } catch(err) {
+        console.error("식단기록 가져오기 실패", err);
+        throw err;
+    }
+}
+
+export const postSearhFood = async (searchQuery: string) => {
+    try {
+        const response = await axiosInstance.post("/saveApi", searchQuery);
+        console.log("음식 검색 요청 성공", response.data);
+    } catch (error) {
+        console.error("음식 검색 요청 실패", error);        
+    }
+}
 
 // const formatDate = (date: Date) => {
 //     // 'yyyy-MM-dd' 형식으로 날짜를 포맷

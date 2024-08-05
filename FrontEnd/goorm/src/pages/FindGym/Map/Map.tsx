@@ -1,5 +1,6 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import './Map.scss';
+import { SearchIcon } from '../../../image/SearchIcon';
 
 declare global {
     interface Window {
@@ -8,7 +9,8 @@ declare global {
 }
 
 const Map = () => {
-    const [keyword, setKeyword] = useState('수원 헬스장');
+    const [keyword, setKeyword] = useState<string>('수원 헬스장');
+    const inputRef = useRef<HTMLInputElement>(null);
     const mapRef = useRef<any>(null);
     const psRef = useRef<any>(null);
     const infowindowRef = useRef<any>(null);
@@ -48,13 +50,19 @@ const Map = () => {
     }, [keyword]);
 
     const searchPlaces = () => {
-        if (!keyword.trim()) {
+        if (!keyword.replace(/^\s+|\s+$/g, '')) {
             alert('키워드를 입력해주세요!');
-            return;
+            return false;
         }
 
         psRef.current.keywordSearch(keyword, placesSearchCB);
     };
+
+    useEffect(() => {
+        if (keyword) {
+            searchPlaces();
+        }
+    }, [keyword]);
 
     const placesSearchCB = (data: any, status: any, pagination: any) => {
         if (status === window.kakao.maps.services.Status.OK) {
@@ -206,29 +214,34 @@ const Map = () => {
 
     return (
         <div className='findGym'>
-            <h2>헬스장 검색</h2>
+            <p className='gymText'>헬스장 검색</p>
+            <div className="option">
+                <div>
+                    <form onSubmit={(e) => {
+                        e.preventDefault();
+                        if(inputRef.current) {
+                            setKeyword(inputRef.current.value);
+                            } else {
+                                console.error("검색어 로직 실패");
+                        }
+                    }}>
+                        키워드 : <input type="text" ref={inputRef} defaultValue={keyword} id="keyword" size={15} />
+                        <button type="submit" id="searchButton">
+                            <SearchIcon />
+                        </button>
+                    </form>
+                </div>
+            </div>
             <div className="map_wrap">
                 <div id="map" style={{  }}></div>
 
                 <div id="menu_wrap" className="bg_white">
-                    <div className="option">
-                        <div>
-                            <form onSubmit={(e) => {
-                                e.preventDefault();
-                                searchPlaces();
-                            }}>
-                                키워드 : <input type="text" value={keyword} onChange={(e) => setKeyword(e.target.value)} id="keyword" size={15} />
-                                <button type="submit" id="searchButton">검색하기</button>
-                            </form>
-                        </div>
-                    </div>
                     <hr />
                     <ul id="placesList"></ul>
                     <div id="pagination"></div>
                 </div>
             </div>
         </div>
-        
     );
 }
 

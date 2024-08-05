@@ -1,6 +1,9 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import MyCalendar from '../Exercise/components/Date/Calendar';
 import styles from './Food.module.scss';
+import FoodSearch from './FoodSearch';
+import { useFood } from '../../contexts/foodContext';
+import { FoodData } from './FoodTypes';
 
 const Food: React.FC = () => {
 
@@ -10,9 +13,20 @@ const Food: React.FC = () => {
         setDateInfo(info);
     }, []);
 
+    const {addFood, addCustomFood} = useFood();
+
+    const handleAddFood = useCallback((food: FoodData) => {
+        addFood(food);
+    }, [addFood]);
+
+    const handleAddCustomFood = useCallback((food: FoodData) => {
+        addCustomFood(food);
+        addFood(food);
+    }, [addCustomFood, addFood]);
+
     return (
-        <div className={styles.exercise}>
-            <div className={styles.exerciseContainer}>
+        <div className={styles.food}>
+            <div className={styles.foodContainer}>
                 <div className={styles.leftColumn}>
                     <div className='calendar'>
                         <MyCalendar onDateChange={handleDateChange} />
@@ -29,6 +43,7 @@ const Food: React.FC = () => {
                     )}
                     <div className={styles.searchListContainer}>
                         <div className={styles.searchColumn}>
+                            <FoodSearch onAddFood={handleAddFood} onAddCustomFood={handleAddCustomFood}/>
                         </div>
                     </div>
                 </div>
