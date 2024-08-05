@@ -50,15 +50,6 @@ public class RecordController {
         return ResponseEntity.ok(result);
     }
 
-//    @PutMapping("/training/{id}/edit")
-//    public ResponseEntity<RecordDto> editRecord(@PathVariable("id") Long recordId,
-//                                                @Valid @ModelAttribute EditRecordRequest request,
-//                                                @RequestParam(value = "images", required = false) MultipartFile[] images,
-//                                                @AuthenticationPrincipal PrincipalDetails principalDetails) {
-//        RecordDto result = recordService.editRecord(recordId, request, principalDetails.member(), images);
-//        return ResponseEntity.ok(result);
-//    }
-
     @PutMapping("/edit-multiple")
     public ResponseEntity<List<RecordDto>> editRecords(
             @RequestBody List<EditRecordRequest> requests,
@@ -84,19 +75,17 @@ public class RecordController {
         return ResponseEntity.ok(records);
     }
 
-//    @GetMapping("/daily-summary")
-//    public ResponseEntity<Map<String, Object>> getDailySummary(
-//            @RequestParam("date") LocalDate date,
-//            @AuthenticationPrincipal PrincipalDetails principalDetails) {
-//
-//        Member member = principalDetails.member();
-//        List<RecordDto> records = recordService.getRecordsByDateAndMember(date, member);
-//        int totalCaloriesBurned = recordService.getTotalCaloriesBurnedByDateAndMember(date, member);
-//
-//        Map<String, Object> response = new HashMap<>();
-//        response.put("records", records);
-//        response.put("totalCaloriesBurned", totalCaloriesBurned);
-//
-//        return ResponseEntity.ok(response);
-//    }
+    @GetMapping("/daily-summary")
+    public ResponseEntity<Map<String, Integer>> getRecordSummary(@AuthenticationPrincipal PrincipalDetails principalDetails) {
+        LocalDate today = LocalDate.now();
+
+        int totalCaloriesBurned = recordService.getTotalCaloriesBurnedByDateAndMember(today, principalDetails.member());
+        int totalDurationMinutes = recordService.getTotalDurationByDateAndMember(today, principalDetails.member());
+
+        Map<String, Integer> response = new HashMap<>();
+        response.put("totalCaloriesBurned", totalCaloriesBurned);
+        response.put("totalDurationMinutes", totalDurationMinutes);
+
+        return ResponseEntity.ok(response);
+    }
 }

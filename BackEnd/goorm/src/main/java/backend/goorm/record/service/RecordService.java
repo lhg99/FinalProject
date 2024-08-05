@@ -22,6 +22,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.ArrayList;
 
@@ -140,14 +141,17 @@ public class RecordService {
         return recordsPage.map(RecordDto::fromEntity);
     }
 
-    public List<RecordDto> getRecordsByDateAndMember(LocalDate date, Member member) {
-        List<Record> records = recordRepository.findAllByExerciseDateAndMember(date, member);
-        return records.stream().map(RecordDto::fromEntity).collect(Collectors.toList());
+    public int getTotalCaloriesBurnedByDateAndMember(LocalDate date, Member member) {
+        return recordRepository.findAllByExerciseDateAndMember(date, member).stream()
+                .mapToInt(record -> record.getCaloriesBurned() != null ? record.getCaloriesBurned().intValue() : 0)
+                .sum();
     }
 
-//    public int getTotalCaloriesBurnedByDateAndMember(LocalDate date, Member member) {
-//        return recordRepository.findAllByExerciseDateAndMember(date, member).stream()
-//                .mapToInt(record -> record.getCaloriesBurned() != null ? (int) record.getCaloriesBurned() : 0)
-//                .sum();
-//    }
+    public int getTotalDurationByDateAndMember(LocalDate date, Member member) {
+        return recordRepository.findAllByExerciseDateAndMember(date, member).stream()
+                .mapToInt(record -> record.getDurationMinutes() != null ? record.getDurationMinutes().intValue() : 0)
+                .sum();
+    }
+
+
 }
