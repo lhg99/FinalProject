@@ -28,9 +28,10 @@ const FoodSearch : React.FC<FoodSearchProps> = ({onAddFood, onAddCustomFood}) =>
     //             setFilteredData(foodData);
     //             const categories: FoodCategory[] = [
     //                 { categoryName: "전체" },
-    //                 { categoryName: "아침" },
-    //                 { categoryName: "점심" },
-    //                 { categoryName: "저녁" }
+    //                 { categoryName: "아침" }, // mealTime: BREAKFAST
+    //                 { categoryName: "점심" }, // mealTime: LUNCH
+    //                 { categoryName: "저녁" }, // mealTime: DINNER
+    //                 { categoryName: "간식" } // mealTime: SNACK
     //             ];
     //             setFoodCategories(categories);
     //         } catch (error) {

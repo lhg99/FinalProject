@@ -12,6 +12,10 @@ interface ExerciseState {
     isAddingExercise: boolean;
     startDate: Date;
     endDate: Date;
+    memo: string;
+    isDeleteModalOpen: boolean;
+    isEditModalOpen: boolean;
+    selectedRecords: number | null;
 }
 
 const initialState: ExerciseState = {
@@ -25,6 +29,10 @@ const initialState: ExerciseState = {
     isAddingExercise: false,
     startDate: new Date(),
     endDate: new Date(),
+    memo: "",
+    isDeleteModalOpen: false,
+    isEditModalOpen: false,
+    selectedRecords: null,
 };
 
 interface ExerciseContextProps {
@@ -33,6 +41,7 @@ interface ExerciseContextProps {
     addCustomExercises: (exercise: ExerciseData) => void;
     addSelectedExercises: (exercise: ExerciseData) => void;
     addExerciseRecord: (record: ExerciseRecords) => void;
+    addMemo: (recordId: number, memo: string) => void;
     setExercises: (exercises: ExerciseData[]) => void;
     setCategories: (categories: Category[]) => void;
     setImageFile: (file: File | null) => void;
@@ -40,8 +49,11 @@ interface ExerciseContextProps {
     setIsAddingExercise: (adding: boolean) => void;
     setStartDate: (date: Date) => void;
     setEndDate: (date: Date) => void;
+    setIsDeleteModalOpen: (isOpen: boolean) => void;
+    setIsEditModalOpen: (isOpen: boolean) => void;
     removeExercise: (exerciseName: string) => void;
     updateExerciseDetails: (details: ExerciseRecords) => void;
+    setSelectedRecord: (recordId: number | null) => void; // 선택된 레코드를 설정하는 함수
 }
 
 const ExerciseContext = createContext<ExerciseContextProps | undefined>(undefined);
@@ -81,6 +93,29 @@ export const ExerciseProvider: React.FC<{ children: ReactNode }> = ({ children }
         }));
     };
 
+    const addMemo = (recordId: number, memo: string) => {
+        console.log("메모 추가", memo);
+        setState(prevState => {
+            // Find the exercise record to update
+            const updatedExerciseDetails = { ...prevState.exerciseDetails };
+            const recordKey = Object.keys(updatedExerciseDetails).find(
+                key => updatedExerciseDetails[key].recordId === recordId
+            );
+
+            if (recordKey) {
+                updatedExerciseDetails[recordKey] = {
+                    ...updatedExerciseDetails[recordKey],
+                    memo
+                };
+            }
+
+            return {
+                ...prevState,
+                exerciseDetails: updatedExerciseDetails
+            };
+        });
+    };
+
     const setExercises = (exercises: ExerciseData[]) => {
         setState(prevState => ({ ...prevState, exercises }));
     };
@@ -109,6 +144,14 @@ export const ExerciseProvider: React.FC<{ children: ReactNode }> = ({ children }
         setState(prevState => ({...prevState, endDate: date}));
     }
 
+    const setIsDeleteModalOpen = (isOpen: boolean) => {
+        setState(prevState => ({...prevState, isDeleteModalOpen: isOpen }));
+    };
+
+    const setIsEditModalOpen = (isOpen: boolean) => {
+        setState(prevState => ({...prevState, isEditModalOpen: isOpen }));
+    }
+
     const removeExercise = (exerciseName: string) => {
         setState(prevState => ({
             ...prevState,
@@ -128,6 +171,14 @@ export const ExerciseProvider: React.FC<{ children: ReactNode }> = ({ children }
         }));
     };
 
+   // 선택된 레코드 ID 설정
+    const setSelectedRecord = (recordId: number | null) => {
+        setState(prevState => ({
+            ...prevState,
+            selectedRecord: recordId
+        }));
+    };
+
     
 
     return (
@@ -137,6 +188,7 @@ export const ExerciseProvider: React.FC<{ children: ReactNode }> = ({ children }
             addCustomExercises,
             addSelectedExercises,
             addExerciseRecord,
+            addMemo,
             setExercises,
             setCategories,
             setImageFile,
@@ -144,8 +196,11 @@ export const ExerciseProvider: React.FC<{ children: ReactNode }> = ({ children }
             setIsAddingExercise,
             setStartDate,
             setEndDate,
+            setIsDeleteModalOpen,
+            setIsEditModalOpen,
             removeExercise,
             updateExerciseDetails,
+            setSelectedRecord
         }}>
             {children}
         </ExerciseContext.Provider>

@@ -4,6 +4,7 @@ import { useExercise } from "../../../../contexts/exerciseContext";
 import { ExerciseRecords } from "../../ExerciseTypes";
 import DeleteModal from "../Modal/DeleteModal";
 import { deleteRecord } from "../../api/exerciseApi";
+import MemoEditModal from "../Modal/MemoEditModal";
 
 interface ExerciseDetailProps {
     exercise: ExerciseRecords;
@@ -22,10 +23,11 @@ const ExerciseDetails: React.FC<ExerciseDetailProps> = ({ exercise, isAddingExer
     const [sets, setSets] = useState<string>(details.sets?.toString() || "0");
     const [weight, setWeight] = useState<string>(details.weight?.toString() || "0");
     const [count, setCount] = useState<string>(details.reps?.toString() || "0");
-    const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
     const prevDetailsRef = useRef(details);
 
-    const { updateExerciseDetails, removeExercise } = useExercise();
+    const { 
+        state: {isEditModalOpen, isDeleteModalOpen, selectedRecords },
+        updateExerciseDetails, removeExercise, setIsDeleteModalOpen, setIsEditModalOpen, setSelectedRecord } = useExercise();
 
     useEffect(() => {
         const updatedDetails = {
@@ -50,28 +52,38 @@ const ExerciseDetails: React.FC<ExerciseDetailProps> = ({ exercise, isAddingExer
     }, [exerciseName, distance, duration, slope, calorie, sets, weight, count, details, updateExerciseDetails]);
 
     const handleDeleteClick = () => {
-        setIsModalOpen(true);
+        setIsDeleteModalOpen(true);
     };
 
-    const handleModalClose = () => {
-        setIsModalOpen(false);
+    const handleDeleteModalClose = () => {
+        setIsDeleteModalOpen(false);
     };
 
-    const handleModalConfirm = async () => {
+    const handleDeleteModalConfirm = async () => {
         try {
             await deleteRecord(details.recordId);
             removeExercise(details.trainingName); // 상태에서 운동 삭제
-            setIsModalOpen(false); // 모달 닫기
+            setIsDeleteModalOpen(false); // 모달 닫기
         } catch (err) {
             throw err;
         }
+    };
+
+    const handleEditClick = () => {
+        setSelectedRecord(details.recordId); // 클릭한 레코드의 ID를 설정
+        setIsEditModalOpen(true);
+    };
+
+    const handleEditModalClose = () => {
+        setSelectedRecord(null);
+        setIsEditModalOpen(false);
     };
 
     return (
         <ExerciseDetailsContainer>
             <ExerciseInfo>
                 <CategoryBadge>{exercise.categoryName}</CategoryBadge>
-                <ExerciseTitle>{exercise.trainingName}</ExerciseTitle>
+                <ExerciseTitle onClick={handleEditClick}>{exercise.trainingName}</ExerciseTitle>
             </ExerciseInfo>
             <InputContainer>
                 {details.categoryName === "유산소" ? (
@@ -183,10 +195,11 @@ const ExerciseDetails: React.FC<ExerciseDetailProps> = ({ exercise, isAddingExer
                 <DeleteButton onClick={handleDeleteClick}>삭제</DeleteButton>
             </InputContainer>
             <DeleteModal
-                isOpen={isModalOpen}
-                onClose={handleModalClose}
-                onConfirm={handleModalConfirm}
+                isOpen={isDeleteModalOpen}
+                onClose={handleDeleteModalClose}
+                onConfirm={handleDeleteModalConfirm}
             />
+            <MemoEditModal isOpen={isEditModalOpen} onClose={handleEditModalClose} memoId={details.recordId}/>
         </ExerciseDetailsContainer>
     );
 }

@@ -176,7 +176,7 @@ const ExerciseSearchContainer = styled.div`
     flex-direction: column;
     padding: .625rem;
     width: 22%;
-    max-height: 33.4375rem;
+    max-height: 35rem;
     overflow-y: auto;
     border: 1px solid #AFAFAF;
     border-radius: 5px;

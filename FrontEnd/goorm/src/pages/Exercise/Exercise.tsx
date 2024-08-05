@@ -50,10 +50,6 @@ const Exercise: React.FC = () => {
         setEndDate(date);
     }
 
-    const handleFileUpload = (file: File) => {
-        console.log('업로드 파일', file);
-    };
-
     const handleSave = async () => {
         const maxRecordId = Math.max(0, ...exerciseRecords.map(record => record.recordId));
         try {
@@ -96,9 +92,9 @@ const Exercise: React.FC = () => {
 
             for (const record of combinedRecords) {
                 if (record.categoryName === "유산소") {
-                    await postCardioRecord(record.trainingId, record, imageFile);
+                    await postCardioRecord(record.trainingId, record);
                 } else {
-                    await postStrengthRecord(record.trainingId, record, imageFile);
+                    await postStrengthRecord(record.trainingId, record);
                 }
             }
         } catch (err) {
@@ -136,7 +132,7 @@ const Exercise: React.FC = () => {
                     </div>
                 </div>
             </div>
-            <ExerciseMemo onFileUpload={handleFileUpload} />
+            <ExerciseMemo />
             <button className={styles.saveButton} onClick={handleSave}>저장하기</button>
         </div>
     );

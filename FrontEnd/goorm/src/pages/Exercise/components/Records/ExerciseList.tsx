@@ -112,7 +112,7 @@ export default ExerciseList;
 
 const ExerciseListWrapper = styled.div`
   width: 100%;
-  max-height: 34.6875rem;
+  max-height: 36.25rem;
   overflow-y: auto;
   border: 1px solid #AFAFAF;
   border-radius: 5px;
