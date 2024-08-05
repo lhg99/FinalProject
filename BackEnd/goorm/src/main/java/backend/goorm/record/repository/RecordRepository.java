@@ -9,6 +9,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDate;
+import java.util.Collection;
 import java.util.List;
 
 @Repository
@@ -19,4 +20,6 @@ public interface RecordRepository extends JpaRepository<Record, Long> {
     Page<Record> findAllByMember(Member member, Pageable pageable);
 
     Page<Record> findByExerciseDateBetweenAndMember(LocalDate start, LocalDate end, Member member, Pageable pageable);
+
+    List<Record> findAllByExerciseDateAndMember(LocalDate date, Member member);
 }

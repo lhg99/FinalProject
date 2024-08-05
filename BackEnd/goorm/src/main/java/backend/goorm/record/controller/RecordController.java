@@ -1,5 +1,6 @@
 package backend.goorm.record.controller;
 
+import backend.goorm.member.model.entity.Member;
 import backend.goorm.member.oauth.PrincipalDetails;
 import backend.goorm.record.dto.AddCardioRecordRequest;
 import backend.goorm.record.dto.AddStrengthRecordRequest;
@@ -18,7 +19,10 @@ import org.springframework.web.bind.annotation.*;
 import jakarta.validation.Valid;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.time.LocalDate;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -46,13 +50,22 @@ public class RecordController {
         return ResponseEntity.ok(result);
     }
 
-    @PutMapping("/training/{id}/edit")
-    public ResponseEntity<RecordDto> editRecord(@PathVariable("id") Long recordId,
-                                                @Valid @ModelAttribute EditRecordRequest request,
-                                                @RequestParam(value = "images", required = false) MultipartFile[] images,
-                                                @AuthenticationPrincipal PrincipalDetails principalDetails) {
-        RecordDto result = recordService.editRecord(recordId, request, principalDetails.member(), images);
-        return ResponseEntity.ok(result);
+//    @PutMapping("/training/{id}/edit")
+//    public ResponseEntity<RecordDto> editRecord(@PathVariable("id") Long recordId,
+//                                                @Valid @ModelAttribute EditRecordRequest request,
+//                                                @RequestParam(value = "images", required = false) MultipartFile[] images,
+//                                                @AuthenticationPrincipal PrincipalDetails principalDetails) {
+//        RecordDto result = recordService.editRecord(recordId, request, principalDetails.member(), images);
+//        return ResponseEntity.ok(result);
+//    }
+
+    @PutMapping("/edit-multiple")
+    public ResponseEntity<List<RecordDto>> editRecords(
+            @RequestBody List<EditRecordRequest> requests,
+            @AuthenticationPrincipal PrincipalDetails principalDetails) {
+
+        List<RecordDto> updatedRecords = recordService.editRecords(requests, principalDetails.member());
+        return ResponseEntity.ok(updatedRecords);
     }
 
     @DeleteMapping("/training/{id}/delete")
@@ -70,4 +83,20 @@ public class RecordController {
         Page<RecordDto> records = recordService.getAllRecords(principalDetails.member(), pageable);
         return ResponseEntity.ok(records);
     }
+
+//    @GetMapping("/daily-summary")
+//    public ResponseEntity<Map<String, Object>> getDailySummary(
+//            @RequestParam("date") LocalDate date,
+//            @AuthenticationPrincipal PrincipalDetails principalDetails) {
+//
+//        Member member = principalDetails.member();
+//        List<RecordDto> records = recordService.getRecordsByDateAndMember(date, member);
+//        int totalCaloriesBurned = recordService.getTotalCaloriesBurnedByDateAndMember(date, member);
+//
+//        Map<String, Object> response = new HashMap<>();
+//        response.put("records", records);
+//        response.put("totalCaloriesBurned", totalCaloriesBurned);
+//
+//        return ResponseEntity.ok(response);
+//    }
 }

@@ -19,6 +19,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.ArrayList;
@@ -85,42 +87,35 @@ public class RecordService {
     }
 
     @Transactional
-    public RecordDto editRecord(Long recordId, EditRecordRequest request, Member member, MultipartFile[] images) {
-        Record record = recordRepository.findById(recordId)
-                .orElseThrow(() -> new IllegalArgumentException("Record not found with id: " + recordId));
+    public List<RecordDto> editRecords(List<EditRecordRequest> requests, Member member) {
+        List<RecordDto> updatedRecords = new ArrayList<>();
 
-        List<String> imageUrls = new ArrayList<>();
-        if (images != null && images.length > 0) {
-            imageUrls = s3ImageService.uploadMulti(images);
+        for (EditRecordRequest request : requests) {
+            Record record = recordRepository.findById(request.getRecordId())
+                    .orElseThrow(() -> new IllegalArgumentException("Record not found with id: " + request.getRecordId()));
+
+            // 권한 확인: 기록의 소유자가 현재 사용자와 일치하는지 확인
+            if (!record.getMember().getMemberId().equals(member.getMemberId())) {
+                throw new IllegalArgumentException("You do not have permission to edit this record.");
+            }
+
+            Training training = record.getTraining();
+            String categoryName = String.valueOf(training.getCategory().getCategoryName());
+
+
+            // 유산소 운동인지 판단하여 해당 메서드에 전달
+            boolean isCardio = "유산소".equalsIgnoreCase(categoryName);
+
+            EditRecordRequest.updateRecord(record, request, isCardio);
+
+
+            Record saved = recordRepository.save(record);
+            updatedRecords.add(RecordDto.fromEntity(saved));
         }
 
-        Training training = record.getTraining();
-        String categoryName = String.valueOf(training.getCategory().getCategoryName());
-
-        if ("유산소".equalsIgnoreCase(categoryName)) {
-            EditRecordRequest.updateCardioRecord(record, request);
-        } else {
-            EditRecordRequest.updateStrengthRecord(record, request);
-        }
-
-        // 기존 이미지 삭제 및 S3에서 제거
-        if (record.getRecordImages() != null) {
-            record.getRecordImages().forEach(image -> s3ImageService.deleteImageFromS3(image.getImageUrl()));
-            record.getRecordImages().clear();
-        }
-
-        if (!imageUrls.isEmpty()) {
-            List<RecordImages> newImages = imageUrls.stream()
-                    .map(url -> RecordImages.builder().record(record).imageUrl(url).build())
-                    .collect(Collectors.toList());
-            record.getRecordImages().addAll(newImages);
-        } else {
-            record.setRecordImages(new ArrayList<>()); // 빈 리스트로 설정
-        }
-
-        Record saved = recordRepository.save(record);
-        return RecordDto.fromEntity(saved);
+        return updatedRecords;
     }
+
 
     @Transactional
     public void deleteRecord(Long recordId, Member member) {
@@ -144,4 +139,15 @@ public class RecordService {
         Page<Record> recordsPage = recordRepository.findAllByMember(member, pageable);
         return recordsPage.map(RecordDto::fromEntity);
     }
+
+    public List<RecordDto> getRecordsByDateAndMember(LocalDate date, Member member) {
+        List<Record> records = recordRepository.findAllByExerciseDateAndMember(date, member);
+        return records.stream().map(RecordDto::fromEntity).collect(Collectors.toList());
+    }
+
+//    public int getTotalCaloriesBurnedByDateAndMember(LocalDate date, Member member) {
+//        return recordRepository.findAllByExerciseDateAndMember(date, member).stream()
+//                .mapToInt(record -> record.getCaloriesBurned() != null ? (int) record.getCaloriesBurned() : 0)
+//                .sum();
+//    }
 }
