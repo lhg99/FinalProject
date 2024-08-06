@@ -23,7 +23,7 @@ public class MemoService {
         LocalDate date = LocalDate.now(); // 오늘 날짜로 메모 관리
         List<Record> records = recordRepository.findAllByExerciseDateAndMember(date, member);
 
-        Memo memo = memoRepository.findByDateAndMember(date, member)
+        Memo memo = memoRepository.findByMemberAndDate(member, date)
                 .orElse(new Memo());
 
         memo.setMember(member);
@@ -37,7 +37,7 @@ public class MemoService {
     }
 
     public MemoDto getMemoByDateAndMember(LocalDate date, Member member) {
-        Memo memo = memoRepository.findByDateAndMember(date, member)
+        Memo memo = memoRepository.findByMemberAndDate(member, date)
                 .orElseThrow(() -> new IllegalArgumentException("Memo not found for date: " + date));
 
         return MemoDto.fromEntity(memo);

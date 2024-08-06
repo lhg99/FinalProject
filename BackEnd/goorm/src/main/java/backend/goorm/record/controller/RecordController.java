@@ -63,18 +63,26 @@ public class RecordController {
         return ResponseEntity.ok().build();
     }
 
-    @GetMapping("/all")
-    public ResponseEntity<SimplePageResponse<RecordDto>> getAllRecords(
-            @AuthenticationPrincipal PrincipalDetails principalDetails,
-            @PageableDefault(size = 20) Pageable pageable) { // 기본 페이지 크기를 20으로 설정
+//    @GetMapping("/all")
+////    public ResponseEntity<SimplePageResponse<RecordDto>> getAllRecords(
+////            @AuthenticationPrincipal PrincipalDetails principalDetails,
+////            @PageableDefault(size = 20) Pageable pageable) { // 기본 페이지 크기를 20으로 설정
+////
+////        Page<RecordDto> records = recordService.getAllRecords(principalDetails.member(), pageable);
+////        SimplePageResponse<RecordDto> response = SimplePageResponse.<RecordDto>builder()
+////                .content(records.getContent())
+////                .totalPages(records.getTotalPages())
+////                .totalElements(records.getTotalElements())
+////                .build();
+////        return ResponseEntity.ok(response);
+////    }
 
-        Page<RecordDto> records = recordService.getAllRecords(principalDetails.member(), pageable);
-        SimplePageResponse<RecordDto> response = SimplePageResponse.<RecordDto>builder()
-                .content(records.getContent())
-                .totalPages(records.getTotalPages())
-                .totalElements(records.getTotalElements())
-                .build();
-        return ResponseEntity.ok(response);
+    @GetMapping("/all")
+    public ResponseEntity<List<RecordDto>> getAllRecords(
+            @AuthenticationPrincipal PrincipalDetails principalDetails) {
+        LocalDate today = LocalDate.now();
+        List<RecordDto> records = recordService.getAllRecords(principalDetails.member(), today);
+        return ResponseEntity.ok(records);
     }
 
     @GetMapping("/daily-summary")

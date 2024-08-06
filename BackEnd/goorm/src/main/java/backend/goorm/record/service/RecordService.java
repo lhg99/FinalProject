@@ -2,8 +2,9 @@ package backend.goorm.record.service;
 
 import backend.goorm.record.dto.EditRecordRequest;
 import backend.goorm.record.dto.RecordDto;
+import backend.goorm.record.entity.Memo;
 import backend.goorm.record.entity.Record;
-import backend.goorm.record.entity.RecordImages;
+import backend.goorm.record.repository.MemoRepository;
 import backend.goorm.record.repository.RecordRepository;
 import backend.goorm.record.dto.AddCardioRecordRequest;
 import backend.goorm.record.dto.AddStrengthRecordRequest;
@@ -33,6 +34,7 @@ public class RecordService {
 
     private final RecordRepository recordRepository;
     private final TrainingRepository trainingRepository;
+    private final MemoRepository memoRepository;
     private final S3ImageService s3ImageService;
 
     @Transactional
@@ -40,22 +42,10 @@ public class RecordService {
         Training training = trainingRepository.findById(trainingId)
                 .orElseThrow(() -> new IllegalArgumentException("Training not found with id: " + trainingId));
 
-        List<String> imageUrls = new ArrayList<>();
-        if (images != null && images.length > 0) {
-            log.info("images : {}", (Object) images);
-            imageUrls = s3ImageService.uploadMulti(images);
-        }
+
 
         Record record = AddCardioRecordRequest.toEntity(request, training);
         record.setMember(member); // Member 설정
-//        if (!imageUrls.isEmpty()) {
-//            List<RecordImages> recordImages = imageUrls.stream()
-//                    .map(url -> RecordImages.builder().record(record).imageUrl(url).build())
-//                    .collect(Collectors.toList());
-//            record.setRecordImages(recordImages);
-//        } else {
-//            record.setRecordImages(new ArrayList<>()); // 빈 리스트로 설정
-//        }
 
         Record saved = recordRepository.save(record);
         return RecordDto.fromEntity(saved);
@@ -74,14 +64,6 @@ public class RecordService {
 
         Record record = AddStrengthRecordRequest.toEntity(request, training);
         record.setMember(member); // Member 설정
-//        if (!imageUrls.isEmpty()) {
-//            List<RecordImages> recordImages = imageUrls.stream()
-//                    .map(url -> RecordImages.builder().record(record).imageUrl(url).build())
-//                    .collect(Collectors.toList());
-//            record.setRecordImages(recordImages);
-//        } else {
-//            record.setRecordImages(new ArrayList<>()); // 빈 리스트로 설정
-//        }
 
         Record saved = recordRepository.save(record);
         return RecordDto.fromEntity(saved);
@@ -128,17 +110,28 @@ public class RecordService {
             throw new IllegalArgumentException("해당 기록을 삭제할 권한이 없습니다.");
         }
 
-//        if (record.getRecordImages() != null) {
-//            record.getRecordImages().forEach(image -> s3ImageService.deleteImageFromS3(image.getImageUrl()));
-//        }
 
         recordRepository.delete(record);
     }
 
-    @Transactional(readOnly = true)
-    public Page<RecordDto> getAllRecords(Member member, Pageable pageable) {
-        Page<Record> recordsPage = recordRepository.findAllByMember(member, pageable);
-        return recordsPage.map(RecordDto::fromEntity);
+    public List<RecordDto> getAllRecords(Member member, LocalDate date) {
+        // 해당 날짜의 운동 기록을 조회
+        List<Record> records = recordRepository.findAllByExerciseDateAndMember(date, member);
+
+        // 해당 날짜의 메모 조회
+        Optional<Memo> memoOpt = memoRepository.findByMemberAndDate(member, date);
+        String memoContent = memoOpt.map(Memo::getContent).orElse(null);
+
+        // 운동 기록과 메모를 RecordDto에 매핑
+        return records.stream()
+                .map(record -> {
+                    if (record.getExerciseDate().equals(date)) {
+                        return RecordDto.fromEntity(record, memoContent);
+                    } else {
+                        return RecordDto.fromEntity(record, null); // 날짜가 다르면 메모를 포함하지 않음
+                    }
+                })
+                .collect(Collectors.toList());
     }
 
     public int getTotalCaloriesBurnedByDateAndMember(LocalDate date, Member member) {
