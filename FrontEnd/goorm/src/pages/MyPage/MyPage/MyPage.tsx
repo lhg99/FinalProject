@@ -12,8 +12,8 @@ const MyPage: React.FC = () => {
       try {
         const data = await getusereData();
         console.log('Fetched data:', data);
-        if (data.length > 0) {
-          setUser(data[0]);
+        if (data) {
+          setUser(data);
         } else {
           setError("사용자 정보가 없습니다.");
         }

@@ -11,9 +11,9 @@ export interface userData {
     memberType: string;
 }
 
-export const getusereData = async (): Promise<userData[]> => {
+export const getusereData = async (): Promise<userData> => {
     try {
-        const response = await axiosInstance.get<userData[]>('/member/get/info');
+        const response = await axiosInstance.get<userData>('/member/get/info');
         console.log(response.data);
         return response.data;
     } catch (err) {
