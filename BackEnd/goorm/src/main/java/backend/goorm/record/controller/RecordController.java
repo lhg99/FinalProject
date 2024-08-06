@@ -64,25 +64,31 @@ public class RecordController {
     }
 
 //    @GetMapping("/all")
-////    public ResponseEntity<SimplePageResponse<RecordDto>> getAllRecords(
-////            @AuthenticationPrincipal PrincipalDetails principalDetails,
-////            @PageableDefault(size = 20) Pageable pageable) { // 기본 페이지 크기를 20으로 설정
-////
-////        Page<RecordDto> records = recordService.getAllRecords(principalDetails.member(), pageable);
-////        SimplePageResponse<RecordDto> response = SimplePageResponse.<RecordDto>builder()
-////                .content(records.getContent())
-////                .totalPages(records.getTotalPages())
-////                .totalElements(records.getTotalElements())
-////                .build();
-////        return ResponseEntity.ok(response);
-////    }
+//    public ResponseEntity<SimplePageResponse<RecordDto>> getAllRecords(
+//            @AuthenticationPrincipal PrincipalDetails principalDetails,
+//            @PageableDefault(size = 20) Pageable pageable) { // 기본 페이지 크기를 20으로 설정
+//
+//        Page<RecordDto> records = recordService.getAllRecords(principalDetails.member(), pageable);
+//        SimplePageResponse<RecordDto> response = SimplePageResponse.<RecordDto>builder()
+//                .content(records.getContent())
+//                .totalPages(records.getTotalPages())
+//                .totalElements(records.getTotalElements())
+//                .build();
+//        return ResponseEntity.ok(response);
+//    }
 
     @GetMapping("/all")
-    public ResponseEntity<List<RecordDto>> getAllRecords(
-            @AuthenticationPrincipal PrincipalDetails principalDetails) {
+    public ResponseEntity<SimplePageResponse<RecordDto>> getPagedRecords(
+            @AuthenticationPrincipal PrincipalDetails principalDetails,
+            @PageableDefault(size = 20) Pageable pageable) {
         LocalDate today = LocalDate.now();
-        List<RecordDto> records = recordService.getAllRecords(principalDetails.member(), today);
-        return ResponseEntity.ok(records);
+        Page<RecordDto> recordsPage = recordService.getPagedRecords(principalDetails.member(), today, pageable);
+        SimplePageResponse<RecordDto> response = SimplePageResponse.<RecordDto>builder()
+                .content(recordsPage.getContent())
+                .totalPages(recordsPage.getTotalPages())
+                .totalElements(recordsPage.getTotalElements())
+                .build();
+        return ResponseEntity.ok(response);
     }
 
     @GetMapping("/daily-summary")

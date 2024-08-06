@@ -42,8 +42,6 @@ public class RecordService {
         Training training = trainingRepository.findById(trainingId)
                 .orElseThrow(() -> new IllegalArgumentException("Training not found with id: " + trainingId));
 
-
-
         Record record = AddCardioRecordRequest.toEntity(request, training);
         record.setMember(member); // Member 설정
 
@@ -55,12 +53,6 @@ public class RecordService {
     public RecordDto addStrengthRecord(Long trainingId, AddStrengthRecordRequest request, Member member, MultipartFile[] images) {
         Training training = trainingRepository.findById(trainingId)
                 .orElseThrow(() -> new IllegalArgumentException("Training not found with id: " + trainingId));
-
-        List<String> imageUrls = new ArrayList<>();
-        if (images != null && images.length > 0) {
-            log.info("images : {}", (Object) images);
-            imageUrls = s3ImageService.uploadMulti(images);
-        }
 
         Record record = AddStrengthRecordRequest.toEntity(request, training);
         record.setMember(member); // Member 설정
@@ -114,24 +106,16 @@ public class RecordService {
         recordRepository.delete(record);
     }
 
-    public List<RecordDto> getAllRecords(Member member, LocalDate date) {
-        // 해당 날짜의 운동 기록을 조회
-        List<Record> records = recordRepository.findAllByExerciseDateAndMember(date, member);
+    public Page<RecordDto> getPagedRecords(Member member, LocalDate date, Pageable pageable) {
+        // 해당 날짜의 운동 기록을 페이징 처리하여 조회
+        Page<Record> recordsPage = recordRepository.findPagedByExerciseDateAndMember(date, member, pageable);
 
         // 해당 날짜의 메모 조회
         Optional<Memo> memoOpt = memoRepository.findByMemberAndDate(member, date);
         String memoContent = memoOpt.map(Memo::getContent).orElse(null);
 
-        // 운동 기록과 메모를 RecordDto에 매핑
-        return records.stream()
-                .map(record -> {
-                    if (record.getExerciseDate().equals(date)) {
-                        return RecordDto.fromEntity(record, memoContent);
-                    } else {
-                        return RecordDto.fromEntity(record, null); // 날짜가 다르면 메모를 포함하지 않음
-                    }
-                })
-                .collect(Collectors.toList());
+        // 운동 기록과 메모를 RecordDto에 매핑하여 페이징 처리
+        return recordsPage.map(record -> RecordDto.fromEntity(record, memoContent));
     }
 
     public int getTotalCaloriesBurnedByDateAndMember(LocalDate date, Member member) {
