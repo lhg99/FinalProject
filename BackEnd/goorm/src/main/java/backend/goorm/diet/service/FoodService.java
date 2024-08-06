@@ -26,13 +26,19 @@ public class FoodService {
     private final MemberRepository memberRepository;
     private final DietRepository dietRepository;
 
-    public List<FoodResponseDto> getFoodByName(Long id, String name) {
-        if (name == null) {
+    public List<FoodResponseDto> getFoodByName(Long memberId, String foodName) {
+        if (foodName == null) {
             return null;
         }
 
+
+        Member member = memberRepository.findByMemberId(memberId)
+                .orElseThrow(() -> new IllegalArgumentException("Member not found with id: " + memberId));
+
+        log.info("memberId: {}", member);
+        log.info("foodName: {}", foodName);
         Pageable limit = PageRequest.of(0, 20);
-        List<Food> foods = foodRepository.findDistinctFoodNameByMember(name, null, limit);
+        List<Food> foods = foodRepository.findDistinctFoodNameByMember(foodName, member, limit);
         return FoodResponseDto.fromEntityList(foods);
     }
 
@@ -41,38 +47,53 @@ public class FoodService {
         return FoodResponseDto.fromEntityList(foods);
     }
 
-    public List<FoodResponseDto> getRecentFood(Long id) {
+    public List<FoodResponseDto> getRecentFood(Long memberId) {
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(() -> new IllegalArgumentException("Member not found with id: " + memberId));
+
         Pageable pageRequest = PageRequest.of(0, 20, Sort.Direction.DESC, "createdAt");
-        List<Food> foods = dietRepository.findDistinctFoodByMember(null, pageRequest);
+        List<Food> foods = dietRepository.findDistinctFoodByMember(member, pageRequest);
         return FoodResponseDto.fromEntityList(foods);
     }
 
-    public FoodResponseDto createFood(Long id, FoodUserDto dto) {
+    public FoodResponseDto createFood(Long memberId, FoodUserDto dto) {
         if (dto.getAmount() == null) {
             throw new IllegalArgumentException("Amount cannot be null");
         }
 
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(() -> new IllegalArgumentException("Member not found with id: " + memberId));
+
         Food food = dto.toEntity();
+        food.setMember(member);
         foodRepository.save(food);
         return FoodResponseDto.fromEntity(food);
     }
 
-    public FoodResponseDto updateFood(Long id, Long foodId, FoodUpdateRequestDto dto) {
+    public FoodResponseDto updateFood(Long memberId, Long foodId, FoodUpdateRequestDto dto) {
         if (dto.getAmount() == null) {
             throw new IllegalArgumentException("Amount cannot be null");
         }
 
         Food food = foodRepository.findById(foodId)
                 .orElseThrow(() -> new IllegalArgumentException("Food not found with id: " + foodId));
+
+        if (!food.getMember().getMemberId().equals(memberId)) {
+            throw new IllegalArgumentException("You do not have permission to update this food item.");
+        }
 
         dto.updateEntity(food);
         foodRepository.save(food);
         return FoodResponseDto.fromEntity(food);
     }
 
-    public boolean deleteFood(Long id, Long foodId) {
+    public boolean deleteFood(Long memberId, Long foodId) {
         Food food = foodRepository.findById(foodId)
                 .orElseThrow(() -> new IllegalArgumentException("Food not found with id: " + foodId));
+
+        if (!food.getMember().getMemberId().equals(memberId)) {
+            throw new IllegalArgumentException("You do not have permission to delete this food item.");
+        }
 
         foodRepository.delete(food);
         return true;

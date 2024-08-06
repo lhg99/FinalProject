@@ -24,6 +24,8 @@ public class QBoard extends EntityPathBase<Board> {
 
     public final EnumPath<backend.goorm.board.model.enums.BoardCategory> boardCategory = createEnum("boardCategory", backend.goorm.board.model.enums.BoardCategory.class);
 
+    public final StringPath boardCommentTexts = createString("boardCommentTexts");
+
     public final StringPath boardContent = createString("boardContent");
 
     public final BooleanPath boardDeleted = createBoolean("boardDeleted");
@@ -35,6 +37,8 @@ public class QBoard extends EntityPathBase<Board> {
     public final StringPath boardTitle = createString("boardTitle");
 
     public final EnumPath<backend.goorm.board.model.enums.BoardType> boardType = createEnum("boardType", backend.goorm.board.model.enums.BoardType.class);
+
+    public final StringPath boardWriter = createString("boardWriter");
 
     public final NumberPath<Integer> likesCnt = createNumber("likesCnt", Integer.class);
 

@@ -12,7 +12,7 @@ import java.util.List;
 public interface DietRepository extends JpaRepository<Diet, Long> {
     List<Food> findDistinctFoodByMember(Member member, Pageable pageRequest);
 
-    List<Diet> findByMemberAndDietDate(Member member, LocalDate date);
+    List<Diet> findByDietDateAndMember(LocalDate date, Member member);
 
-    List<Diet> findByDietDate(LocalDate dietDate);
+    List<Diet> findByMember(Member member);
 }

@@ -5,6 +5,7 @@ import backend.goorm.diet.dto.FoodResponseDto;
 import backend.goorm.diet.dto.FoodUpdateRequestDto;
 import backend.goorm.diet.dto.FoodUserDto;
 import backend.goorm.diet.service.FoodService;
+import backend.goorm.member.oauth.PrincipalDetails;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -35,46 +36,49 @@ public class FoodController {
         }
     }
 
-    @GetMapping
-    public ResponseEntity<Collection<FoodResponseDto>> getFoodByName(
-            @RequestParam(required = true) String name) {
-        Collection<FoodResponseDto> response = foodService.getFoodByName(null, name);
-        return ResponseEntity.status(HttpStatus.OK).body(response);
-    }
-
+    // 모든 음식을 조회하는 엔드포인트
     @GetMapping("/all")
     public ResponseEntity<Collection<FoodResponseDto>> getAllFoods() {
         Collection<FoodResponseDto> response = foodService.getAllFoods();
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
+    @GetMapping
+    public ResponseEntity<Collection<FoodResponseDto>> getFoodByName(
+            @RequestParam(name = "name") String foodName,
+            @AuthenticationPrincipal PrincipalDetails principalDetails) {
+        Collection<FoodResponseDto> response = foodService.getFoodByName( principalDetails.member().getMemberId(), foodName);
+        return ResponseEntity.status(HttpStatus.OK).body(response);
+    }
+
     @GetMapping("/recent")
-    public ResponseEntity<Collection<FoodResponseDto>> getRecentFood() {
-        Collection<FoodResponseDto> response = foodService.getRecentFood(null);
+    public ResponseEntity<Collection<FoodResponseDto>> getRecentFood(@AuthenticationPrincipal PrincipalDetails principalDetails) {
+        Collection<FoodResponseDto> response = foodService.getRecentFood( principalDetails.member().getMemberId());
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
     @PostMapping
     public ResponseEntity<FoodResponseDto> createFood(
-            @ModelAttribute FoodUserDto dto
-    ) {
-        FoodResponseDto response = foodService.createFood(null, dto);
+            @ModelAttribute FoodUserDto dto,
+            @AuthenticationPrincipal PrincipalDetails principalDetails) {
+        FoodResponseDto response = foodService.createFood(principalDetails.member().getMemberId(), dto);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
     @PutMapping("{food_id}")
     public ResponseEntity<FoodResponseDto> updateFood(
             @PathVariable("food_id") Long foodId,
-            @ModelAttribute FoodUpdateRequestDto dto
-    ) {
-        FoodResponseDto response = foodService.updateFood(null, foodId, dto);
+            @ModelAttribute FoodUpdateRequestDto dto,
+            @AuthenticationPrincipal PrincipalDetails principalDetails) {
+        FoodResponseDto response = foodService.updateFood(principalDetails.member().getMemberId(), foodId, dto);
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
     @DeleteMapping("{food_id}")
     public ResponseEntity<Boolean> deleteFood(
-            @PathVariable Long food_id) {
-        boolean response = foodService.deleteFood(null, food_id);
+            @PathVariable Long food_id,
+            @AuthenticationPrincipal PrincipalDetails principalDetails) {
+        boolean response = foodService.deleteFood(principalDetails.member().getMemberId(), food_id);
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 }

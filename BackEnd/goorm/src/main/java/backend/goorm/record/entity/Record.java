@@ -1,5 +1,6 @@
 package backend.goorm.record.entity;
 
+import backend.goorm.member.model.entity.Member;
 import backend.goorm.training.model.entity.Training;
 import jakarta.persistence.*;
 import lombok.*;
@@ -27,6 +28,10 @@ public class Record {
     @ManyToOne
     @JoinColumn(name = "training_id", nullable = false)
     private Training training;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "member_id")
+    private Member member;
 
     @Column(name = "record_date", nullable = false)
     private LocalDateTime recordDate;
