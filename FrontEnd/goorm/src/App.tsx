@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Suspense } from 'react';
 import { BrowserRouter, Route, Routes, Outlet } from 'react-router-dom';
 import Header from './components/Header/Header';
 import Chat from './pages/Chat/components/Chat';
@@ -7,6 +7,10 @@ import Exercise from './pages/Exercise/Exercise';
 import Map from './pages/FindGym/Map/Map';
 import Login from './pages/Login/Login';
 import SignUp from './pages/SignUp/SignUp';
+import Main from './pages/MyPage/Main/Main';
+import MyPage from './pages/MyPage/MyPage/MyPage';
+import { AuthProvider } from './pages/Login/auth/AuthContext';
+import ProtectedRoute from './pages/Login/auth/ProtectedRoute';
 
 const Layout: React.FC = () => (
   <>
@@ -20,19 +24,53 @@ const Layout: React.FC = () => (
 
 const App: React.FC = () => {
   return (
-    <BrowserRouter>
-      <Routes>
-        <Route path="/login" element={<Login />} />
-        <Route path="/signup" element={<SignUp />} />
+    <AuthProvider>
+      <BrowserRouter>
+        <Routes>
+          <Route path="/login" element={<Login />} />
+          <Route path="/signup" element={<SignUp />} />
 
-        <Route element={<Layout />}>
-          <Route path="/" element={<h1>Welcome to MyWebsite</h1>} />
-          <Route path="/Chat" element={<Chat />} />
-          <Route path="/exercise" element={<Exercise />} />
-          <Route path="/findgym" element={<Map />} />
-        </Route>
-      </Routes>
-    </BrowserRouter>
+          <Route element={<Layout />}>
+            <Route path="/" element={<h1>Welcome to MyWebsite</h1>} />
+            <Route path="/chat" 
+              element={
+                <ProtectedRoute>
+                  <Chat />
+                </ProtectedRoute>
+              } 
+            />
+            <Route path="/exercise" 
+              element={
+                <ProtectedRoute>
+                  <Exercise />
+                </ProtectedRoute>
+              } 
+            />
+            <Route path="/findgym" 
+              element={
+                <ProtectedRoute>
+                  <Map />
+                </ProtectedRoute>
+              } 
+            />
+            <Route path="/main" 
+              element={
+                <ProtectedRoute>
+                  <Main />
+                </ProtectedRoute>
+              } 
+            />
+              <Route path="/mypage" 
+              element={
+                <ProtectedRoute>
+                  <Suspense><MyPage /></Suspense>
+                </ProtectedRoute>
+              } 
+            />
+          </Route>
+        </Routes>
+      </BrowserRouter>
+    </AuthProvider>
   );
 };
 
