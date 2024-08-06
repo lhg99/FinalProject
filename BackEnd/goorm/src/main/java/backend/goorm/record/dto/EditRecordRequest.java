@@ -23,14 +23,14 @@ public class EditRecordRequest {
     private Integer reps;
     private Float distance;
     private Float incline;
-    private String memo;
+//    private String memo;
     private Integer satisfaction;
 
     public static Record updateRecord(Record record, EditRecordRequest edit, boolean isCardio) {
         // 공통된 필드 업데이트
         record.setDurationMinutes(edit.getDurationMinutes());
         record.setCaloriesBurned(edit.getCaloriesBurned());
-        record.setMemo(edit.getMemo());
+//        record.setMemo(edit.getMemo());
         record.setSatisfaction(edit.getSatisfaction());
         record.setIntensity(edit.getIntensity());
 

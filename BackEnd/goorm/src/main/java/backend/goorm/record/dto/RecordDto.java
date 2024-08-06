@@ -22,7 +22,7 @@ public class RecordDto {
     private Integer weight;
     private Float distance;
     private Float incline; // 경사 필드 추가
-    private String memo;
+//    private String memo;
     private Integer satisfaction;
     private String trainingName; // 운동 이름 필드 추가
     private LocalDate exerciseDate; // 운동 날짜 필드 추가
@@ -41,7 +41,7 @@ public class RecordDto {
         dto.setWeight(record.getWeight());
         dto.setDistance(record.getDistance());
         dto.setIncline(record.getIncline()); // 경사 필드 설정
-        dto.setMemo(record.getMemo());
+//        dto.setMemo(record.getMemo());
         dto.setSatisfaction(record.getSatisfaction());
         dto.setTrainingName(record.getTraining().getTrainingName()); // 운동 이름 필드 설정
         dto.setExerciseDate(record.getExerciseDate()); // 운동 날짜 필드 설정

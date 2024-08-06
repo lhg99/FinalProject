@@ -2,10 +2,7 @@ package backend.goorm.record.controller;
 
 import backend.goorm.member.model.entity.Member;
 import backend.goorm.member.oauth.PrincipalDetails;
-import backend.goorm.record.dto.AddCardioRecordRequest;
-import backend.goorm.record.dto.AddStrengthRecordRequest;
-import backend.goorm.record.dto.EditRecordRequest;
-import backend.goorm.record.dto.RecordDto;
+import backend.goorm.record.dto.*;
 import backend.goorm.record.service.RecordService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -67,12 +64,17 @@ public class RecordController {
     }
 
     @GetMapping("/all")
-    public ResponseEntity<Page<RecordDto>> getAllRecords(
+    public ResponseEntity<SimplePageResponse<RecordDto>> getAllRecords(
             @AuthenticationPrincipal PrincipalDetails principalDetails,
             @PageableDefault(size = 20) Pageable pageable) { // 기본 페이지 크기를 20으로 설정
 
         Page<RecordDto> records = recordService.getAllRecords(principalDetails.member(), pageable);
-        return ResponseEntity.ok(records);
+        SimplePageResponse<RecordDto> response = SimplePageResponse.<RecordDto>builder()
+                .content(records.getContent())
+                .totalPages(records.getTotalPages())
+                .totalElements(records.getTotalElements())
+                .build();
+        return ResponseEntity.ok(response);
     }
 
     @GetMapping("/daily-summary")

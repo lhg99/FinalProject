@@ -66,17 +66,10 @@ public class Record {
     @Column(name = "incline")
     private Float incline;
 
-    @Column(name = "memo", length = 1000)
-    private String memo;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "memo_id")
+    private Memo memo;
 
     @Column(name = "satisfaction")
     private Integer satisfaction;
-
-    @OneToMany(mappedBy = "record", cascade = CascadeType.ALL, orphanRemoval = true)
-    @JsonManagedReference
-    private List<RecordImages> recordImages = new ArrayList<>();
-
-    public void setRecordImages(List<RecordImages> recordImages) {
-        this.recordImages = (recordImages != null) ? recordImages : new ArrayList<>();
-    }
 }
