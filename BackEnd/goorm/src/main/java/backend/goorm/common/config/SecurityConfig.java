@@ -94,7 +94,7 @@ public class SecurityConfig {
     @Bean
     CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOriginPatterns(Arrays.asList("http://localhost:3000/**","http://localhost:5500/**", "*"));
+        configuration.setAllowedOriginPatterns(Arrays.asList("http://127.0.0.1:3000","http://127.0.0.1:5500", "http://final-project-app-env.eba-xdjqmujd.ap-northeast-2.elasticbeanstalk.com","*"));
         configuration.setAllowedMethods(Arrays.asList("GET","POST","PUT","DELETE"));
         configuration.setAllowedHeaders(Arrays.asList("*"));
         configuration.setAllowCredentials(true);
