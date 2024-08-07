@@ -145,23 +145,31 @@ public class MemberServiceImpl implements  MemberService{
 
         Optional<MemberInfo> findInfo = memberInfoRepository.findByIdWithMember(member);
 
+
         if(!findInfo.isPresent()){
-            throw new CustomException(CustomExceptionType.USER_NOT_FOUND);
+            return MemberInfoResponse.builder()
+                    .memberName(member.getMemberName())
+                    .memberEmail(member.getMemberEmail())
+                    .username(member.getMemberNickname())
+                    .memberRegDate(dateConvertUtil.convertDateToString(member.getMemberRegDate()))
+                    .memberHeight(null)
+                    .memberWeight(null)
+                    .comment(null)
+                    .memberType(member.getMemberType())
+                    .build();
+        }else{
+            return MemberInfoResponse.builder()
+                    .memberName(member.getMemberName())
+                    .memberEmail(member.getMemberEmail())
+                    .username(member.getMemberNickname())
+                    .memberRegDate(dateConvertUtil.convertDateToString(member.getMemberRegDate()))
+                    .memberHeight(findInfo.get().getMemberHeight())
+                    .memberWeight(findInfo.get().getMemberWeight())
+                    .comment(findInfo.get().getComment())
+                    .memberType(member.getMemberType())
+                    .build();
         }
 
-        Member findMember  = findInfo.get().getMemberId();
-
-
-        return MemberInfoResponse.builder()
-                .memberName(findMember.getMemberName())
-                .memberEmail(findMember.getMemberEmail())
-                .username(findMember.getMemberNickname())
-                .memberRegDate(dateConvertUtil.convertDateToString(findMember.getMemberRegDate()))
-                .memberHeight(findInfo.get().getMemberHeight())
-                .memberWeight(findInfo.get().getMemberWeight())
-                .comment(findInfo.get().getComment())
-                .memberType(findMember.getMemberType())
-                .build();
     }
 
     @Override
