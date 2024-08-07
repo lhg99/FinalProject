@@ -2,8 +2,9 @@ package backend.goorm.record.service;
 
 import backend.goorm.record.dto.EditRecordRequest;
 import backend.goorm.record.dto.RecordDto;
+import backend.goorm.record.entity.Memo;
 import backend.goorm.record.entity.Record;
-import backend.goorm.record.entity.RecordImages;
+import backend.goorm.record.repository.MemoRepository;
 import backend.goorm.record.repository.RecordRepository;
 import backend.goorm.record.dto.AddCardioRecordRequest;
 import backend.goorm.record.dto.AddStrengthRecordRequest;
@@ -33,6 +34,7 @@ public class RecordService {
 
     private final RecordRepository recordRepository;
     private final TrainingRepository trainingRepository;
+    private final MemoRepository memoRepository;
     private final S3ImageService s3ImageService;
 
     @Transactional
@@ -40,22 +42,8 @@ public class RecordService {
         Training training = trainingRepository.findById(trainingId)
                 .orElseThrow(() -> new IllegalArgumentException("Training not found with id: " + trainingId));
 
-        List<String> imageUrls = new ArrayList<>();
-        if (images != null && images.length > 0) {
-            log.info("images : {}", (Object) images);
-            imageUrls = s3ImageService.uploadMulti(images);
-        }
-
         Record record = AddCardioRecordRequest.toEntity(request, training);
         record.setMember(member); // Member 설정
-        if (!imageUrls.isEmpty()) {
-            List<RecordImages> recordImages = imageUrls.stream()
-                    .map(url -> RecordImages.builder().record(record).imageUrl(url).build())
-                    .collect(Collectors.toList());
-            record.setRecordImages(recordImages);
-        } else {
-            record.setRecordImages(new ArrayList<>()); // 빈 리스트로 설정
-        }
 
         Record saved = recordRepository.save(record);
         return RecordDto.fromEntity(saved);
@@ -66,22 +54,8 @@ public class RecordService {
         Training training = trainingRepository.findById(trainingId)
                 .orElseThrow(() -> new IllegalArgumentException("Training not found with id: " + trainingId));
 
-        List<String> imageUrls = new ArrayList<>();
-        if (images != null && images.length > 0) {
-            log.info("images : {}", (Object) images);
-            imageUrls = s3ImageService.uploadMulti(images);
-        }
-
         Record record = AddStrengthRecordRequest.toEntity(request, training);
         record.setMember(member); // Member 설정
-        if (!imageUrls.isEmpty()) {
-            List<RecordImages> recordImages = imageUrls.stream()
-                    .map(url -> RecordImages.builder().record(record).imageUrl(url).build())
-                    .collect(Collectors.toList());
-            record.setRecordImages(recordImages);
-        } else {
-            record.setRecordImages(new ArrayList<>()); // 빈 리스트로 설정
-        }
 
         Record saved = recordRepository.save(record);
         return RecordDto.fromEntity(saved);
@@ -103,15 +77,33 @@ public class RecordService {
             Training training = record.getTraining();
             String categoryName = String.valueOf(training.getCategory().getCategoryName());
 
-
             // 유산소 운동인지 판단하여 해당 메서드에 전달
             boolean isCardio = "유산소".equalsIgnoreCase(categoryName);
-
             EditRecordRequest.updateRecord(record, request, isCardio);
 
+            // 메모 업데이트 또는 추가
+            Optional<Memo> existingMemoOpt = memoRepository.findByMemberAndDate(member, record.getExerciseDate());
+
+            if (existingMemoOpt.isPresent()) {
+                Memo existingMemo = existingMemoOpt.get();
+                existingMemo.setContent(request.getMemo()); // 기존 메모 업데이트
+                memoRepository.save(existingMemo);
+            } else {
+                // 새로운 메모 생성
+                Memo newMemo = Memo.builder()
+                        .member(member)
+                        .content(request.getMemo()) // 메모가 비어있거나 null일 수 있음
+                        .date(record.getExerciseDate())
+                        .build();
+                memoRepository.save(newMemo);
+            }
 
             Record saved = recordRepository.save(record);
-            updatedRecords.add(RecordDto.fromEntity(saved));
+
+            // 메모가 null 또는 비어 있는 경우 처리
+            String memoContent = request.getMemo() != null && !request.getMemo().isEmpty() ? request.getMemo() : null;
+
+            updatedRecords.add(RecordDto.fromEntity(saved, memoContent));
         }
 
         return updatedRecords;
@@ -128,17 +120,19 @@ public class RecordService {
             throw new IllegalArgumentException("해당 기록을 삭제할 권한이 없습니다.");
         }
 
-        if (record.getRecordImages() != null) {
-            record.getRecordImages().forEach(image -> s3ImageService.deleteImageFromS3(image.getImageUrl()));
-        }
 
         recordRepository.delete(record);
     }
 
     @Transactional(readOnly = true)
-    public Page<RecordDto> getAllRecords(Member member, Pageable pageable) {
-        Page<Record> recordsPage = recordRepository.findAllByMember(member, pageable);
-        return recordsPage.map(RecordDto::fromEntity);
+    public Page<RecordDto> getPagedRecords(Member member, Pageable pageable) {
+        Page<Record> records = recordRepository.findAllByMember(member, pageable);
+
+        return records.map(record -> {
+            Optional<Memo> memoOpt = memoRepository.findByMemberAndDate(member, record.getExerciseDate());
+            String memoContent = memoOpt.map(Memo::getContent).orElse(null);
+            return RecordDto.fromEntity(record, memoContent);
+        });
     }
 
     public int getTotalCaloriesBurnedByDateAndMember(LocalDate date, Member member) {
