@@ -12,6 +12,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
+
 public class EditRecordRequest {
 
     private Long recordId;  // Record ID를 요청에서 받도록 추가
@@ -30,7 +31,6 @@ public class EditRecordRequest {
         // 공통된 필드 업데이트
         record.setDurationMinutes(edit.getDurationMinutes());
         record.setCaloriesBurned(edit.getCaloriesBurned());
-        record.setMemo(edit.getMemo());
         record.setSatisfaction(edit.getSatisfaction());
         record.setIntensity(edit.getIntensity());
 

@@ -2,10 +2,7 @@ package backend.goorm.record.controller;
 
 import backend.goorm.member.model.entity.Member;
 import backend.goorm.member.oauth.PrincipalDetails;
-import backend.goorm.record.dto.AddCardioRecordRequest;
-import backend.goorm.record.dto.AddStrengthRecordRequest;
-import backend.goorm.record.dto.EditRecordRequest;
-import backend.goorm.record.dto.RecordDto;
+import backend.goorm.record.dto.*;
 import backend.goorm.record.service.RecordService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -66,13 +63,34 @@ public class RecordController {
         return ResponseEntity.ok().build();
     }
 
-    @GetMapping("/all")
-    public ResponseEntity<Page<RecordDto>> getAllRecords(
-            @AuthenticationPrincipal PrincipalDetails principalDetails,
-            @PageableDefault(size = 20) Pageable pageable) { // 기본 페이지 크기를 20으로 설정
+//    @GetMapping("/all")
+//    public ResponseEntity<SimplePageResponse<RecordDto>> getAllRecords(
+//            @AuthenticationPrincipal PrincipalDetails principalDetails,
+//            @PageableDefault(size = 20) Pageable pageable) { // 기본 페이지 크기를 20으로 설정
+//
+//        Page<RecordDto> records = recordService.getAllRecords(principalDetails.member(), pageable);
+//        SimplePageResponse<RecordDto> response = SimplePageResponse.<RecordDto>builder()
+//                .content(records.getContent())
+//                .totalPages(records.getTotalPages())
+//                .totalElements(records.getTotalElements())
+//                .build();
+//        return ResponseEntity.ok(response);
+//    }
 
-        Page<RecordDto> records = recordService.getAllRecords(principalDetails.member(), pageable);
-        return ResponseEntity.ok(records);
+    @GetMapping("/all")
+    public ResponseEntity<SimplePageResponse<RecordDto>> getPagedRecords(
+            @AuthenticationPrincipal PrincipalDetails principalDetails,
+            @PageableDefault(size = 20) Pageable pageable) {
+        // 모든 운동 기록을 조회
+        Page<RecordDto> recordsPage = recordService.getPagedRecords(principalDetails.member(), pageable);
+
+        SimplePageResponse<RecordDto> response = SimplePageResponse.<RecordDto>builder()
+                .content(recordsPage.getContent())
+                .totalPages(recordsPage.getTotalPages())
+                .totalElements(recordsPage.getTotalElements())
+                .build();
+
+        return ResponseEntity.ok(response);
     }
 
     @GetMapping("/daily-summary")
