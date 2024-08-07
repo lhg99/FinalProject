@@ -33,8 +33,9 @@ public class Board {
     @Column(length = 100, nullable = false)
     private String boardTitle;
 
-    @Column(nullable = false)
+
     @Lob
+    @Column(nullable = false, columnDefinition = "TEXT")
     private String boardContent;
 
     @Column(nullable = false)

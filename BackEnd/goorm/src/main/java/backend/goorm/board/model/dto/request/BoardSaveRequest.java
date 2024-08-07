@@ -22,8 +22,8 @@ public class BoardSaveRequest {
     @NotBlank
     private String boardTitle;
 
-    @NotBlank
     @Lob
+    @NotBlank
     private String boardContent;
 
     @NotBlank
