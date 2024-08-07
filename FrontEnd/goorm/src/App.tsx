@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Suspense } from 'react';
 import { BrowserRouter, Route, Routes, Outlet } from 'react-router-dom';
 import Header from './components/Header/Header';
 import Chat from './pages/Chat/components/Chat';
@@ -8,6 +8,7 @@ import Map from './pages/FindGym/Map/Map';
 import Login from './pages/Login/Login';
 import SignUp from './pages/SignUp/SignUp';
 import Main from './pages/MyPage/Main/Main';
+import MyPage from './pages/MyPage/MyPage/MyPage';
 import { AuthProvider } from './pages/Login/auth/AuthContext';
 import ProtectedRoute from './pages/Login/auth/ProtectedRoute';
 import Food from './pages/Food/Food';
@@ -61,12 +62,19 @@ const App: React.FC = () => {
                 </ProtectedRoute>
               } 
             />
-            <Route  path="/main" 
+            <Route path="/main" 
               element={
                 // <ProtectedRoute>
                 //   <Main />
                 // </ProtectedRoute>
                 <Main />
+              } 
+            />
+              <Route path="/mypage" 
+              element={
+                <ProtectedRoute>
+                  <Suspense><MyPage /></Suspense>
+                </ProtectedRoute>
               } 
             />
           </Route>
