@@ -1,0 +1,90 @@
+.postContainer {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    margin-top: 100px;
+  
+    @media (max-width: 768px) {
+      margin-top: 50px;
+    }
+  
+    form {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      width: 600px;
+  
+      @media (max-width: 768px) {
+        width: 100%;
+      }
+  
+      input, select {
+        width: 100%;
+        height: 40px;
+        font-size: 16px;
+        border: 1px solid lightgray;
+        border-radius: 5px;
+        padding-left: 15px;
+        box-sizing: border-box;
+        cursor: text;
+  
+        @media (max-width: 768px) {
+          font-size: 14px;
+          height: 35px;
+        }
+      }
+  
+      textarea {
+        width: 100%;
+        height: 200px;
+        font-size: 16px;
+        border: 1px solid lightgray;
+        border-radius: 5px;
+        padding-left: 15px;
+        box-sizing: border-box;
+        cursor: text;
+        resize: none;
+  
+        @media (max-width: 768px) {
+          font-size: 14px;
+          height: 150px;
+        }
+      }
+  
+      .buttonGroup {
+        display: flex;
+        gap: 10px;
+  
+        @media (max-width: 768px) {
+          flex-direction: column;
+        }
+  
+        button {
+          flex: 1;
+          height: 40px;
+          font-size: 16px;
+          border: 1px solid lightgray;
+          border-radius: 5px;
+          cursor: pointer;
+          font-weight: bold;
+  
+          @media (max-width: 768px) {
+            height: 35px;
+            font-size: 14px;
+          }
+        }
+  
+        .backButton {
+          background-color: gray;
+          color: #ffffff;
+        }
+  
+        .submitButton {
+          background-color: #003369;
+          color: #ffffff;
+        }
+      }
+    }
+  }
+  
