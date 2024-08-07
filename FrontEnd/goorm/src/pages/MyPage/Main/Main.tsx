@@ -1,7 +1,13 @@
-import React from 'react';
+import React, { useCallback, useState } from 'react';
 import styles from './Main.module.scss';
+import MyCalendar from '../../Exercise/components/Date/Calendar';
 
 const MainPage: React.FC = () => {
+  const [dateInfo, setDateInfo] = useState<{ year: number, month: number, day: number, weekday: string } | null>(null);
+
+  const handleDateChange = useCallback((info: { year: number, month: number, day: number, weekday: string }) => {
+    setDateInfo(info);
+  }, []);
   return (
     <div className={styles.container}>
       <div className={styles.leftPane}>
@@ -13,7 +19,7 @@ const MainPage: React.FC = () => {
           <button>Button 2</button>
         </div>
         <div className={styles.calPane}>
-          <h2>달력</h2>
+          <MyCalendar onDateChange={handleDateChange} />
         </div>
       </div>
     </div>

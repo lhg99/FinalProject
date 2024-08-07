@@ -11,6 +11,7 @@ import Main from './pages/MyPage/Main/Main';
 import MyPage from './pages/MyPage/MyPage/MyPage';
 import { AuthProvider } from './pages/Login/auth/AuthContext';
 import ProtectedRoute from './pages/Login/auth/ProtectedRoute';
+import Food from './pages/Food/Food';
 
 const Layout: React.FC = () => (
   <>
@@ -46,6 +47,14 @@ const App: React.FC = () => {
                 </ProtectedRoute>
               } 
             />
+            <Route path="/food" 
+              element={
+                <Food />
+                // <ProtectedRoute>
+                //   <Food />
+                // </ProtectedRoute>
+              } 
+            />
             <Route path="/findgym" 
               element={
                 <ProtectedRoute>
@@ -55,9 +64,10 @@ const App: React.FC = () => {
             />
             <Route path="/main" 
               element={
-                <ProtectedRoute>
-                  <Main />
-                </ProtectedRoute>
+                // <ProtectedRoute>
+                //   <Main />
+                // </ProtectedRoute>
+                <Main />
               } 
             />
               <Route path="/mypage" 

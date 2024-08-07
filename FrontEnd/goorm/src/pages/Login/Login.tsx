@@ -19,8 +19,9 @@ const Login: React.FC = () => {
     const { loginId, loginPw } = data;
 
     try {
-      await login({ loginId, loginPw });
+      const response = await login({ loginId, loginPw });
       navigate('/main');
+      console.log("로그인 성공", response);
     } catch (error: any) {
       console.error('로그인에 실패했습니다:', error);
       alert(error.response?.data || '로그인에 실패했습니다. 아이디와 비밀번호를 확인해 주세요.');
