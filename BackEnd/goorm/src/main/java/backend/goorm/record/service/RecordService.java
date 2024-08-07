@@ -81,35 +81,34 @@ public class RecordService {
             boolean isCardio = "유산소".equalsIgnoreCase(categoryName);
             EditRecordRequest.updateRecord(record, request, isCardio);
 
-            // 메모 업데이트
+            // 메모 업데이트 또는 추가
             Optional<Memo> existingMemoOpt = memoRepository.findByMemberAndDate(member, record.getExerciseDate());
 
-            if (request.getMemo() != null && !request.getMemo().isEmpty()) {
-                if (existingMemoOpt.isPresent()) {
-                    Memo existingMemo = existingMemoOpt.get();
-                    existingMemo.setContent(request.getMemo()); // 기존 메모 업데이트
-                    memoRepository.save(existingMemo);
-                } else {
-                    // 새로운 메모 생성
-                    Memo newMemo = Memo.builder()
-                            .member(member)
-                            .content(request.getMemo())
-                            .date(record.getExerciseDate())
-                            .build();
-                    memoRepository.save(newMemo);
-                }
+            if (existingMemoOpt.isPresent()) {
+                Memo existingMemo = existingMemoOpt.get();
+                existingMemo.setContent(request.getMemo()); // 기존 메모 업데이트
+                memoRepository.save(existingMemo);
             } else {
-                // 메모가 비어 있으면 메모 삭제
-                existingMemoOpt.ifPresent(memoRepository::delete);
+                // 새로운 메모 생성
+                Memo newMemo = Memo.builder()
+                        .member(member)
+                        .content(request.getMemo()) // 메모가 비어있거나 null일 수 있음
+                        .date(record.getExerciseDate())
+                        .build();
+                memoRepository.save(newMemo);
             }
 
             Record saved = recordRepository.save(record);
-            String memoContent = request.getMemo();
+
+            // 메모가 null 또는 비어 있는 경우 처리
+            String memoContent = request.getMemo() != null && !request.getMemo().isEmpty() ? request.getMemo() : null;
+
             updatedRecords.add(RecordDto.fromEntity(saved, memoContent));
         }
 
         return updatedRecords;
     }
+
 
     @Transactional
     public void deleteRecord(Long recordId, Member member) {

@@ -72,4 +72,9 @@ public class Record {
 
     @Column(name = "satisfaction")
     private Integer satisfaction;
+
+    @PreUpdate
+    protected void onUpdate() {
+        this.modifiedDate = LocalDateTime.now();
+    }
 }
