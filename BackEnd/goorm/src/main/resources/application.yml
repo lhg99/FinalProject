@@ -2,5 +2,4 @@
 spring:
   profiles:
     active: prod
-#    include: private
 
