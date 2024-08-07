@@ -77,20 +77,39 @@ public class RecordService {
             Training training = record.getTraining();
             String categoryName = String.valueOf(training.getCategory().getCategoryName());
 
-
             // 유산소 운동인지 판단하여 해당 메서드에 전달
             boolean isCardio = "유산소".equalsIgnoreCase(categoryName);
-
             EditRecordRequest.updateRecord(record, request, isCardio);
 
+            // 메모 업데이트
+            Optional<Memo> existingMemoOpt = memoRepository.findByMemberAndDate(member, record.getExerciseDate());
+
+            if (request.getMemo() != null && !request.getMemo().isEmpty()) {
+                if (existingMemoOpt.isPresent()) {
+                    Memo existingMemo = existingMemoOpt.get();
+                    existingMemo.setContent(request.getMemo()); // 기존 메모 업데이트
+                    memoRepository.save(existingMemo);
+                } else {
+                    // 새로운 메모 생성
+                    Memo newMemo = Memo.builder()
+                            .member(member)
+                            .content(request.getMemo())
+                            .date(record.getExerciseDate())
+                            .build();
+                    memoRepository.save(newMemo);
+                }
+            } else {
+                // 메모가 비어 있으면 메모 삭제
+                existingMemoOpt.ifPresent(memoRepository::delete);
+            }
 
             Record saved = recordRepository.save(record);
-            updatedRecords.add(RecordDto.fromEntity(saved));
+            String memoContent = request.getMemo();
+            updatedRecords.add(RecordDto.fromEntity(saved, memoContent));
         }
 
         return updatedRecords;
     }
-
 
     @Transactional
     public void deleteRecord(Long recordId, Member member) {
