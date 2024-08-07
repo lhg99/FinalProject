@@ -22,4 +22,9 @@ public interface RecordRepository extends JpaRepository<Record, Long> {
     Page<Record> findByExerciseDateBetweenAndMember(LocalDate start, LocalDate end, Member member, Pageable pageable);
 
     List<Record> findAllByExerciseDateAndMember(LocalDate date, Member member);
+
+//    Page<Record> findPagedByExerciseDateAndMember(LocalDate date, Member member, Pageable pageable);
+
+
+
 }
