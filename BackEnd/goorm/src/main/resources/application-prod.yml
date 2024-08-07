@@ -22,8 +22,8 @@ spring:
       client:
         registration:
           kakao:
-            client-id: 6eb005afd4685fa7dd9733beac01c3db #${KAKAO_CLIENT_ID}
-            client-secret: 4o3UFEdtirm1XlmxouaWpFVixFeiEtAc #${KAKAO_CLIENT_SECRET}
+            client-id: ${KAKAO_CLIENT_ID}
+            client-secret: ${KAKAO_CLIENT_SECRET}
             redirect-uri: http://final-project-app-env.eba-xdjqmujd.ap-northeast-2.elasticbeanstalk.com/login/oauth2/code/kakao
             client-authentication-method: client_secret_post
             authorization-grant-type: authorization_code
@@ -69,4 +69,4 @@ cloud:
       auto: false
 
 data:
-  apiKey: MN6yZ24amfOMX7NPDMv25PBIUdw4zXtBml18P15%2Fu1wvmWbdrTAcjn4tE67yh7kybg5kLNDoPSBLr9mjn8SFxQ%3D%3D
+  apiKey: ${DATA_API_KEY}
