@@ -23,5 +23,8 @@ public interface RecordRepository extends JpaRepository<Record, Long> {
 
     List<Record> findAllByExerciseDateAndMember(LocalDate date, Member member);
 
-    Page<Record> findPagedByExerciseDateAndMember(LocalDate date, Member member, Pageable pageable);
+//    Page<Record> findPagedByExerciseDateAndMember(LocalDate date, Member member, Pageable pageable);
+
+
+
 }

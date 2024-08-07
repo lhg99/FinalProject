@@ -81,13 +81,15 @@ public class RecordController {
     public ResponseEntity<SimplePageResponse<RecordDto>> getPagedRecords(
             @AuthenticationPrincipal PrincipalDetails principalDetails,
             @PageableDefault(size = 20) Pageable pageable) {
-        LocalDate today = LocalDate.now();
-        Page<RecordDto> recordsPage = recordService.getPagedRecords(principalDetails.member(), today, pageable);
+        // 모든 운동 기록을 조회
+        Page<RecordDto> recordsPage = recordService.getPagedRecords(principalDetails.member(), pageable);
+
         SimplePageResponse<RecordDto> response = SimplePageResponse.<RecordDto>builder()
                 .content(recordsPage.getContent())
                 .totalPages(recordsPage.getTotalPages())
                 .totalElements(recordsPage.getTotalElements())
                 .build();
+
         return ResponseEntity.ok(response);
     }
 

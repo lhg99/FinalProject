@@ -106,16 +106,15 @@ public class RecordService {
         recordRepository.delete(record);
     }
 
-    public Page<RecordDto> getPagedRecords(Member member, LocalDate date, Pageable pageable) {
-        // 해당 날짜의 운동 기록을 페이징 처리하여 조회
-        Page<Record> recordsPage = recordRepository.findPagedByExerciseDateAndMember(date, member, pageable);
+    @Transactional(readOnly = true)
+    public Page<RecordDto> getPagedRecords(Member member, Pageable pageable) {
+        Page<Record> records = recordRepository.findAllByMember(member, pageable);
 
-        // 해당 날짜의 메모 조회
-        Optional<Memo> memoOpt = memoRepository.findByMemberAndDate(member, date);
-        String memoContent = memoOpt.map(Memo::getContent).orElse(null);
-
-        // 운동 기록과 메모를 RecordDto에 매핑하여 페이징 처리
-        return recordsPage.map(record -> RecordDto.fromEntity(record, memoContent));
+        return records.map(record -> {
+            Optional<Memo> memoOpt = memoRepository.findByMemberAndDate(member, record.getExerciseDate());
+            String memoContent = memoOpt.map(Memo::getContent).orElse(null);
+            return RecordDto.fromEntity(record, memoContent);
+        });
     }
 
     public int getTotalCaloriesBurnedByDateAndMember(LocalDate date, Member member) {
