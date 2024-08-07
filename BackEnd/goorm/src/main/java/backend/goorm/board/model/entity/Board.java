@@ -8,6 +8,8 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 @Setter
@@ -26,11 +28,14 @@ public class Board {
     @JoinColumn(name = "MEMBER_ID", nullable = false)
     private Member memberId;
 
+    private String boardWriter;
 
     @Column(length = 100, nullable = false)
     private String boardTitle;
 
-    @Column(nullable = false)
+
+    @Lob
+    @Column(nullable = false, columnDefinition = "TEXT")
     private String boardContent;
 
     @Column(nullable = false)
@@ -51,6 +56,8 @@ public class Board {
     @Enumerated(EnumType.STRING)
     BoardCategory boardCategory;
 
+    private String boardCommentTexts;
+
     public void increaseViewCnt() {
         this.viewCnt++;
     }
@@ -61,6 +68,18 @@ public class Board {
         this.boardContent = updateRequest.getBoardContent();
         this.boardCategory = updateRequest.getBoardCategory();
 
+    }
+
+    public void increaseLikesCnt() {
+        this.likesCnt++;
+    }
+
+    public void decreaseLikesCnt() {
+        this.likesCnt--;
+    }
+
+    public void addCommentTexts(String commentTexts) {
+        this.boardCommentTexts += commentTexts;
     }
 
 

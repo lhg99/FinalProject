@@ -1,8 +1,10 @@
 package backend.goorm.training.model.entity;
+
 import backend.goorm.training.model.enums.TrainingCategoryType;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import java.util.List;
 
@@ -22,5 +24,6 @@ public class TrainingCategory {
     private TrainingCategoryType categoryName;
 
     @OneToMany(mappedBy = "category")
+    @JsonIgnore
     private List<Training> trainings;
 }
