@@ -1,23 +1,23 @@
 import React from 'react'
 import styled from 'styled-components';
 
-interface DeleteModalProps {
+interface EditModalProps {
     isOpen: boolean;
     onClose: () => void;
     onConfirm: () => void;
 }
 
-const DeleteModal = ({ isOpen, onClose, onConfirm }: DeleteModalProps) => {
+const EditModal = ({ isOpen, onClose, onConfirm }: EditModalProps) => {
     if(!isOpen) return null;
 
     return (
         <ModalOverlay>
             <ModalContainer>
                 <ModalHeader>
-                    <h2>삭제 확인</h2>
+                    <h2>수정 확인</h2>
                 </ModalHeader>
                 <ModalBody>
-                    <p>정말로 이 운동 기록을 삭제하시겠습니까?</p>
+                    <p>수정하시겠습니까?</p>
                 </ModalBody>
                 <ModalFooter>
                     <ConfirmButton onClick={onConfirm}>네</ConfirmButton>
@@ -28,7 +28,7 @@ const DeleteModal = ({ isOpen, onClose, onConfirm }: DeleteModalProps) => {
     )
 }
 
-export default DeleteModal;
+export default EditModal;
 
 const ModalOverlay = styled.div`
     position: fixed;

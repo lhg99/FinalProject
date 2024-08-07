@@ -12,7 +12,7 @@ interface DateSelectorProps {
     onHandleEndDate: (date: Date) => void;
 }
 
-const DateSelector: React.FC<DateSelectorProps> = ({ startDate, endDate, onHandleStartDate, onHandleEndDate }) => {
+const DateSelector = ({ startDate, endDate, onHandleStartDate, onHandleEndDate }: DateSelectorProps) => {
 
     const handleStartDateChange = (date: Date | null) => {
         if (date) {

@@ -1,35 +1,37 @@
-import React, { useEffect, useMemo } from 'react'
-import styled from 'styled-components';
-import { FoodData } from '../../FoodTypes';
+import React, { useEffect, useMemo } from "react";
+import styled from "styled-components";
+import { FoodData } from "../../FoodTypes";
 // import { getDietRecord } from '../../api/foodApi';
-import { useFood } from '../../../../contexts/foodContext';
+import { useFood } from "../../../../contexts/foodContext";
+import { getFoodRecord } from "../../../../api/Food/foodApi";
 
 interface FoodListProps {
   food: FoodData[];
-  dateInfo: { year: number, month: number, day: number, weekday: string } | null;
-  onExerciseNameChange: (name: string) => void
+  dateInfo: {
+    year: number;
+    month: number;
+    day: number;
+    weekday: string;
+  } | null;
 }
 
 // 운동을 나열하는 컴포넌트
-const FoodList: React.FC<FoodListProps> = ({ food, dateInfo, onExerciseNameChange }) => {
-
-  // const { 
-  //   state: { selectedFood, foodRecords }, 
-  //   setFoodRecords 
+const FoodList = ({ food, dateInfo }: FoodListProps) => {
+  // const {
+  //   state: { selectedFood, foodRecords },
+  //   setFoodRecord
   // } = useFood();
-
   // useEffect(() => {
   //   const fetchRecords = async () => {
   //     try {
-  //       const records = await getDietRecord();
-  //       setFoodRecords(records);
+  //       const records = await getFoodRecord();
+  //       setFoodRecord(records);
   //     } catch (error) {
   //       console.error('Failed to fetch exercise records', error);
   //     }
   //   };
   //   fetchRecords();
   // }, []);
-
   // const filteredRecords = useMemo(() => {
   //   if (!dateInfo) {
   //     console.log('No dateInfo provided');
@@ -37,16 +39,14 @@ const FoodList: React.FC<FoodListProps> = ({ food, dateInfo, onExerciseNameChang
   //   }
   //   const { year, month, day } = dateInfo;
   //   const selectedDate = new Date(year, month - 1, day);
-
   //   const records = foodRecords.filter(record => {
-  //     const recordDate = new Date(record.exerciseDate);
+  //     const recordDate = new Date(record.recordDate);
   //     return (
   //       recordDate.getFullYear() === selectedDate.getFullYear() &&
   //       recordDate.getMonth() === selectedDate.getMonth() &&
   //       recordDate.getDate() === selectedDate.getDate()
   //     );
   //   });
-
   //   return records.map(record => {
   //     const foodData = food.find(ex => ex.foodName.replace(/\s+/g, '').toLowerCase() === record.trainingName.replace(/\s+/g, '').toLowerCase());
   //     if (food) {
@@ -56,10 +56,8 @@ const FoodList: React.FC<FoodListProps> = ({ food, dateInfo, onExerciseNameChang
   //     }
   //   });
   // }, [dateInfo, exerciseRecords, exercises]);
-
   // const combinedRecords = useMemo(() => {
   //   const maxRecordId = Math.max(0, ...exerciseRecords.map(record => record.recordId));
-
   //   const selectedExerciseRecords: ExerciseRecords[] = selectedExercises.map((exercise) => ({
   //     recordId: maxRecordId + 1, // 기존 maxRecordId에 index를 더해 recordId를 증가
   //     trainingName: exercise.name,
@@ -77,34 +75,32 @@ const FoodList: React.FC<FoodListProps> = ({ food, dateInfo, onExerciseNameChang
   //     trainingId: exercise.id,
   //     isAddingExercise: exercise.isAddingExercise ? true : false
   //   }));
-
   //   return [...filteredRecords, ...selectedExerciseRecords];
   // }, [filteredRecords, exerciseRecords, selectedExercises]); // Add selectedExercises to the dependency array
-
-  return (
-    <FoodListWrapper>
-      {/* <FoodTextContainer>
-        <FoodText>오늘의 운동 목록</FoodText>
-      </FoodTextContainer>
-      <FoodListContainer>
-        {combinedRecords.length > 0 ? (
-          combinedRecords.map(record => (
-            <FoodDetails
-              key={record.recordId}
-              exercise={record}
-              isAddingExercise={record.isAddingExercise as boolean}
-              details={record}
-              onExerciseNameChange={onExerciseNameChange}
-            />
-          ))
-        ) : (
-          <FoodTextContainer>
-            <FoodText>운동기록 없음</FoodText>
-          </FoodTextContainer>
-        )}
-      </FoodListContainer> */}
-    </FoodListWrapper>
-  );
+  // return (
+  //   <FoodListWrapper>
+  //     <FoodTextContainer>
+  //       <FoodText>오늘의 운동 목록</FoodText>
+  //     </FoodTextContainer>
+  //     <FoodListContainer>
+  //       {combinedRecords.length > 0 ? (
+  //         combinedRecords.map(record => (
+  //           <FoodDetails
+  //             key={record.recordId}
+  //             exercise={record}
+  //             isAddingExercise={record.isAddingExercise as boolean}
+  //             details={record}
+  //             onExerciseNameChange={onExerciseNameChange}
+  //           />
+  //         ))
+  //       ) : (
+  //         <FoodTextContainer>
+  //           <FoodText>운동기록 없음</FoodText>
+  //         </FoodTextContainer>
+  //       )}
+  //     </FoodListContainer>
+  //   </FoodListWrapper>
+  // );
 };
 
 export default FoodList;
@@ -113,7 +109,7 @@ const FoodListWrapper = styled.div`
   width: 100%;
   max-height: 34.6875rem;
   overflow-y: auto;
-  border: 1px solid #AFAFAF;
+  border: 1px solid #afafaf;
   border-radius: 5px;
   border-left: none;
   box-sizing: content-box;

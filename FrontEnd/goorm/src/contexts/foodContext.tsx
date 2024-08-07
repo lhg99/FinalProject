@@ -1,12 +1,13 @@
 import React, { createContext, useContext, useState, ReactNode } from 'react';
 import { Category, ExerciseData, ExerciseRecords } from '../pages/Exercise/ExerciseTypes';
-import { FoodData, FoodCategory } from '../pages/Food/FoodTypes';
+import { FoodData, FoodCategory, FoodRecord } from '../pages/Food/FoodTypes';
 
 interface FoodState {
     food: FoodData[];
     customFood: FoodData[];
     selectedFood: FoodData[];
     foodCategories: FoodCategory[];
+    foodRecords: FoodRecord[];
 
 }
 
@@ -15,6 +16,7 @@ const initialState: FoodState = {
     customFood: [],
     selectedFood: [],
     foodCategories: [],
+    foodRecords: [],
 
 };
 
@@ -22,6 +24,7 @@ interface FoodContextProps {
     state: FoodState;
     setFood: (food: FoodData[]) => void;
     setFoodCategories: (categories: FoodCategory[]) => void;
+    setFoodRecord: (foodRecord: FoodRecord[]) => void;
     addFood: (food: FoodData) => void;
     addCustomFood: (food: FoodData) => void;
     addSelectedFood: (food: FoodData) => void;
@@ -38,6 +41,10 @@ export const FoodProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
 
     const setFoodCategories = (categories: FoodCategory[]) => {
         setState(prevState => ({...prevState, categories}));
+    }
+
+    const setFoodRecord = (foodRecord: FoodRecord[]) => {
+        setState(prevState => ({...prevState, foodRecord}));
     }
 
     const addFood = (food: FoodData) => {
@@ -69,6 +76,7 @@ export const FoodProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
             state,
             setFood,
             setFoodCategories,
+            setFoodRecord,
             addFood,
             addCustomFood,
             addSelectedFood

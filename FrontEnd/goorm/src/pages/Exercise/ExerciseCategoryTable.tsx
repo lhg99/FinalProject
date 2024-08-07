@@ -1,35 +1,35 @@
-import React, { useEffect, useState } from 'react'
-import styled from 'styled-components';
-import { ExerciseCount } from './ExerciseTypes';
-import { useExercise } from '../../contexts/exerciseContext';
-import { getExercisePercentage } from './api/exerciseApi';
+import React, { useEffect, useState } from "react";
+import styled from "styled-components";
+import { ExerciseCount } from "./ExerciseTypes";
+import { useExercise } from "../../contexts/exerciseContext";
+import { getExercisePercentage } from "../../api/Exercise/exerciseApi";
 
-const ExerciseCategoryTable: React.FC = () => {
+const ExerciseCategoryTable = () => {
   const [data, setData] = useState<ExerciseCount | null>(null);
 
-  const { 
-    state: { startDate, endDate }
-} = useExercise();
+  const {
+    state: { startDate, endDate },
+  } = useExercise();
 
-useEffect(() => {
-  const fetchData = async () => {
+  useEffect(() => {
+    const fetchData = async () => {
       try {
         const response = await getExercisePercentage(startDate, endDate);
         setData(response);
       } catch (err) {
         console.error("데이터를 가져오는 데 실패했습니다.", err);
       }
-  };
+    };
 
-  fetchData();
-}, [startDate, endDate]);
+    fetchData();
+  }, [startDate, endDate]);
 
   return (
     <Table>
       <thead>
         <tr>
           <th>카테고리 구분</th>
-          <th>달성률</th>
+          <th>비율</th>
         </tr>
       </thead>
       <tbody>
@@ -47,10 +47,10 @@ useEffect(() => {
         )}
       </tbody>
     </Table>
-  )
-}
+  );
+};
 
-export default ExerciseCategoryTable
+export default ExerciseCategoryTable;
 
 const Table = styled.table`
   width: 95%;
@@ -62,9 +62,10 @@ const Table = styled.table`
   margin-left: 0.625rem;
   font-size: 0.875rem;
 
-  th, td {
-  border: 1px solid #bbb;
-  padding: 0.5rem;
+  th,
+  td {
+    border: 1px solid #bbb;
+    padding: 0.5rem;
   }
 
   th {

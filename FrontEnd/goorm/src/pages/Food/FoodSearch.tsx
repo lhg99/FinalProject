@@ -2,113 +2,118 @@ import React, { useCallback, useEffect, useState } from 'react'
 import { FoodData, FoodCategory } from './FoodTypes';
 import styled from 'styled-components';
 import { SearchIcon } from '../../image/SearchIcon';
-// import { getDietRecord, getFoodData, postSearhFood } from './api/foodApi';
 import { useFood } from '../../contexts/foodContext';
 import CustomFoodModal from './components/Modal/CustomFoodModal';
+import { getFoodData, postSearhFood } from '../../api/Food/foodApi';
+import { ModalStore } from '../../store/store';
 
 interface FoodSearchProps {
     onAddFood: (food: FoodData) => void;
     onAddCustomFood: (food: FoodData) => void;
 }
 
-const FoodSearch : React.FC<FoodSearchProps> = ({onAddFood, onAddCustomFood}) => {
-    // const [loading, setLoading] = useState<boolean>(true);
-    // const [searchQuery, setSearchQuery] = useState<string>("");
-    // const [filteredData, setFilteredData] = useState<FoodData[]>([]);
-    // const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
-    // const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+const FoodSearch = ({onAddFood, onAddCustomFood} : FoodSearchProps) => {
+    const [loading, setLoading] = useState<boolean>(true);
+    const [searchQuery, setSearchQuery] = useState<string>("");
+    const [filteredData, setFilteredData] = useState<FoodData[]>([]);
+    const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
 
-    // const { state: {food, selectedFood, foodCategories}, setFoodCategories, setFood} = useFood();
+    const { state: {food, selectedFood, foodCategories}, setFoodCategories, setFood} = useFood();
+    const { modals, openModal, closeModal } = ModalStore();
 
-    // useEffect(() => {
-    //     const fetchdata = async() => {
-    //         try {
-    //             const foodData = await getFoodData();
-    //             setFood(foodData);
-    //             setFilteredData(foodData);
-    //             const categories: FoodCategory[] = [
-    //                 { categoryName: "전체" },
-    //                 { categoryName: "아침" }, // mealTime: BREAKFAST
-    //                 { categoryName: "점심" }, // mealTime: LUNCH
-    //                 { categoryName: "저녁" }, // mealTime: DINNER
-    //                 { categoryName: "간식" } // mealTime: SNACK
-    //             ];
-    //             setFoodCategories(categories);
-    //         } catch (error) {
-    //             throw error;
-    //         } finally {
-    //             setLoading(false);
-    //         }
-    //     }
-    //     fetchdata();
-    // }, []);
+    const [nutritionDetails, setNutritionDetails] = useState<Omit<FoodData, 'foodId' | 'foodName'>>({
+        amount: 0,
+        calories: 0,
+        carbohydrate: 0,
+        protein: 0,
+        fat: 0,
+    });
 
-    // const handleCategoryChange = (categoryName: string) => {
-    //     if (categoryName === "전체") {
-    //         if (selectedCategories.includes("전체")) {
-    //             setSelectedCategories([]);
-    //         } else {
-    //             setSelectedCategories(["전체"]);
-    //         }
-    //     } else {
-    //         const newSelectedCategories = selectedCategories.includes(categoryName)
-    //             ? selectedCategories.filter(name => name !== categoryName) 
-    //             : [...selectedCategories, categoryName];
-    //         setSelectedCategories(newSelectedCategories);
-    //     }
-    // };
+    useEffect(() => {
+        const fetchdata = async() => {
+            try {
+                const foodData = await getFoodData();
+                setFood(foodData);
+                setFilteredData(foodData);
+                const categories: FoodCategory[] = [
+                    { categoryName: "전체" },
+                    { categoryName: "아침" }, // mealTime: BREAKFAST
+                    { categoryName: "점심" }, // mealTime: LUNCH
+                    { categoryName: "저녁" }, // mealTime: DINNER
+                    { categoryName: "간식" } // mealTime: SNACK
+                ];
+                setFoodCategories(categories);
+            } catch (error) {
+                throw error;
+            } finally {
+                setLoading(false);
+            }
+        }
+        fetchdata();
+    }, []);
 
-    // const handleSearchClick = async(searchQuery: string) => {
-    //     const response = await postSearhFood(searchQuery);
-    // }
+    const handleCategoryChange = (categoryName: string) => {
+        if (categoryName === "전체") {
+            if (selectedCategories.includes("전체")) {
+                setSelectedCategories([]);
+            } else {
+                setSelectedCategories(["전체"]);
+            }
+        } else {
+            const newSelectedCategories = selectedCategories.includes(categoryName)
+                ? selectedCategories.filter(name => name !== categoryName) 
+                : [...selectedCategories, categoryName];
+            setSelectedCategories(newSelectedCategories);
+        }
+    };
 
-    // const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    //     setSearchQuery(event.target.value);
-    // }
+    const handleSearchClick = async(searchQuery: string) => {
+        const response = await postSearhFood(searchQuery);
+    }
 
-    // const handleAddFoodClick = (food: FoodData) => {
-    //     const isFoodSelected = selectedFood.some(selected => selected.foodName.toLowerCase() === food.foodName.toLowerCase());
-    //     if (!isFoodSelected) {
-    //         onAddFood(food);
-    //     }
-    // }
+    const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        setSearchQuery(event.target.value);
+    }
 
-    // const handleModalClose = () => {
-    //     setIsModalOpen(false);
-    // };
+    const handleAddFoodClick = (food: FoodData) => {
+        const isFoodSelected = selectedFood.some(selected => selected.foodName.toLowerCase() === food.foodName.toLowerCase());
+        if (!isFoodSelected) {
+            onAddFood(food);
+        }
+    }
 
-    // const handleModalSave = (name: string) => {
-    //     if (selectedCategories.length === 0) {
-    //         alert("카테고리를 선택해주세요");
-    //         return;
-    //     }
+    const handleModalClose = () => {
+        closeModal("customFoodModal");
+    };
 
-    //     const category = foodCategories.find(cat => cat.categoryName === selectedCategories[0]);
+    const handleModalSave = (foodName: string) => {
+        if (selectedCategories.length === 0) {
+            alert("카테고리를 선택해주세요");
+            return;
+        }
 
-    //     if (!category) {
-    //         alert("유효한 카테고리를 선택해주세요");
-    //         return;
-    //     }
+        const category = foodCategories.find(cat => cat.categoryName === selectedCategories[0]);
 
-    //     const maxId = Math.max(0, ...food.map(food => food.foodId));
+        if (!category) {
+            alert("유효한 카테고리를 선택해주세요");
+            return;
+        }
 
-    //     const newCustomFood: FoodData = { 
-    //         foodId: maxId + 1,
-    //         foodName: name,
-    //         amount: selectedFood,
-    //         calories: selectedFood,
-    //         carbohydrate: selectedFood,
-    //         protein: selectedFood,
-    //         fat: selectedFood,
-    //     };
+        const maxId = Math.max(0, ...food.map(f => f.foodId));
 
-    //     onAddCustomFood(newCustomFood);
-    //     console.log("newCustomFood: ", newCustomFood);
-    // };
+        const newCustomFood: FoodData = {
+            foodId: maxId + 1,
+            foodName,
+            ...nutritionDetails // 영양소 정보 추가
+        };
+
+        onAddCustomFood(newCustomFood);
+        console.log("newCustomFood: ", newCustomFood);
+    };
 
     return (
         <FoodSearchContainer>
-            {/* <CategoriesContainer>
+            <CategoriesContainer>
                 {foodCategories.map((option, index) => (
                     <label key={index}>
                         <input 
@@ -132,7 +137,7 @@ const FoodSearch : React.FC<FoodSearchProps> = ({onAddFood, onAddCustomFood}) =>
                 </SearchButton>
             </SearchForm>
             <FoodListContainer>
-                <FoodItemButton onClick={() => setIsModalOpen(true)}>직접 입력하기</FoodItemButton>
+                <FoodItemButton onClick={() => openModal("customFoodModal")}>직접 입력하기</FoodItemButton>
                 {filteredData.map(data => (
                     <FoodItemButton key={data.foodId} onClick={() => handleAddFoodClick(data)}>
                         {data.foodName}
@@ -140,10 +145,10 @@ const FoodSearch : React.FC<FoodSearchProps> = ({onAddFood, onAddCustomFood}) =>
                 ))}
             </FoodListContainer>
             <CustomFoodModal
-                isOpen={isModalOpen}
+                isOpen={modals.customFoodModal?.isOpen}
                 onClose={handleModalClose}
                 onSave={handleModalSave}
-            /> */}
+            />
         </FoodSearchContainer>
     );
 }

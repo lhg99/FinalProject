@@ -4,7 +4,7 @@ import styled from 'styled-components';
 interface CustomFoodModalProps {
     isOpen: boolean;
     onClose: () => void;
-    onSave: (exerciseName: string) => void;
+    onSave: (foodName: string) => void;
 }
 
 const CustomFoodModal: React.FC<CustomFoodModalProps> = ({isOpen, onClose, onSave}) => {

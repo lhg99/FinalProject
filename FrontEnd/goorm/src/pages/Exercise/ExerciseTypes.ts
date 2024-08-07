@@ -18,6 +18,11 @@ export interface ExerciseCount {
     };
 }
 
+export interface Memo {
+    content: string;
+    date: string;
+}
+
 export interface ExerciseRecords {
     recordId: number;
     trainingName: string;
@@ -29,9 +34,9 @@ export interface ExerciseRecords {
     caloriesBurned?: number;
     incline?: number;
     reps?: number;
+    memo?: string;
     satisfaction: number;
     intensity: string; // 운동 강도(high, middle, low)
-    memo?: string;
     imageUrl?: string;
     categoryName: string;
     trainingId: number;

@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useState, ReactNode } from 'react';
-import { Category, ExerciseData, ExerciseRecords } from '../pages/Exercise/ExerciseTypes';
+import { Category, ExerciseData, ExerciseRecords, Memo } from '../pages/Exercise/ExerciseTypes';
+import { RecordResponse } from '../api/Exercise/dto/RecordResponse';
 
 interface ExerciseState {
     exercises: ExerciseData[];
@@ -8,14 +9,15 @@ interface ExerciseState {
     selectedExercises: ExerciseData[];
     categories: Category[];
     exerciseRecords: ExerciseRecords[];
+    selectedExerciseRecords: ExerciseRecords[];
     imageFile: File | null;
     isAddingExercise: boolean;
     startDate: Date;
     endDate: Date;
-    memo: string;
+    memo: Memo;
     isDeleteModalOpen: boolean;
     isEditModalOpen: boolean;
-    selectedRecords: number | null;
+    selectedRecords: number;
 }
 
 const initialState: ExerciseState = {
@@ -23,16 +25,17 @@ const initialState: ExerciseState = {
     exerciseDetails: {},
     customExercises: [],
     selectedExercises: [],
+    selectedExerciseRecords: [],
     categories: [],
     exerciseRecords: [],
     imageFile: null,
     isAddingExercise: false,
     startDate: new Date(),
     endDate: new Date(),
-    memo: "",
+    memo: { content: '', date: '' },
     isDeleteModalOpen: false,
     isEditModalOpen: false,
-    selectedRecords: null,
+    selectedRecords: 0,
 };
 
 interface ExerciseContextProps {
@@ -41,19 +44,21 @@ interface ExerciseContextProps {
     addCustomExercises: (exercise: ExerciseData) => void;
     addSelectedExercises: (exercise: ExerciseData) => void;
     addExerciseRecord: (record: ExerciseRecords) => void;
-    addMemo: (recordId: number, memo: string) => void;
+    // addMemo: (recordId: number, memo: string) => void;
     setExercises: (exercises: ExerciseData[]) => void;
     setCategories: (categories: Category[]) => void;
     setImageFile: (file: File | null) => void;
-    setExerciseRecords: (records: ExerciseRecords[]) => void;
+    setExerciseRecords: (records: RecordResponse) => void;
     setIsAddingExercise: (adding: boolean) => void;
     setStartDate: (date: Date) => void;
     setEndDate: (date: Date) => void;
-    setIsDeleteModalOpen: (isOpen: boolean) => void;
-    setIsEditModalOpen: (isOpen: boolean) => void;
+    setMemo: (memo: Memo) => void;
+    setSelectedExerciseRecords: (records: ExerciseRecords[]) => void; // 추가된 함수
     removeExercise: (exerciseName: string) => void;
     updateExerciseDetails: (details: ExerciseRecords) => void;
-    setSelectedRecord: (recordId: number | null) => void; // 선택된 레코드를 설정하는 함수
+    updateExerciseRecords: (recordId: number, updatedDetails: Partial<ExerciseRecords>) => void; // 추가
+    updateExerciseMemo: (recordId: number, memo: string) => void;
+    setSelectedRecord: (recordId: number) => void; // 선택된 레코드를 설정하는 함수
 }
 
 const ExerciseContext = createContext<ExerciseContextProps | undefined>(undefined);
@@ -89,31 +94,8 @@ export const ExerciseProvider: React.FC<{ children: ReactNode }> = ({ children }
     const addExerciseRecord = (record: ExerciseRecords) => {
         setState(prevState => ({
             ...prevState,
-            exerciseRecords: [...prevState.exerciseRecords, record]
+            exerciseRecords: [...prevState.exerciseRecords, record] // record를 배열에 직접 추가
         }));
-    };
-
-    const addMemo = (recordId: number, memo: string) => {
-        console.log("메모 추가", memo);
-        setState(prevState => {
-            // Find the exercise record to update
-            const updatedExerciseDetails = { ...prevState.exerciseDetails };
-            const recordKey = Object.keys(updatedExerciseDetails).find(
-                key => updatedExerciseDetails[key].recordId === recordId
-            );
-
-            if (recordKey) {
-                updatedExerciseDetails[recordKey] = {
-                    ...updatedExerciseDetails[recordKey],
-                    memo
-                };
-            }
-
-            return {
-                ...prevState,
-                exerciseDetails: updatedExerciseDetails
-            };
-        });
     };
 
     const setExercises = (exercises: ExerciseData[]) => {
@@ -128,12 +110,15 @@ export const ExerciseProvider: React.FC<{ children: ReactNode }> = ({ children }
         setState(prevState => ({ ...prevState, imageFile: file }));
     };
 
-    const setExerciseRecords = (records: ExerciseRecords[]) => {
-        setState(prevState => ({ ...prevState, exerciseRecords: records }));
+    const setExerciseRecords = (recordResponse: RecordResponse) => {
+        setState(prevState => ({
+            ...prevState,
+            exerciseRecords: recordResponse.content // RecordResponse 객체의 content를 설정
+        }));
     };
 
     const setIsAddingExercise = (adding: boolean) => {
-        setState(prevState => ({ ...prevState, addingNewExercise: adding }));
+        setState(prevState => ({ ...prevState, isAddingExercise: adding })); // 변경된 부분
     };
 
     const setStartDate = (date: Date) => {
@@ -144,35 +129,66 @@ export const ExerciseProvider: React.FC<{ children: ReactNode }> = ({ children }
         setState(prevState => ({...prevState, endDate: date}));
     }
 
-    const setIsDeleteModalOpen = (isOpen: boolean) => {
-        setState(prevState => ({...prevState, isDeleteModalOpen: isOpen }));
+    const setMemo = (memo: Memo) => {
+        setState(prevState => ({...prevState, memo }));
     };
 
-    const setIsEditModalOpen = (isOpen: boolean) => {
-        setState(prevState => ({...prevState, isEditModalOpen: isOpen }));
-    }
+    const setSelectedExerciseRecords = (records: ExerciseRecords[]) => {
+        setState(prevState => ({
+            ...prevState,
+            selectedExerciseRecords: records
+        }));
+    };
 
     const removeExercise = (exerciseName: string) => {
         setState(prevState => ({
             ...prevState,
             selectedExercises: prevState.selectedExercises.filter(ex => ex.name !== exerciseName),
-            exerciseRecords: prevState.exerciseRecords.filter(rec => rec.trainingName !== exerciseName)
+            exerciseRecords: prevState.exerciseRecords.filter(rec => rec.trainingName !== exerciseName) // content 제거
         }));
     };
 
-    const updateExerciseDetails = (details: ExerciseRecords) => {
-        console.log('Updating Exercise Details:', details); // 디버깅용 로그 추가
+    const updateExerciseDetails = (updatedRecord: ExerciseRecords) => {
         setState(prevState => ({
-            ...prevState,
-            exerciseDetails: {
-                ...prevState.exerciseDetails,
-                [details.trainingName]: details
-            }
+          ...prevState,
+          exerciseDetails: {
+            ...prevState.exerciseDetails,
+            [updatedRecord.trainingName]: updatedRecord // Update the specific record
+          }
         }));
+      };
+
+    const updateExerciseRecords = (recordId: number, updatedDetails: Partial<ExerciseRecords>) => {
+        setState((prevState) => {
+            const updatedRecords = prevState.exerciseRecords.map(record =>
+                record.recordId === recordId ? { ...record, ...updatedDetails } : record
+            );
+
+            return {
+                ...prevState,
+                exerciseRecords: updatedRecords,
+            };
+        });
     };
+
+    const updateExerciseMemo = (recordId: number, memo: string) => {
+        setState((prevState) => {
+          const updatedRecords = prevState.exerciseRecords.map((record) => {
+            if (record.recordId === recordId) {
+              return { ...record, memo };
+            }
+            return record;
+          });
+    
+          return {
+            ...prevState,
+            exerciseRecords: updatedRecords,
+          };
+        });
+      };
 
    // 선택된 레코드 ID 설정
-    const setSelectedRecord = (recordId: number | null) => {
+    const setSelectedRecord = (recordId: number) => {
         setState(prevState => ({
             ...prevState,
             selectedRecord: recordId
@@ -188,7 +204,6 @@ export const ExerciseProvider: React.FC<{ children: ReactNode }> = ({ children }
             addCustomExercises,
             addSelectedExercises,
             addExerciseRecord,
-            addMemo,
             setExercises,
             setCategories,
             setImageFile,
@@ -196,11 +211,13 @@ export const ExerciseProvider: React.FC<{ children: ReactNode }> = ({ children }
             setIsAddingExercise,
             setStartDate,
             setEndDate,
-            setIsDeleteModalOpen,
-            setIsEditModalOpen,
+            setMemo,
             removeExercise,
             updateExerciseDetails,
-            setSelectedRecord
+            updateExerciseRecords,
+            updateExerciseMemo,
+            setSelectedRecord,
+            setSelectedExerciseRecords
         }}>
             {children}
         </ExerciseContext.Provider>

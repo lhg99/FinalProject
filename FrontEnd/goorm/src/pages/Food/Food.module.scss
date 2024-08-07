@@ -1,4 +1,3 @@
-
 .food {
     display: flex;
     flex-direction: column;
@@ -11,67 +10,68 @@
         display: flex;
         width: 100%;
         margin-bottom: .625rem;
-        margin-top: 1.25rem;
+        margin-top: .625rem;
         justify-content: space-between;
-        
+
         .leftColumn {
             display: flex;
             flex-direction: column;
             margin-right: .625rem;
-        
-        .calendar {
-            margin-bottom: .625rem;
-        }
-    }
-    
-    .rightColumn {
-        display: flex;
-        flex-direction: column;
-        border: 1px solid black;
-        border-radius: .625rem;
-  
-        margin-top: .625rem;
-        flex: 1;
-  
-        .dateInfo {
-            text-align: center;
-            background-color: #7CADF7;
-            border-radius: .3125rem;
-            color: white;
-            
-            .dateText {
-                margin-top: .625rem;
+
+            .calendar {
                 margin-bottom: .625rem;
-                font-size: 2rem;
-                font-weight: bold;
             }
         }
-  
-        .searchListContainer {
+
+        .rightColumn {
             display: flex;
-            flex-direction: row;
-            justify-content: space-between;
-            width: 100%;
-            height: 100%;
-            margin-left: 0;
-            margin-top: .9375rem;
-    
-            .searchColumn {
+            flex-direction: column;
+            border: 1px solid black;
+            border-radius: .625rem;
+
+            margin-top: .625rem;
+            flex: 1;
+
+            .dateInfo {
+                text-align: center;
+                background-color: #7CADF7;
+                border-radius: .3125rem;
+                color: white;
+
+                .dateText {
+                    margin-top: .625rem;
+                    margin-bottom: .625rem;
+                    font-size: 2rem;
+                    font-weight: bold;
+                }
+            }
+
+            .searchListContainer {
                 display: flex;
+                flex-direction: row;
+                justify-content: space-between;
                 width: 100%;
-                margin-left: .9375rem;
-                margin-right: .9375rem;
+                height: 37.5rem;
+                margin-left: 0;
+                margin-top: .9375rem;
+
+                .searchColumn {
+                    display: flex;
+                    width: 100%;
+                    height: 600px;
+                    margin-left: .9375rem;
+                    margin-right: .9375rem;
+                }
             }
         }
     }
-}
 
     .foodMemo {
         display: flex;
         margin-top: 1.25rem;
         border: 1px solid black;
         border-radius: 0.9375rem;
-        
+
         .memoInput {
             display: flex;
             margin-bottom: 1.25rem;

@@ -1,28 +1,30 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import { getExerciseData } from './api/exerciseApi';
 import styled from 'styled-components';
 import { SearchIcon } from '../../image/SearchIcon';
 import { useExercise } from '../../contexts/exerciseContext';
 import { Category, ExerciseData } from './ExerciseTypes';
 import CustomExerciseModal from './components/Modal/CusomExerciseModal';
+import { ModalStore } from '../../store/store';
+import { getExerciseData } from '../../api/Exercise/exerciseApi';
 
 interface ExerciseSearchProps {
     onAddExercise: (exercise: ExerciseData) => void;
     onAddCustomExercise: (exercise: ExerciseData) => void;
 }
 
-const ExerciseSearch: React.FC<ExerciseSearchProps> = ({ onAddExercise, onAddCustomExercise }) => {
+const ExerciseSearch = ({ onAddExercise, onAddCustomExercise }: ExerciseSearchProps) => {
     const [loading, setLoading] = useState<boolean>(true);
     const [searchQuery, setSearchQuery] = useState<string>("");
     const [filteredData, setFilteredData] = useState<ExerciseData[]>([]);
     const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
-    const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
 
     const {
         state: { exercises, categories, selectedExercises }, 
         setCategories, 
         setExercises
     } = useExercise();
+
+    const {modals, openModal, closeModal} = ModalStore();
 
     // Fetch exercise data on initial render
     useEffect(() => {
@@ -93,7 +95,7 @@ const ExerciseSearch: React.FC<ExerciseSearchProps> = ({ onAddExercise, onAddCus
     };
 
     const handleModalClose = () => {
-        setIsModalOpen(false);
+        closeModal("customExerciseModal"); // 수정: 모달 닫기
     };
 
     const handleModalSave = (exerciseName: string) => {
@@ -153,7 +155,7 @@ const ExerciseSearch: React.FC<ExerciseSearchProps> = ({ onAddExercise, onAddCus
                 </SearchButton>
             </SearchForm>
             <ExerciseListContainer>
-                <ExerciseItemButton onClick={() => setIsModalOpen(true)}>직접 입력하기</ExerciseItemButton>
+                <ExerciseItemButton onClick={() => openModal("customExerciseModal")}>직접 입력하기</ExerciseItemButton>
                 {filteredData.map(data => (
                     <ExerciseItemButton key={data.id} onClick={() => handleAddExerciseClick(data)}>
                         {data.name}
@@ -161,7 +163,7 @@ const ExerciseSearch: React.FC<ExerciseSearchProps> = ({ onAddExercise, onAddCus
                 ))}
             </ExerciseListContainer>
             <CustomExerciseModal
-                isOpen={isModalOpen}
+                isOpen={modals.customExerciseModal?.isOpen} // 수정: 모달 상태 접근
                 onClose={handleModalClose}
                 onSave={handleModalSave}
             />

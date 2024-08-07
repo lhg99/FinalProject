@@ -13,7 +13,7 @@ const Food: React.FC = () => {
         setDateInfo(info);
     }, []);
 
-    const {addFood, addCustomFood} = useFood();
+    const {state: {selectedFood}, addFood, addCustomFood} = useFood();
 
     const handleAddFood = useCallback((food: FoodData) => {
         addFood(food);
@@ -44,6 +44,7 @@ const Food: React.FC = () => {
                     <div className={styles.searchListContainer}>
                         <div className={styles.searchColumn}>
                             <FoodSearch onAddFood={handleAddFood} onAddCustomFood={handleAddCustomFood}/>
+                            {/* <FoodList food={selectedFood} dateInfo={dateInfo} /> */}
                         </div>
                     </div>
                 </div>

@@ -7,7 +7,7 @@ interface CustomExerciseModalProps {
     onSave: (exerciseName: string) => void;
 }
 
-const CustomExerciseModal: React.FC<CustomExerciseModalProps> = ({isOpen, onClose, onSave}) => {
+const CustomExerciseModal = ({ isOpen, onClose, onSave }: CustomExerciseModalProps) => {
     const [exerciseName, setExerciseName] = useState<string>("");
     if(!isOpen) return null;
 
@@ -78,6 +78,7 @@ const CloseButton = styled.button`
 
 const ModalBody = styled.div`
     margin-bottom: 1rem;
+    margin-right: 1.25rem;
 `;
 
 const Input = styled.input`

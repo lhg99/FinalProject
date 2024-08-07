@@ -1,5 +1,6 @@
-import axiosInstance from '../../../api/axiosInstance';
-import { FoodData, FoodRecord } from '../FoodTypes';
+import { FoodData, FoodRecord } from "../../pages/Food/FoodTypes";
+import axiosInstance from "../axiosInstance";
+
 
 export const getFoodData = async (): Promise<FoodData[]> => {
     try {

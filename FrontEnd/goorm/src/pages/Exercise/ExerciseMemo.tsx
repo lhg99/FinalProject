@@ -1,77 +1,94 @@
-import React, { useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
-import { CKEditor } from '@ckeditor/ckeditor5-react';
-import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
-import axiosInstance from "../../api/axiosInstance";
+import { CKEditor } from "@ckeditor/ckeditor5-react";
+import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
 import { useExercise } from "../../contexts/exerciseContext";
+import { ModalStore } from "../../store/store";
+import axiosInstance from "../../api/axiosInstance";
+import { formatDateData, formatDateInfo } from "../../utils/DateUtils";
 
-const ExerciseMemo: React.FC = () => {
-  const { state: {
-    exerciseDetails, exerciseRecords
-  }, addMemo } = useExercise();
+interface ExerciseMemoProps {
+  dateInfo: {
+    year: number;
+    month: number;
+    day: number;
+    weekday: string;
+    formattedDate: string;
+  } | null;
+}
+
+const ExerciseMemo = ({dateInfo}:ExerciseMemoProps) => {
+  const {
+    state: { exerciseRecords },
+    setMemo
+  } = useExercise();
+  const { isAnyModalOpen } = ModalStore();
   const [editorData, setEditorData] = useState<string>("");
 
-  const { state: { isDeleteModalOpen, isEditModalOpen } } = useExercise();
+  useEffect(() => {
+    if (dateInfo) {
+      const formattedDate = formatDateInfo(dateInfo);
+      const record = exerciseRecords.find(
+        (record) => record.exerciseDate === formattedDate
+      );
+      const memoContent = record?.memo || ""; // Default to empty if no memo is found
+      setEditorData(memoContent);
 
-  const recordId = exerciseRecords.length > 0 ? exerciseRecords[exerciseRecords.length - 1].recordId + 1 : 1; 
-
-  const currentRecord = Object.values(exerciseDetails).find(record => record.recordId === recordId - 1);
-  const currentMemo = currentRecord ? currentRecord.memo : "여기에 운동메모를 기록하세요.";
+      // Set memo on initial load
+      setMemo({
+        content: memoContent,
+        date: formattedDate,
+      });
+    }
+  }, [dateInfo, exerciseRecords]); // Depend on dateInfo and exerciseRecords
 
   return (
     <MemoContainer>
       <MemoDetails>
         <DetailsText>메모</DetailsText>
-        {!isDeleteModalOpen && !isEditModalOpen && (  // 메모 모달이 열려 있지 않을 때만 CKEditor 표시
-          <CKEditor 
-            editor={ClassicEditor} 
-            data="<p>여기에 운동메모를 입력하세요</p>"
+        {!isAnyModalOpen() && ( // 다른 모달이 열려있지 않을 때 CKeditor 표시
+          <CKEditor
+            editor={ClassicEditor}
+            data={editorData}
             onChange={(event, editor) => {
               const data = editor.getData();
               setEditorData(data);
+              // 선택된 날짜에 대한 메모를 업데이트합니다
+              if (dateInfo) {
+                const formattedDate = formatDateInfo(dateInfo); // 날짜 형식화
+                setMemo({
+                  content: data,
+                  date: formattedDate,
+                }); // Update memo
+              }
             }}
             onBlur={(event, editor) => {
               const data = editor.getData();
-              addMemo(recordId, data.toString());
-              console.log("recordId and data: " + recordId + data);
-            }} 
+            }}
             config={{
               toolbar: [
-                'heading', '|', 'bold', 'italic', 'link', 'bulletedList', 'numberedList', 'blockQuote'
-              ]
+                "heading",
+                "|",
+                "bold",
+                "italic",
+                "link",
+                "bulletedList",
+                "numberedList",
+                "blockQuote",
+                "imageUpload",
+              ],
+              ckfinder: {
+                uploadUrl: `${axiosInstance.defaults.baseURL}/s3/ck/upload`,
+              },
             }}
           />
         )}
-        <CKEditor 
-            editor={ClassicEditor} 
-            data=""
-            onChange={(event, editor) => {
-              const data = editor.getData();
-              setEditorData(data);
-            }}
-            onBlur={(event, editor) => {
-              const data = editor.getData();
-              addMemo(recordId, data.toString());
-              console.log("recordId and data: " + recordId + data);
-            }} 
-            config={{
-              toolbar: [
-                'heading', '|', 'bold', 'italic', 'link', 'bulletedList', 'numberedList', 'blockQuote', 'imageUpload'
-              ],
-              ckfinder: {
-                uploadUrl: `${axiosInstance.defaults.baseURL}/s3/ck/upload`, // 이미지 업로드를 위한 서버 엔드포인트
-              },
-              image: {
-                toolbar: ['imageTextAlternative', 'imageStyle:full', 'imageStyle:side']
-              }
-            }}
-          />
       </MemoDetails>
     </MemoContainer>
-  )
-}
+  );
+};
 
-export default ExerciseMemo
+export default ExerciseMemo;
 
 const MemoContainer = styled.div`
   display: flex;
@@ -88,12 +105,9 @@ const MemoDetails = styled.div`
   width: 100%;
   margin-bottom: 10px;
   border: 1px solid black;
+  flex-direction: row; /* Stack items vertically */
   border-right: none;
   height: 100%;
-
-  .ck-editor {
-    z-index: 1; /* 다른 UI 요소보다 낮게 설정 */
-  }
 
   .ck.ck-editor__main > .ck-editor__editable {
     width: 68.75rem;
@@ -105,10 +119,11 @@ const MemoDetails = styled.div`
   }
 `;
 
-const DetailsText = styled.p `
+const DetailsText = styled.p`
   width: 5%;
   margin-left: 1.25rem;
   margin-right: 1.25rem;
+  flex-direction: row;
   font-size: 0.875rem;
   font-weight: bold;
 `;
