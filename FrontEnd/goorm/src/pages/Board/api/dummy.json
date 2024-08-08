@@ -1,0 +1,289 @@
+{
+    "posts": [
+        {
+            "boardId": 1,
+            "boardType": "자유게시판",
+            "category": "운동",
+            "title": "벤치 프레스 기술 질문",
+            "content": "",
+            "createdAt": "2024-06-17",
+            "likeCount": 25,
+            "member": {
+                "id": 1,
+                "loginId": "loginId1",
+                "nickname": "헬스마스터"
+            },
+            "question": {
+                "id": 0,
+                "level": 0,
+                "title": ""
+            }
+        },
+        {
+            "boardId": 2,
+            "boardType": "자유게시판",
+            "category": "기타",
+            "title": "스쿼트 자세 관련 질문",
+            "content": "",
+            "createdAt": "2024-06-16",
+            "likeCount": 18,
+            "member": {
+                "id": 2,
+                "loginId": "loginId2",
+                "nickname": "운동전문가"
+            },
+            "question": {
+                "id": 0,
+                "level": 0,
+                "title": ""
+            }
+        },
+        {
+            "boardId": 3,
+            "boardType": "자유게시판",
+            "category": "식단",
+            "title": "다이어트 요령 질문드립니다",
+            "content": "",
+            "createdAt": "2024-06-15",
+            "likeCount": 10,
+            "member": {
+                "id": 3,
+                "loginId": "loginId3",
+                "nickname": "다이어트초보"
+            },
+            "question": {
+                "id": 0,
+                "level": 0,
+                "title": ""
+            }
+        },
+        {
+            "boardId": 4,
+            "boardType": "자유게시판",
+            "category": "운동",
+            "title": "푸쉬업의 효과적인 방법 질문",
+            "content": "",
+            "createdAt": "2024-06-14",
+            "likeCount": 30,
+            "member": {
+                "id": 4,
+                "loginId": "loginId4",
+                "nickname": "운동고수"
+            },
+            "question": {
+                "id": 0,
+                "level": 0,
+                "title": ""
+            }
+        },
+        {
+            "boardId": 5,
+            "boardType": "자유게시판",
+            "category": "운동",
+            "title": "버피 테스트 질문",
+            "content": "",
+            "createdAt": "2024-06-13",
+            "likeCount": 15,
+            "member": {
+                "id": 5,
+                "loginId": "loginId5",
+                "nickname": "피트니스사랑"
+            },
+            "question": {
+                "id": 0,
+                "level": 0,
+                "title": ""
+            }
+        },
+        {
+            "boardId": 6,
+            "boardType": "자유게시판",
+            "category": "운동",
+            "title": "크런치 운동 질문드립니다",
+            "content": "",
+            "createdAt": "2024-06-12",
+            "likeCount": 12,
+            "member": {
+                "id": 6,
+                "loginId": "loginId6",
+                "nickname": "복근전문가"
+            },
+            "question": {
+                "id": 0,
+                "level": 0,
+                "title": ""
+            }
+        },
+        {
+            "boardId": 7,
+            "boardType": "자유게시판",
+            "category": "운동",
+            "title": "플랭크 자세의 효과에 대한 질문",
+            "content": "",
+            "createdAt": "2024-06-11",
+            "likeCount": 20,
+            "member": {
+                "id": 7,
+                "loginId": "loginId7",
+                "nickname": "플랭크마스터"
+            },
+            "question": {
+                "id": 0,
+                "level": 0,
+                "title": ""
+            }
+        },
+        {
+            "boardId": 8,
+            "boardType": "자유게시판",
+            "category": "운동",
+            "title": "레그 프레스 최적화 방법 질문",
+            "content": "",
+            "createdAt": "2024-06-10",
+            "likeCount": 28,
+            "member": {
+                "id": 8,
+                "loginId": "loginId8",
+                "nickname": "하체연구가"
+            },
+            "question": {
+                "id": 0,
+                "level": 0,
+                "title": ""
+            }
+        },
+        {
+            "boardId": 9,
+            "boardType": "자유게시판",
+            "category": "운동",
+            "title": "인터벌 트레이닝 시간 설정 질문",
+            "content": "",
+            "createdAt": "2024-06-09",
+            "likeCount": 15,
+            "member": {
+                "id": 9,
+                "loginId": "loginId9",
+                "nickname": "트레이닝전문가"
+            },
+            "question": {
+                "id": 0,
+                "level": 0,
+                "title": ""
+            }
+        },
+        {
+            "boardId": 10,
+            "boardType": "자유게시판",
+            "category": "운동",
+            "title": "코어 운동 기초 질문입니다",
+            "content": "",
+            "createdAt": "2024-06-08",
+            "likeCount": 8,
+            "member": {
+                "id": 10,
+                "loginId": "loginId10",
+                "nickname": "운동초보"
+            },
+            "question": {
+                "id": 0,
+                "level": 0,
+                "title": ""
+            }
+        },
+        {
+            "boardId": 11,
+            "boardType": "자유게시판",
+            "category": "운동",
+            "title": "크로스핏 운동 과정에 대해 궁금합니다",
+            "content": "",
+            "createdAt": "2024-06-07",
+            "likeCount": 32,
+            "member": {
+                "id": 11,
+                "loginId": "loginId11",
+                "nickname": "크로스핏고수"
+            },
+            "question": {
+                "id": 0,
+                "level": 0,
+                "title": ""
+            }
+        },
+        {
+            "boardId": 12,
+            "boardType": "자유게시판",
+            "category": "운동",
+            "title": "유산소 운동 질문",
+            "content": "",
+            "createdAt": "2024-06-06",
+            "likeCount": 22,
+            "member": {
+                "id": 12,
+                "loginId": "loginId12",
+                "nickname": "유산소전문가"
+            },
+            "question": {
+                "id": 0,
+                "level": 0,
+                "title": ""
+            }
+        },
+        {
+            "boardId": 13,
+            "boardType": "자유게시판",
+            "category": "운동",
+            "title": "덤벨 컬의 활용에 대한 질문입니다",
+            "content": "",
+            "createdAt": "2024-06-05",
+            "likeCount": 14,
+            "member": {
+                "id": 13,
+                "loginId": "loginId13",
+                "nickname": "덤벨마스터"
+            },
+            "question": {
+                "id": 0,
+                "level": 0,
+                "title": ""
+            }
+        },
+        {
+            "boardId": 14,
+            "boardType": "자유게시판",
+            "category": "운동",
+            "title": "케틀벨 운동 질문합니다",
+            "content": "",
+            "createdAt": "2024-06-04",
+            "likeCount": 19,
+            "member": {
+                "id": 14,
+                "loginId": "loginId14",
+                "nickname": "케틀벨연구자"
+            },
+            "question": {
+                "id": 0,
+                "level": 0,
+                "title": ""
+            }
+        },
+        {
+            "boardId": 15,
+            "boardType": "자유게시판",
+            "category": "운동",
+            "title": "하체 운동의 효과적인 방법 질문",
+            "content": "",
+            "createdAt": "2024-06-03",
+            "likeCount": 16,
+            "member": {
+                "id": 15,
+                "loginId": "loginId15",
+                "nickname": "운동응용"
+            },
+            "question": {
+                "id": 0,
+                "level": 0,
+                "title": ""
+            }
+        }
+    ]
+}

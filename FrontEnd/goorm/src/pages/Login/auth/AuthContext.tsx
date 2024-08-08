@@ -77,7 +77,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       setTimeout(() => {
         const result = user.message.includes("로그인이 정상적으로 완료되었습니다");
         resolve(result);
-      }, 2000);
+      }, 2000); // 2초 시간
     });
   };
 
