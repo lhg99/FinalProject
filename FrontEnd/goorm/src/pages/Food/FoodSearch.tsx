@@ -4,7 +4,7 @@ import styled from 'styled-components';
 import { SearchIcon } from '../../image/SearchIcon';
 import { useFood } from '../../contexts/foodContext';
 import CustomFoodModal from './components/Modal/CustomFoodModal';
-import { getFoodData, postSearhFood } from '../../api/Food/foodApi';
+import { getFoodByName, getFoodData } from '../../api/Food/foodApi';
 import { ModalStore } from '../../store/store';
 
 interface FoodSearchProps {
@@ -70,7 +70,7 @@ const FoodSearch = ({onAddFood, onAddCustomFood} : FoodSearchProps) => {
     
 
     const handleSearchClick = async(searchQuery: string) => {
-        const response = await postSearhFood(searchQuery);
+        await getFoodByName(searchQuery);
     }
 
     const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -117,14 +117,14 @@ const FoodSearch = ({onAddFood, onAddCustomFood} : FoodSearchProps) => {
         <FoodSearchContainer>
             <CategoriesContainer>
                 {foodCategories.map((option, index) => (
-                    <label key={index}>
+                    <CategoryLabel key={index}>
                         <input 
                             type='checkbox' 
                             checked={selectedCategories.includes(option.categoryName)}
                             onChange={() => handleCategoryChange(option.categoryName)} 
                         />
                         {option.categoryName}
-                    </label>
+                    </CategoryLabel>
                 ))}
             </CategoriesContainer>
             <SearchForm onSubmit={() => handleSearchClick(searchQuery)}>
@@ -191,6 +191,15 @@ const FoodSearchContainer = styled.div`
 const CategoriesContainer = styled.div`
     margin-top: .625rem;
     font-size: 0.875rem;
+    display: flex;
+    flex-direction: column; /* 카테고리들을 세로로 나열합니다 */
+    gap: 0.5rem; /* 각 카테고리 사이에 간격을 둡니다 */
+`;
+
+const CategoryLabel = styled.label`
+    display: flex;
+    align-items: center; /* 체크박스와 텍스트가 수평으로 정렬되도록 합니다 */
+    gap: 0.5rem; /* 체크박스와 텍스트 사이의 간격을 둡니다 */
 `;
 
 const SearchForm = styled.form`

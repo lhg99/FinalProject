@@ -13,9 +13,9 @@ export const getExerciseData = async (): Promise<ExerciseData[]> => {
     }
 };
 
-export const getExerciseRecords = async (): Promise<ExerciseRecords> => {
+export const getExerciseRecords = async (): Promise<ExerciseRecords[]> => {
     try {
-        const response = await axiosInstance.get<ExerciseRecords>('/record/all');
+        const response = await axiosInstance.get<ExerciseRecords[]>('/record/all');
         console.log("운동기록 가져오기 성공: ", response.data);
         return response.data;
     } catch(err) {
