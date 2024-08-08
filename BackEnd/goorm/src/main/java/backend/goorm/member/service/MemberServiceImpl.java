@@ -130,8 +130,10 @@ public class MemberServiceImpl implements  MemberService{
             throw new CustomException(CustomExceptionType.ALREADY_REG_INFO);
         }
 
+        Optional<Member> findMember = memberRepository.findByMemberId(member.getMemberId());
+
         MemberInfo memberInfo = MemberInfo.builder()
-                .memberId(member)
+                .memberId(findMember.get())
                 .memberHeight(regMemberInfoRequest.getMemberHeight())
                 .memberWeight(regMemberInfoRequest.getMemberWeight())
                 .comment(regMemberInfoRequest.getComment())
@@ -145,13 +147,15 @@ public class MemberServiceImpl implements  MemberService{
 
         Optional<MemberInfo> findInfo = memberInfoRepository.findByIdWithMember(member);
 
+        Optional<Member> findMember = memberRepository.findByMemberId(member.getMemberId());
+
 
         if(!findInfo.isPresent()){
             return MemberInfoResponse.builder()
-                    .memberName(member.getMemberName())
-                    .memberEmail(member.getMemberEmail())
-                    .username(member.getMemberNickname())
-                    .memberRegDate(dateConvertUtil.convertDateToString(member.getMemberRegDate()))
+                    .memberName(findMember.get().getMemberName())
+                    .memberEmail(findMember.get().getMemberEmail())
+                    .username(findMember.get().getMemberNickname())
+                    .memberRegDate(dateConvertUtil.convertDateToString(findMember.get().getMemberRegDate()))
                     .memberHeight(null)
                     .memberWeight(null)
                     .comment(null)
@@ -159,14 +163,14 @@ public class MemberServiceImpl implements  MemberService{
                     .build();
         }else{
             return MemberInfoResponse.builder()
-                    .memberName(member.getMemberName())
-                    .memberEmail(member.getMemberEmail())
-                    .username(member.getMemberNickname())
-                    .memberRegDate(dateConvertUtil.convertDateToString(member.getMemberRegDate()))
+                    .memberName(findMember.get().getMemberName())
+                    .memberEmail(findMember.get().getMemberEmail())
+                    .username(findMember.get().getMemberNickname())
+                    .memberRegDate(dateConvertUtil.convertDateToString(findMember.get().getMemberRegDate()))
                     .memberHeight(findInfo.get().getMemberHeight())
                     .memberWeight(findInfo.get().getMemberWeight())
                     .comment(findInfo.get().getComment())
-                    .memberType(member.getMemberType())
+                    .memberType(findMember.get().getMemberType())
                     .build();
         }
 
