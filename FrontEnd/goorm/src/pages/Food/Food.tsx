@@ -4,23 +4,30 @@ import styles from './Food.module.scss';
 import FoodSearch from './FoodSearch';
 import { useFood } from '../../contexts/foodContext';
 import { FoodData } from './FoodTypes';
+import FoodList from './components/Records/FoodList';
+import { formatDateInfo } from '../../utils/DateUtils';
 
 const Food: React.FC = () => {
 
-    const [dateInfo, setDateInfo] = useState<{ year: number, month: number, day: number, weekday: string } | null>(null);
+    const [dateInfo, setDateInfo] = useState<{ year: number; month: number; day: number; weekday: string; formattedDate: string } | null>(null);
 
-    const handleDateChange = useCallback((info: { year: number, month: number, day: number, weekday: string }) => {
-        setDateInfo(info);
-    }, []);
+    const handleDateChange = useCallback(
+        (info: { year: number; month: number; day: number; weekday: string }) => {
+          const formattedDate = formatDateInfo(info); // Format the date as a string
+          setDateInfo({ ...info, formattedDate }); // Store both the original info and formatted date
+        },[]
+    );
 
     const {state: {selectedFood}, addFood, addCustomFood} = useFood();
 
     const handleAddFood = useCallback((food: FoodData) => {
+        console.log("handleAddFood 호출", food);
         addFood(food);
     }, [addFood]);
 
-    const handleAddCustomFood = useCallback((food: FoodData) => {
-        addCustomFood(food);
+    const handleAddCustomFood = useCallback((food: FoodData, mealType: string) => {
+        console.log("handleAddCustomFood 호출", food, mealType);
+        addCustomFood(food, mealType);
         addFood(food);
     }, [addCustomFood, addFood]);
 
@@ -44,7 +51,7 @@ const Food: React.FC = () => {
                     <div className={styles.searchListContainer}>
                         <div className={styles.searchColumn}>
                             <FoodSearch onAddFood={handleAddFood} onAddCustomFood={handleAddCustomFood}/>
-                            {/* <FoodList food={selectedFood} dateInfo={dateInfo} /> */}
+                            <FoodList food={selectedFood} dateInfo={dateInfo} />
                         </div>
                     </div>
                 </div>

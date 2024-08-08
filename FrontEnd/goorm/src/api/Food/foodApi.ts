@@ -22,6 +22,7 @@ export const getFoodByName = async (foodName: string) => {
     try {
         const response = await axiosInstance.get("/food", {params});
         console.log("음식 이름으로 검색 성공", response.data);
+        return response.data;
     } catch (error) {
         console.error("음식 이름 검색 실패", error);
     }
@@ -41,7 +42,12 @@ export const getFoodRecord = async (): Promise<FoodRecord[]> => {
 export const getFoodPercentage = async (startDate: Date, endDate: Date) => {
 }
 
-export const postCustomExerciseData = async (exercise: { name: string; category: {categoryId: number; categoryName: string} }) => {
+export const postFoodRecord = async () => {
+    try {
+        // const response = await axiosInstance.post();
+    } catch (error) {
+        
+    }
 }
 
 export const postCardioRecord = async (trainingId: number, exerciseRecord: null, image: File | null): Promise<void> => {

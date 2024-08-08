@@ -6,6 +6,7 @@ export interface FoodData {
     carbohydrate: number;
     protein: number;
     fat: number;
+    mealType?: string;
 }
 
 export interface FoodCategory {
@@ -14,6 +15,11 @@ export interface FoodCategory {
 
 export interface FoodRecord {
     dietId: number;
+    mealType: string;
+    quantity: number;
+    dietMemo?: string;
+    dietDate: string;
+    gram: number;
     foodRes: {
         foodId: number,
         foodName: string,
@@ -22,8 +28,6 @@ export interface FoodRecord {
         protein: number,
         carbohydrate: number
     };
-    mealType: string;
-    quantity: number;
-    dietMemo?: string;
-    dietDate: Date;
+    totalCalories: number;
+    memo?: string;
 }

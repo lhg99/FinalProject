@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react';
 import { FoodData, FoodCategory } from './FoodTypes';
 import styled from 'styled-components';
 import { SearchIcon } from '../../image/SearchIcon';
@@ -6,19 +6,20 @@ import { useFood } from '../../contexts/foodContext';
 import CustomFoodModal from './components/Modal/CustomFoodModal';
 import { getFoodByName, getFoodData } from '../../api/Food/foodApi';
 import { ModalStore } from '../../store/store';
+import { MEAL_TYPES } from '../../constants/Food/MealType';
 
 interface FoodSearchProps {
     onAddFood: (food: FoodData) => void;
-    onAddCustomFood: (food: FoodData) => void;
+    onAddCustomFood: (food: FoodData, mealType: string) => void;
 }
 
-const FoodSearch = ({onAddFood, onAddCustomFood} : FoodSearchProps) => {
+const FoodSearch = ({ onAddFood, onAddCustomFood } : FoodSearchProps) => {
     const [loading, setLoading] = useState<boolean>(true);
     const [searchQuery, setSearchQuery] = useState<string>("");
     const [filteredData, setFilteredData] = useState<FoodData[]>([]);
     const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
 
-    const { state: {food, selectedFood, foodCategories}, setFoodCategories, setFood} = useFood();
+    const { state: { food, selectedFood, foodCategories, mealType }, setFoodCategories, setFood, setMealType } = useFood();
     const { modals, openModal, closeModal } = ModalStore();
 
     const [nutritionDetails, setNutritionDetails] = useState<Omit<FoodData, 'foodId' | 'foodName'>>({
@@ -30,7 +31,7 @@ const FoodSearch = ({onAddFood, onAddCustomFood} : FoodSearchProps) => {
     });
 
     useEffect(() => {
-        const fetchdata = async() => {
+        const fetchdata = async () => {
             try {
                 const foodData = await getFoodData();
                 setFood(foodData);
@@ -52,6 +53,28 @@ const FoodSearch = ({onAddFood, onAddCustomFood} : FoodSearchProps) => {
         fetchdata();
     }, []);
 
+    useEffect(() => {
+        if (selectedCategories.length > 0) {
+            const lastCategory = selectedCategories[selectedCategories.length - 1];
+            switch (lastCategory) {
+                case '아침':
+                    setMealType(MEAL_TYPES.BREAKFAST);
+                    break;
+                case '점심':
+                    setMealType(MEAL_TYPES.LUNCH);
+                    break;
+                case '저녁':
+                    setMealType(MEAL_TYPES.DINNER);
+                    break;
+                case '간식':
+                    setMealType(MEAL_TYPES.SNACK);
+                    break;
+                default:
+                    setMealType(MEAL_TYPES.OTHER);
+            }
+        }
+    }, [selectedCategories]);
+
     const handleCategoryChange = (categoryName: string) => {
         console.log("Selected category:", categoryName); // 선택된 카테고리 확인
         if (categoryName === "전체") {
@@ -62,27 +85,42 @@ const FoodSearch = ({onAddFood, onAddCustomFood} : FoodSearchProps) => {
             }
         } else {
             const newSelectedCategories = selectedCategories.includes(categoryName)
-                ? selectedCategories.filter(name => name !== categoryName) 
+                ? selectedCategories.filter(name => name !== categoryName)
                 : [...selectedCategories, categoryName];
             setSelectedCategories(newSelectedCategories);
         }
     };
-    
 
-    const handleSearchClick = async(searchQuery: string) => {
-        await getFoodByName(searchQuery);
-    }
+    const handleSearchClick = async () => {
+        if (searchQuery.trim() === "") {
+            setFilteredData(food); // 검색어가 없을 경우 모든 데이터를 표시
+            return;
+        }
+        try {
+            const response = await getFoodByName(searchQuery);
+            if (response) {
+                setFilteredData(response); // 검색 결과로 filteredData 업데이트
+                console.log("handleSearch 결과: ", response);
+            }
+        } catch (error) {
+            console.error("검색 중 오류 발생:", error);
+        }
+    };
+
+    useEffect(() => {
+        handleSearchClick();
+    }, [searchQuery]);
 
     const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         setSearchQuery(event.target.value);
     }
 
     const handleAddFoodClick = (food: FoodData) => {
-        const isFoodSelected = selectedFood.some(selected => selected.foodName.toLowerCase() === food.foodName.toLowerCase());
-        if (!isFoodSelected) {
+        const isExerciseSelected = selectedFood.some(selected => selected.foodName.toLowerCase() === food.foodName.toLowerCase());
+        if (!isExerciseSelected) {
             onAddFood(food);
         }
-    }
+    };
 
     const handleModalClose = () => {
         closeModal("customFoodModal");
@@ -109,7 +147,7 @@ const FoodSearch = ({onAddFood, onAddCustomFood} : FoodSearchProps) => {
             ...nutritionDetails // 영양소 정보 추가
         };
 
-        onAddCustomFood(newCustomFood);
+        onAddCustomFood(newCustomFood, mealType); // 선택된 mealType을 함께 전달
         console.log("newCustomFood: ", newCustomFood);
     };
 
@@ -117,17 +155,19 @@ const FoodSearch = ({onAddFood, onAddCustomFood} : FoodSearchProps) => {
         <FoodSearchContainer>
             <CategoriesContainer>
                 {foodCategories.map((option, index) => (
-                    <CategoryLabel key={index}>
+                    <label key={index}>
                         <input 
                             type='checkbox' 
                             checked={selectedCategories.includes(option.categoryName)}
                             onChange={() => handleCategoryChange(option.categoryName)} 
                         />
                         {option.categoryName}
-                    </CategoryLabel>
+                    </label>
                 ))}
             </CategoriesContainer>
-            <SearchForm onSubmit={() => handleSearchClick(searchQuery)}>
+            <SearchForm onSubmit={(e) => {
+                e.preventDefault();
+            }}>
                 <SearchInput 
                     type="text" 
                     placeholder='식단 검색' 
@@ -192,14 +232,6 @@ const CategoriesContainer = styled.div`
     margin-top: .625rem;
     font-size: 0.875rem;
     display: flex;
-    flex-direction: column; /* 카테고리들을 세로로 나열합니다 */
-    gap: 0.5rem; /* 각 카테고리 사이에 간격을 둡니다 */
-`;
-
-const CategoryLabel = styled.label`
-    display: flex;
-    align-items: center; /* 체크박스와 텍스트가 수평으로 정렬되도록 합니다 */
-    gap: 0.5rem; /* 체크박스와 텍스트 사이의 간격을 둡니다 */
 `;
 
 const SearchForm = styled.form`

@@ -1,166 +1,113 @@
 import React, { useEffect, useRef, useState } from "react";
 import styled from "styled-components";
-import { useExercise } from "../../../../contexts/exerciseContext";
-import { ModalStore } from "../../../../store/store";
-import { deleteRecord } from "../../../../api/Exercise/exerciseApi";
-import { FoodRecord } from "../../FoodTypes";
 import { useFood } from "../../../../contexts/foodContext";
+import { ModalStore } from "../../../../store/store";
+import { deleteRecord } from "../../../../api/Food/foodApi";
+import { FoodRecord } from "../../FoodTypes";
+import { DeleteModal } from "../../../Board/components/Modal";
 
 interface FoodDetailProps {
   food: FoodRecord;
-  isAddingFood: boolean; // 새로운 운동 여부
 }
 
-// 운동 세부정보 입력하는 컴포넌트
-const FoodDetails: React.FC<FoodDetailProps> = ({
-  food,
-  isAddingFood,
-}) => {
-//   const [foodName, setFoodName] = useState<string>(
-//     exercise.trainingName || ""
-//   );
-//   const [fat, setFat] = useState<string>(
-//     food.foodRes.fat?.toString() || ""
-//   );
-//   const prevDetailsRef = useRef(food);
+const FoodDetails: React.FC<FoodDetailProps> = ({ food }) => {
+  const [quantity, setQuantity] = useState<string>(food.quantity?.toString() || "");
+  const [gram, setGram] = useState<string>(food.gram?.toString() || "");
+  const prevDetailsRef = useRef(food);
 
-//   const {
-//     state: { selectedRecords, foodRecords },
-//     updateExerciseDetails,
-//     removeFood,
-//     setSelectedRecord,
-//     updateExerciseRecords
-//   } = useFood();
+  const {
+    state: { foodRecords },
+    updateFoodDetails,
+    // removeFood,
+    // setSelectedRecord,
+    updateFoodRecords
+  } = useFood();
 
-//   const { modals, openModal, closeModal } = ModalStore();
+  const { modals, openModal, closeModal } = ModalStore();
 
-//   useEffect(() => {
-//     const updatedDetails = {
-//       ...food,
+  useEffect(() => {
+    const updatedDetails = {
+      ...food,
+    };
 
-//     };
+    const prevDetails = prevDetailsRef.current;
 
-//     const prevDetails = prevDetailsRef.current;
+    const existingRecord = foodRecords.find(
+      (record) => record.dietId === food.dietId
+    );
 
-//     // exerciseRecords에서 해당 recordId가 있는지 확인
-//     const existingRecord = foodRecords.find(
-//       (record) => record.dietId === food.dietId
-//     );
+    if (JSON.stringify(updatedDetails) !== JSON.stringify(prevDetails)) {
+      if (existingRecord) {
+        updateFoodRecords(food.dietId, updatedDetails);
+        console.log("Food Records Updated:", updatedDetails);
+      } else {
+        updateFoodDetails(updatedDetails);
+        console.log("Food Details Updated:", updatedDetails);
+      }
+    }
+    prevDetailsRef.current = updatedDetails;
+  }, [food, foodRecords, updateFoodDetails, updateFoodRecords]);
 
-//     // Check if updatedDetails differ from previous details
-//     if (JSON.stringify(updatedDetails) !== JSON.stringify(prevDetails)) {
-//       if (existingRecord) {
-//         // record가 있으면 updateExerciseRecords로 업데이트
-//         updateExerciseRecords(food.dietId, updatedDetails);
-//         console.log("Exercise Records Updated:", updatedDetails);
-//       } else {
-//         // record가 없으면 updateExerciseDetails로 업데이트
-//         updateExerciseDetails(updatedDetails);
-//         console.log("Exercise Details Updated:", updatedDetails);
-//       }
-//     }
-//     prevDetailsRef.current = updatedDetails;
-//   }, []);
+  const handleModalClick = () => {
+    openModal("deleteModal");
+  };
 
-//   const handleModalClick = () => {
-//     openModal("deleteModal");
-//   };
+  const handleModalClose = () => {
+    closeModal("deleteModal");
+  };
 
-//   const handleModalClose = () => {
-//     closeModal("deleteModal");
-//   };
-
-//   const handleDeleteModalConfirm = async () => {
-//     try {
-//       await deleteRecord(food.dietId);
-//     //   removeFood(food.foodRes.foodName); // 상태에서 운동 삭제
-//       closeModal("deleteModal");
-//     } catch (err) {
-//       throw err;
-//     }
-//   };
+  const handleDeleteModalConfirm = async () => {
+    try {
+      await deleteRecord(food.dietId);
+      // removeFood(food.foodRes.foodName);
+      closeModal("deleteModal");
+    } catch (err) {
+      throw err;
+    }
+  };
 
   return (
     <FoodDetailsContainer>
-      {/* <FoodInfo>
-        <CategoryBadge>{exercise.categoryName}</CategoryBadge>
-        <FoodTitle>{exercise.trainingName}</FoodTitle>
+      <FoodInfo>
+        <CategoryBadge>{food.mealType}</CategoryBadge>
+        <FoodTitle>{food.foodRes.foodName}</FoodTitle>
       </FoodInfo>
       <InputContainer>
-        
-          <>
-            <SetContainer>
-              <FoodLabel>
-                <FoodInput
-                  type="text"
-                  placeholder=" 시간"
-                  value={duration}
-                  onChange={(e) => {
-                    setDuration(e.target.value);
-                    const newDuration = parseInt(e.target.value, 10);
-                    if (!isNaN(newDuration)) {
-                      const updatedDetails = { durationMinutes: newDuration };
-                      updateExerciseRecords(details.recordId, updatedDetails);
-                    }
-                  }}
-                />
-              </FoodLabel>
-              <FoodText>분</FoodText>
-              <FoodLabel>
-                <FoodInput
-                  type="number"
-                  placeholder="세트"
-                  value={sets}
-                  onChange={(e) => {
-                    setSets(e.target.value);
-                    const newSets = parseInt(e.target.value, 10);
-                    if (!isNaN(newSets)) {
-                      const updatedDetails = { sets: newSets };
-                      updateExerciseRecords(details.recordId, updatedDetails);
-                    }
-                  }}
-                />
-              </FoodLabel>
-              <FoodText>세트</FoodText>
-              <FoodLabel>
-                <FoodInput
-                  type="number"
-                  placeholder="중량(kg)"
-                  value={weight}
-                  step="5"
-                  onChange={(e) => {
-                    setWeight(e.target.value);
-                    const newWeight = parseFloat(e.target.value);
-                    if (!isNaN(newWeight)) {
-                      const updatedDetails = { weight: newWeight };
-                      updateExerciseRecords(details.recordId, updatedDetails);
-                    }
-                  }}
-                />
-              </FoodLabel>
-              <FoodText>kg</FoodText>
-              <FoodLabel>
-                <FoodInput
-                  type="number"
-                  placeholder="횟수"
-                  value={count}
-                  onChange={(e) => {
-                    setCount(e.target.value);
-                    const newReps = parseInt(e.target.value, 10);
-                    if (!isNaN(newReps)) {
-                      const updatedDetails = { reps: newReps };
-                      updateExerciseRecords(details.recordId, updatedDetails);
-                    }
-                  }}
-                />
-              </FoodLabel>
-              <FoodText>회</FoodText>
-            </SetContainer>
-          </>
-        )}
+        <FoodLabel>
+          <FoodInput
+            type="number"
+            placeholder="총량"
+            value={quantity}
+            onChange={(e) => {
+              setQuantity(e.target.value);
+              const newQuantity = parseInt(e.target.value, 10);
+              if (!isNaN(newQuantity)) {
+                const updatedDetails = { ...food, quantity: newQuantity };
+                updateFoodRecords(food.dietId, updatedDetails);
+              }
+            }}
+          />
+          <FoodText> 개</FoodText>
+        </FoodLabel>
+        <FoodLabel>
+          <FoodInput
+            type="number"
+            placeholder="gram"
+            value={gram}
+            onChange={(e) => {
+              setGram(e.target.value);
+              const newGram = parseInt(e.target.value, 10);
+              if (!isNaN(newGram)) {
+                const updatedDetails = { ...food, gram: newGram };
+                updateFoodRecords(food.dietId, updatedDetails);
+              }
+            }}
+          />
+          <FoodText> g</FoodText>
+        </FoodLabel>
         <DeleteButton onClick={handleModalClick}>삭제</DeleteButton>
       </InputContainer>
-      <DeleteModal
+      {/* <DeleteModal
         isOpen={modals.deleteModal?.isOpen}
         onClose={handleModalClose}
         onConfirm={handleDeleteModalConfirm}
@@ -216,6 +163,7 @@ const FoodLabel = styled.label`
 const InputContainer = styled.div`
   display: flex;
   align-items: center;
+  gap: 0.625rem;
 `;
 
 const FoodInput = styled.input`
@@ -227,7 +175,6 @@ const FoodInput = styled.input`
   border-radius: 0.625rem;
   font-size: 0.875rem;
   margin-left: 0.3125rem;
-  gap: 0.0625rem;
 
   // 스핀버튼 항상 보이게 설정하는 CSS
   -webkit-appearance: none;
