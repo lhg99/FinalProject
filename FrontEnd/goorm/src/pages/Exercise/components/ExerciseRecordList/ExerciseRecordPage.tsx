@@ -29,12 +29,11 @@ const ExerciseRecordPage: React.FC = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const data: RecordResponse = await getExerciseRecords();
-        const records: ExerciseRecords[] = data.content; // 'content' 배열을 사용
-        console.log('Fetched data:', records); // 데이터 확인을 위한 로그 추가
+        const data = await getExerciseRecords();
+        console.log('Fetched data:', data); // 데이터 확인을 위한 로그 추가
         setExerciseRecords(data); // 전체 데이터 설정
-        setAllRecords(records); // records 배열 설정
-        filterRecords(records, selectedTab);
+        setAllRecords(data); // records 배열 설정
+        filterRecords(data, selectedTab);
       } catch (error) {
         console.error('Error fetching records:', error); // 에러 로그
       }
@@ -116,11 +115,11 @@ const ExerciseRecordPage: React.FC = () => {
           </tbody>
         </table>
       </div>
-      <Pagination
+      {/* <Pagination
         totalPages={totalPages}
         currentPage={currentPage}
         paginate={paginate}
-      />
+      /> */}
       <Searchbar searchQuery={searchQuery} setSearchQuery={setSearchQuery} handleSearch={handleSearch} />
     </div>
   );
