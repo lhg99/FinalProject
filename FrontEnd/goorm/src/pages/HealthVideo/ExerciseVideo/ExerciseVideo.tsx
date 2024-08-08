@@ -1,22 +1,21 @@
-import React, { useState, useRef } from 'react';
+import React, { useState } from 'react';
 import Slider from "react-slick";
-import "slick-carousel/slick/slick-theme.css";
-import "slick-carousel/slick/slick.css";
 import styled from 'styled-components';
 import { Nav, Tab } from 'react-bootstrap';
-import 'bootstrap/dist/css/bootstrap.min.css';
 import styles from './ExerciseVideo.module.scss';
+import "slick-carousel/slick/slick-theme.css";
+import "slick-carousel/slick/slick.css";
 
 const SliderWrapper = styled.div`
   position: relative;
   width: 100%;
+  display: flex;
+  justify-content: center;
 `;
 
 const StyledSlider = styled(Slider)`
-  height: 550px;
   width: 100%;
   position: relative;
-  background-color: lightblue;
 
   .slick-prev::before,
   .slick-next::before {
@@ -26,6 +25,14 @@ const StyledSlider = styled(Slider)`
 
   .slick-slide div {
     cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .slick-slide div div {
+    max-height: 450px !important;
+    max-width: 800px !important;
   }
 
   .slick-dots {
@@ -74,9 +81,12 @@ const CenterModeSlider = styled(Slider)`
 const ThumbnailContainer = styled.div`
   position: relative;
   width: 100%;
-  padding-bottom: 56.25%;
+  padding-bottom: 56.25%; /* Aspect ratio (16:9) */
   overflow: hidden;
-  background-color:
+  background-color: #f0f0f0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 `;
 
 const ThumbnailImage = styled.img`
@@ -130,36 +140,35 @@ const VideoSlider: React.FC<VideoSliderProps> = ({ videoIds }) => {
 };
 
 const CenterModeSliderComponent: React.FC<VideoSliderProps> = ({ videoIds }) => {
-  const centerSliderRef = useRef<Slider | null>(null);
-
   return (
-    <CenterModeSlider
-      ref={centerSliderRef}
-      centerMode={true}
-      infinite={true}
-      centerPadding="60px"
-      slidesToShow={3}
-      speed={500}
-      autoplay={false}
-      pauseOnHover
-    >
-      {videoIds.map(id => (
-        <div key={id}>
-          <a
-            href={`https://www.youtube.com/watch?v=${id}`}
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <ThumbnailContainer>
-              <ThumbnailImage
-                src={`https://img.youtube.com/vi/${id}/0.jpg`}
-                alt={`Thumbnail for video ${id}`}
-              />
-            </ThumbnailContainer>
-          </a>
-        </div>
-      ))}
-    </CenterModeSlider>
+    <div className={styles.centerModeSliderContainer}>
+      <CenterModeSlider
+        centerMode={true}
+        infinite={true}
+        centerPadding="60px"
+        slidesToShow={3}
+        speed={500}
+        autoplay={false}
+        pauseOnHover
+      >
+        {videoIds.map(id => (
+          <div key={id}>
+            <a
+              href={`https://www.youtube.com/watch?v=${id}`}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <ThumbnailContainer>
+                <ThumbnailImage
+                  src={`https://img.youtube.com/vi/${id}/0.jpg`}
+                  alt={`Thumbnail for video ${id}`}
+                />
+              </ThumbnailContainer>
+            </a>
+          </div>
+        ))}
+      </CenterModeSlider>
+    </div>
   );
 };
 
@@ -173,6 +182,7 @@ interface VideoData {
 
 const ExerciseVideo: React.FC = () => {
   const [key, setKey] = useState<string>('shoulders');
+  const [currentLevel, setCurrentLevel] = useState<Level>('beginner');
 
   const videoData: VideoData = {
     shoulders: {
@@ -197,52 +207,55 @@ const ExerciseVideo: React.FC = () => {
     }
   };
 
+  // 현재 선택된 카테고리와 레벨에 해당하는 비디오 IDs를 추출합니다.
+  const currentCategoryVideos = videoData[key] || {};
+  const videosToDisplay = currentCategoryVideos[currentLevel] || [];
+  
   return (
-    <div>
-      <div className={styles.sliderContainer}>
-        <h1>오늘의 추천 운동</h1>
-        <VideoSlider videoIds={["TMx-f-AIT58", "Y2hyGxh0QCk", "CAt37ltbjTI"]} />
-      </div>
-
-      <Tab.Container
-        id="left-tabs-example"
-        activeKey={key}
-        onSelect={(k) => setKey(k || 'shoulders')}
-      >
-        <Nav variant="pills" className={styles.navContainer}>
-          <Nav.Item>
-            <Nav.Link eventKey="shoulders" className={styles.navLink}>어깨 운동</Nav.Link>
-          </Nav.Item>
-          <Nav.Item>
-            <Nav.Link eventKey="chest" className={styles.navLink}>가슴 운동</Nav.Link>
-          </Nav.Item>
-          <Nav.Item>
-            <Nav.Link eventKey="back" className={styles.navLink}>등 운동</Nav.Link>
-          </Nav.Item>
-          <Nav.Item>
-            <Nav.Link eventKey="legs" className={styles.navLink}>다리 운동</Nav.Link>
-          </Nav.Item>
-        </Nav>
-        <Tab.Content>
-          {Object.keys(videoData).map(category => (
-            <Tab.Pane eventKey={category} key={category}>
-              {['beginner', 'intermediate', 'advanced'].map(level => (
-                <div key={level} className={styles.sliderContainer}>
-                  <h1>
-                    {level === 'beginner' ? '초급' :
-                     level === 'intermediate' ? '중급' : '상급'}
-                  </h1>
-                  <CenterModeSliderComponent
-                    videoIds={videoData[category][level as Level]}
-                  />
-                </div>
-              ))}
-            </Tab.Pane>
-          ))}
-        </Tab.Content>
-      </Tab.Container>
+  <div className={styles.videoWrapper}>
+    <div className={styles.sliderContainer}>
+      <h1>오늘의 추천 운동</h1>
+      <VideoSlider videoIds={["TMx-f-AIT58", "Y2hyGxh0QCk", "CAt37ltbjTI"]} />
     </div>
-  );
+
+    <Tab.Container
+      id="left-tabs-example"
+      activeKey={key}
+      onSelect={(k) => setKey(k || 'shoulders')}
+    >
+      <Nav variant="pills" className={styles.navContainer}>
+        <Nav.Item>
+          <Nav.Link eventKey="shoulders" className={styles.navLink}>어깨 운동</Nav.Link>
+        </Nav.Item>
+        <Nav.Item>
+          <Nav.Link eventKey="chest" className={styles.navLink}>가슴 운동</Nav.Link>
+        </Nav.Item>
+        <Nav.Item>
+          <Nav.Link eventKey="back" className={styles.navLink}>등 운동</Nav.Link>
+        </Nav.Item>
+        <Nav.Item>
+          <Nav.Link eventKey="legs" className={styles.navLink}>하체 운동</Nav.Link>
+        </Nav.Item>
+      </Nav>
+      <Tab.Content>
+        <Tab.Pane eventKey={key}>
+          {['beginner', 'intermediate', 'advanced'].map(level => (
+            <div key={level} className={`${styles.sliderContainer} ${level === 'advanced' ? styles.advancedSection : ''}`}>
+              <h1>
+                {level === 'beginner' ? '초급' :
+                 level === 'intermediate' ? '중급' : '상급'}
+              </h1>
+              <CenterModeSliderComponent
+                videoIds={videoData[key][level as Level] || []}
+              />
+            </div>
+          ))}
+        </Tab.Pane>
+      </Tab.Content>
+    </Tab.Container>
+  </div>
+);
+
 };
 
 export default ExerciseVideo;

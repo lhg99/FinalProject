@@ -1,14 +1,15 @@
 import React, { useEffect, useState } from "react";
 import styles from "./MyPage.module.scss";
 import { userData, getusereData } from '../../../api/mypageApi';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 
 const MyPage: React.FC = () => {
   const [user, setUser] = useState<userData | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
 
-  const navigate = useNavigate(); // useNavigate 훅 사용
+  const navigate = useNavigate();
+  const location = useLocation();
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -27,18 +28,13 @@ const MyPage: React.FC = () => {
       }
     };
 
-    fetchUserData();
-  }, []);
-
-  const handleUpdate = async () => {
-    // 업데이트 후 사용자 정보를 새로 고침
-    try {
-      const data = await getusereData();
-      setUser(data);
-    } catch (err) {
-      console.error('사용자 정보 새로고침에 실패하였습니다.', err);
+    if (location.state?.updated) {
+      fetchUserData();
+      navigate('/mypage', { state: {} });
+    } else {
+      fetchUserData();
     }
-  };
+  }, [location.state?.updated, navigate]);
 
   if (loading) {
     return <div>로딩 중...</div>;

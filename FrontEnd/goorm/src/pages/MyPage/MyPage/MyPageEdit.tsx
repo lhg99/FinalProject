@@ -36,8 +36,7 @@ const MyPageEdit: React.FC<MyPageEditProps> = ({
 
     try {
       await postChangeData(updatedData);
-      onUpdate();
-      navigate('/mypage');
+      navigate('/mypage', { state: { updated: true } });
     } catch (err) {
       setError('회원 정보 수정에 실패하였습니다.');
       console.error(err);
@@ -55,7 +54,7 @@ const MyPageEdit: React.FC<MyPageEditProps> = ({
             type="text"
             id="username"
             name="username"
-            value={username}
+            value={username} // Ensure input reflects state
             onChange={(e) => setUsername(e.target.value)}
             required
           />
@@ -66,7 +65,7 @@ const MyPageEdit: React.FC<MyPageEditProps> = ({
           <textarea
             id="comment"
             name="comment"
-            value={comment}
+            value={comment} // Ensure textarea reflects state
             onChange={(e) => setComment(e.target.value)}
             required
           />

@@ -1,11 +1,35 @@
+body {
+    background-color: #FFDE95;
+    /* 원하는 배경색으로 설정 */
+}
+
+.videoWrapper {
+    border: 1px solid #ddd;
+    /* 연한 회색 보더 */
+    background-color: #fff;
+    /* 하얀 배경색 */
+    padding: 20px;
+    /* 내부 여백 */
+    border-radius: 8px;
+    /* 모서리 둥글게 */
+    margin: 20px auto;
+    /* 위아래 여백, 가운데 정렬 */
+    width: 85%;
+    /* 최대 너비 설정 */
+}
+
 .sliderContainer {
     width: 100%;
     max-width: 85%;
+    /* 최대 너비 조정 */
     height: auto;
-    max-height: 400px;
     margin: 0 auto;
     overflow: hidden;
     position: relative;
+    margin-bottom: 20px;
+}
+
+.advancedSection {
     margin-bottom: 20px;
 }
 
@@ -15,9 +39,11 @@
 
 .navContainer {
     display: flex;
-    justify-content: space-around;
+    width: 85%;
+    justify-content: center;
     padding: 20px 50px;
     border-radius: 5px;
+    margin: 0 auto;
 }
 
 .navLink {
@@ -27,12 +53,14 @@
     border-radius: 5px;
     text-decoration: none;
     position: relative;
-    transition: color 0.3s ease;
+    transition: color 0.3s ease, background-color 0.3s ease;
+    background-color: #ffffff;
 }
 
 .navLink:hover,
 .navLink.active {
-    // color: #ff0000;
+    color: #ff0000;
+    background-color: #e9ecef;
 }
 
 .slick-slide {
@@ -41,5 +69,4 @@
 
 .slick-track {
     display: flex;
-
 }
