@@ -17,11 +17,13 @@ public interface RecordRepository extends JpaRepository<Record, Long> {
     List<Record> findAll();
     List<Record> findByTraining_TrainingId(Long trainingId);
 
-    Page<Record> findAllByMember(Member member, Pageable pageable);
+    List<Record> findAllByMember(Member member);
 
     Page<Record> findByExerciseDateBetweenAndMember(LocalDate start, LocalDate end, Member member, Pageable pageable);
 
     List<Record> findAllByExerciseDateAndMember(LocalDate date, Member member);
+
+    Page<Record> findAllByMember(Member member, Pageable pageable);
 
 //    Page<Record> findPagedByExerciseDateAndMember(LocalDate date, Member member, Pageable pageable);
 
