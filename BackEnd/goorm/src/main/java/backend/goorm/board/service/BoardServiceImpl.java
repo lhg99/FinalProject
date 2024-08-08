@@ -16,6 +16,7 @@ import backend.goorm.common.exception.CustomException;
 import backend.goorm.common.exception.CustomExceptionType;
 import backend.goorm.common.util.DateConvertUtil;
 import backend.goorm.member.model.entity.Member;
+import backend.goorm.member.repository.MemberRepository;
 import backend.goorm.s3.service.S3ImageService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -43,6 +44,7 @@ public class BoardServiceImpl implements BoardService {
 
     private final DateConvertUtil dateConvertUtil;
     private final S3ImageService s3ImageService;
+    private final MemberRepository memberRepository;
 
     @Value("${board.page.size}")
     private int pageSize;
@@ -56,9 +58,12 @@ public class BoardServiceImpl implements BoardService {
     @Override
     public void saveBoard(BoardSaveRequest saveRequest, Member member) {
 
+        Optional<Member> findMember = memberRepository.findByMemberId(member.getMemberId());
+
+
         Board board = Board.builder()
-                .memberId(member)
-                .boardWriter(member.getMemberNickname())
+                .memberId(findMember.get())
+                .boardWriter(findMember.get().getMemberNickname())
                 .boardTitle(saveRequest.getBoardTitle())
                 .boardContent(saveRequest.getBoardContent())
                 .boardRegDate(LocalDateTime.now())
