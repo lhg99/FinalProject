@@ -190,7 +190,7 @@ public class MemberServiceImpl implements  MemberService{
     public void changeInfo(Member member, ChangeInfoRequest changeInfoRequest) {
         Optional<MemberInfo> findInfo = memberInfoRepository.findByIdWithMember(member);
 
-        if(findInfo.get().getMemberId().getMemberType() == MemberType.SOCIAL){
+        if(member.getMemberType() == MemberType.SOCIAL){
             // 소셜 회원은 비밀번호 변경을 할 수 없음
             throw new CustomException(CustomExceptionType.RUNTIME_EXCEPTION);
         }
@@ -201,8 +201,21 @@ public class MemberServiceImpl implements  MemberService{
             throw new CustomException(CustomExceptionType.DUPLICATE_INFORMATION);
         }
 
-        findInfo.get().setComment(changeInfoRequest.getComment());
-        findInfo.get().getMemberId().setMemberNickname(changeInfoRequest.getUsername());
+        if(findInfo.isPresent()){
+            findInfo.get().setComment(changeInfoRequest.getComment());
+            member.setMemberNickname(changeInfoRequest.getUsername());
+        }else{
+            MemberInfo memberInfo = MemberInfo.builder()
+                    .memberId(member)
+                    .memberHeight(null)
+                    .memberWeight(null)
+                    .comment(changeInfoRequest.getComment())
+                    .build();
+
+            memberInfoRepository.save(memberInfo);
+            member.setMemberNickname(changeInfoRequest.getUsername());
+        }
+
 
     }
 
