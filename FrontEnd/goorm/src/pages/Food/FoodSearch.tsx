@@ -53,6 +53,7 @@ const FoodSearch = ({onAddFood, onAddCustomFood} : FoodSearchProps) => {
     }, []);
 
     const handleCategoryChange = (categoryName: string) => {
+        console.log("Selected category:", categoryName); // 선택된 카테고리 확인
         if (categoryName === "전체") {
             if (selectedCategories.includes("전체")) {
                 setSelectedCategories([]);
@@ -66,6 +67,7 @@ const FoodSearch = ({onAddFood, onAddCustomFood} : FoodSearchProps) => {
             setSelectedCategories(newSelectedCategories);
         }
     };
+    
 
     const handleSearchClick = async(searchQuery: string) => {
         const response = await postSearhFood(searchQuery);

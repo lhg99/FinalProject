@@ -9,36 +9,34 @@ import { deleteRecord } from "../../../../api/Exercise/exerciseApi";
 interface ExerciseDetailProps {
   exercise: ExerciseRecords;
   isAddingExercise: boolean; // 새로운 운동 여부
-  details: ExerciseRecords;
 }
 
 // 운동 세부정보 입력하는 컴포넌트
 const ExerciseDetails: React.FC<ExerciseDetailProps> = ({
   exercise,
-  details,
-  isAddingExercise,
+  isAddingExercise
 }) => {
   const [exerciseName, setExerciseName] = useState<string>(
     exercise.trainingName || ""
   );
   const [distance, setDistance] = useState<string>(
-    details.distance?.toString() || ""
+    exercise.distance?.toString() || ""
   );
   const [duration, setDuration] = useState<string>(
-    details.durationMinutes?.toString() || "0"
+    exercise.durationMinutes?.toString() || "0"
   );
   const [slope, setSlope] = useState<string>(
-    details.incline?.toString() || "0"
+    exercise.incline?.toString() || "0"
   );
   const [calorie, setCalorie] = useState<string>(
-    details.caloriesBurned?.toString() || "0"
+    exercise.caloriesBurned?.toString() || "0"
   );
-  const [sets, setSets] = useState<string>(details.sets?.toString() || "0");
+  const [sets, setSets] = useState<string>(exercise.sets?.toString() || "0");
   const [weight, setWeight] = useState<string>(
-    details.weight?.toString() || "0"
+    exercise.weight?.toString() || "0"
   );
-  const [count, setCount] = useState<string>(details.reps?.toString() || "0");
-  const prevDetailsRef = useRef(details);
+  const [count, setCount] = useState<string>(exercise.reps?.toString() || "0");
+  const prevDetailsRef = useRef(exercise);
 
   const {
     state: { selectedRecords, exerciseRecords },
@@ -52,7 +50,7 @@ const ExerciseDetails: React.FC<ExerciseDetailProps> = ({
 
   useEffect(() => {
     const updatedDetails = {
-      ...details,
+      ...exercise,
       trainingName: exerciseName,
       distance: distance ? parseFloat(distance) : 0,
       durationMinutes: duration ? parseInt(duration) : 0,
@@ -67,14 +65,14 @@ const ExerciseDetails: React.FC<ExerciseDetailProps> = ({
 
     // exerciseRecords에서 해당 recordId가 있는지 확인
     const existingRecord = exerciseRecords.find(
-      (record) => record.recordId === details.recordId
+      (record) => record.recordId === exercise.recordId
     );
 
     // Check if updatedDetails differ from previous details
     if (JSON.stringify(updatedDetails) !== JSON.stringify(prevDetails)) {
       if (existingRecord) {
         // record가 있으면 updateExerciseRecords로 업데이트
-        updateExerciseRecords(details.recordId, updatedDetails);
+        updateExerciseRecords(exercise.recordId, updatedDetails);
         console.log("Exercise Records Updated:", updatedDetails);
       } else {
         // record가 없으면 updateExerciseDetails로 업데이트
@@ -92,7 +90,6 @@ const ExerciseDetails: React.FC<ExerciseDetailProps> = ({
     sets,
     weight,
     count,
-    details,
     updateExerciseRecords,
     updateExerciseDetails,
   ]);
@@ -107,8 +104,8 @@ const ExerciseDetails: React.FC<ExerciseDetailProps> = ({
 
   const handleDeleteModalConfirm = async () => {
     try {
-      await deleteRecord(details.recordId);
-      removeExercise(details.trainingName); // 상태에서 운동 삭제
+      await deleteRecord(exercise.recordId);
+      removeExercise(exercise.trainingName); // 상태에서 운동 삭제
       closeModal("deleteModal");
     } catch (err) {
       throw err;
@@ -122,7 +119,7 @@ const ExerciseDetails: React.FC<ExerciseDetailProps> = ({
         <ExerciseTitle>{exercise.trainingName}</ExerciseTitle>
       </ExerciseInfo>
       <InputContainer>
-        {details.categoryName === "유산소" ? (
+        {exercise.categoryName === "유산소" ? (
           <>
             <ExerciseLabel>
               <ExerciseInput
@@ -134,7 +131,7 @@ const ExerciseDetails: React.FC<ExerciseDetailProps> = ({
                   const newDistance = parseFloat(e.target.value);
                   if (!isNaN(newDistance)) {
                     const updatedDetails = { distance: newDistance };
-                    updateExerciseRecords(details.recordId, updatedDetails);
+                    updateExerciseRecords(exercise.recordId, updatedDetails);
                   }
                 }}
               />
@@ -150,7 +147,7 @@ const ExerciseDetails: React.FC<ExerciseDetailProps> = ({
                   const newDuration = parseInt(e.target.value, 10);
                   if (!isNaN(newDuration)) {
                     const updatedDetails = { durationMinutes: newDuration };
-                    updateExerciseRecords(details.recordId, updatedDetails);
+                    updateExerciseRecords(exercise.recordId, updatedDetails);
                   }
                 }}
               />
@@ -166,7 +163,7 @@ const ExerciseDetails: React.FC<ExerciseDetailProps> = ({
                   const newSlope = parseFloat(e.target.value);
                   if (!isNaN(newSlope)) {
                     const updatedDetails = { incline: newSlope };
-                    updateExerciseRecords(details.recordId, updatedDetails);
+                    updateExerciseRecords(exercise.recordId, updatedDetails);
                   }
                 }}
               />
@@ -182,7 +179,7 @@ const ExerciseDetails: React.FC<ExerciseDetailProps> = ({
                   const newCalorie = parseInt(e.target.value, 10);
                   if (!isNaN(newCalorie)) {
                     const updatedDetails = { caloriesBurned: newCalorie };
-                    updateExerciseRecords(details.recordId, updatedDetails);
+                    updateExerciseRecords(exercise.recordId, updatedDetails);
                   }
                 }}
               />
@@ -202,7 +199,7 @@ const ExerciseDetails: React.FC<ExerciseDetailProps> = ({
                     const newDuration = parseInt(e.target.value, 10);
                     if (!isNaN(newDuration)) {
                       const updatedDetails = { durationMinutes: newDuration };
-                      updateExerciseRecords(details.recordId, updatedDetails);
+                      updateExerciseRecords(exercise.recordId, updatedDetails);
                     }
                   }}
                 />
@@ -218,7 +215,7 @@ const ExerciseDetails: React.FC<ExerciseDetailProps> = ({
                     const newSets = parseInt(e.target.value, 10);
                     if (!isNaN(newSets)) {
                       const updatedDetails = { sets: newSets };
-                      updateExerciseRecords(details.recordId, updatedDetails);
+                      updateExerciseRecords(exercise.recordId, updatedDetails);
                     }
                   }}
                 />
@@ -235,7 +232,7 @@ const ExerciseDetails: React.FC<ExerciseDetailProps> = ({
                     const newWeight = parseFloat(e.target.value);
                     if (!isNaN(newWeight)) {
                       const updatedDetails = { weight: newWeight };
-                      updateExerciseRecords(details.recordId, updatedDetails);
+                      updateExerciseRecords(exercise.recordId, updatedDetails);
                     }
                   }}
                 />
@@ -251,7 +248,7 @@ const ExerciseDetails: React.FC<ExerciseDetailProps> = ({
                     const newReps = parseInt(e.target.value, 10);
                     if (!isNaN(newReps)) {
                       const updatedDetails = { reps: newReps };
-                      updateExerciseRecords(details.recordId, updatedDetails);
+                      updateExerciseRecords(exercise.recordId, updatedDetails);
                     }
                   }}
                 />

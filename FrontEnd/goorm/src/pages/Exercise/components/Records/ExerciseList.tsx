@@ -129,7 +129,6 @@ const ExerciseList = ({exercises,dateInfo}: ExerciseListProps) => {
                     key={record.recordId}
                     exercise={record}
                     isAddingExercise={record.isAddingExercise as boolean}
-                    details={record}
                     />
                 ))
                 ) : (

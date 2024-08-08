@@ -1,7 +1,6 @@
 import { ExerciseData, ExerciseRecords, Memo } from '../../pages/Exercise/ExerciseTypes';
 import { formatDate, formatDateData } from '../../utils/DateUtils';
 import axiosInstance from '../axiosInstance';
-import { RecordResponse } from './dto/RecordResponse';
 
 export const getExerciseData = async (): Promise<ExerciseData[]> => {
     try {
@@ -14,9 +13,9 @@ export const getExerciseData = async (): Promise<ExerciseData[]> => {
     }
 };
 
-export const getExerciseRecords = async (): Promise<RecordResponse> => {
+export const getExerciseRecords = async (): Promise<ExerciseRecords> => {
     try {
-        const response = await axiosInstance.get<RecordResponse>('/record/all');
+        const response = await axiosInstance.get<ExerciseRecords>('/record/all');
         console.log("운동기록 가져오기 성공: ", response.data);
         return response.data;
     } catch(err) {
@@ -107,7 +106,7 @@ export const postExerciseMemo = async(memo: string) => {
     }
     try {
         const response = await axiosInstance.post(`/memo`, request);
-        console.log("운동 메모 post 성공!!");
+        console.log("운동 메모 post 성공!!", response.data);
     } catch (error) {
         console.error("운동 메모 post 실패", error);
     }

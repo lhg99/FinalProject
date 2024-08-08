@@ -40,12 +40,13 @@ export const FoodProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     }
 
     const setFoodCategories = (categories: FoodCategory[]) => {
-        setState(prevState => ({...prevState, categories}));
-    }
-
+        setState(prevState => ({ ...prevState, foodCategories: categories }));
+    };
+    
     const setFoodRecord = (foodRecord: FoodRecord[]) => {
-        setState(prevState => ({...prevState, foodRecord}));
-    }
+        setState(prevState => ({ ...prevState, foodRecords: foodRecord }));
+    };
+    
 
     const addFood = (food: FoodData) => {
         setState(prevState => ({
@@ -80,7 +81,6 @@ export const FoodProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
             addFood,
             addCustomFood,
             addSelectedFood
-    
         }}>
             {children}
         </FoodContext.Provider>
@@ -90,7 +90,7 @@ export const FoodProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
 export const useFood = () => {
     const context = useContext(FoodContext);
     if (context === undefined) {
-        throw new Error('useExercise must be used within an ExerciseProvider');
+        throw new Error('useFood must be used within a FoodProvider');
     }
     return context;
 };

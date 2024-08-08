@@ -22,7 +22,8 @@ export interface FoodRecord {
         protein: number,
         carbohydrate: number
     };
-    imageUrl?: string;
     mealType: string;
     quantity: number;
+    dietMemo?: string;
+    dietDate: Date;
 }

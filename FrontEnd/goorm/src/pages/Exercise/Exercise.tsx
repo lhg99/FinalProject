@@ -152,8 +152,6 @@ const Exercise: React.FC = () => {
       console.error("운동기록 저장 실패", err);
     }
   };
-  
-  
 
   const handleEdit = async () => {
     try {
