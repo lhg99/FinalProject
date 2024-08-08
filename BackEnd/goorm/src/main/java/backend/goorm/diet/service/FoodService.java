@@ -57,9 +57,7 @@ public class FoodService {
     }
 
     public FoodResponseDto createFood(Long memberId, FoodUserDto dto) {
-        if (dto.getAmount() == null) {
-            throw new IllegalArgumentException("Amount cannot be null");
-        }
+
 
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new IllegalArgumentException("Member not found with id: " + memberId));

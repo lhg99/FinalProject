@@ -11,7 +11,7 @@ import lombok.*;
 public class FoodUserDto {
     private String foodType;
     private String foodName;
-    private Double amount; // NULL 값 허용하지 않음
+    private Float gram;
     private Float calories;
     private Float carbohydrate;
     private Float protein;
@@ -26,14 +26,11 @@ public class FoodUserDto {
     private Boolean userRegister = true;
 
     public Food toEntity() {
-        if (this.amount == null) {
-            throw new IllegalArgumentException("Amount cannot be null");
-        }
 
         return Food.builder()
                 .foodType(this.foodType)
                 .foodName(this.foodName)
-                .amount(this.amount)
+                .gram(this.gram)
                 .calories(this.calories)
                 .carbohydrate(this.carbohydrate)
                 .protein(this.protein)
@@ -49,13 +46,10 @@ public class FoodUserDto {
     }
 
     public void updateEntity(Food food) {
-        if (this.amount == null) {
-            throw new IllegalArgumentException("Amount cannot be null");
-        }
 
         food.setFoodType(this.foodType);
         food.setFoodName(this.foodName);
-        food.setAmount(this.amount);
+        food.setGram(this.gram);
         food.setCalories(this.calories);
         food.setCarbohydrate(this.carbohydrate);
         food.setProtein(this.protein);
