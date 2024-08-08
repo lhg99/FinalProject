@@ -18,7 +18,7 @@ public class DateConvertUtil {
 
     public String convertDateToStringWithTime(LocalDateTime date) {
 
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yy/MM/dd HH:mm");
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm");
         String regDate = date.format(formatter);
         return regDate;
 
