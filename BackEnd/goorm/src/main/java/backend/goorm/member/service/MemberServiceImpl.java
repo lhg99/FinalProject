@@ -195,15 +195,23 @@ public class MemberServiceImpl implements  MemberService{
             throw new CustomException(CustomExceptionType.RUNTIME_EXCEPTION);
         }
 
+        log.info("change nickname = {} , change comment = {}", changeInfoRequest.getUsername(), changeInfoRequest.getComment());
+
         Optional<Member> findByNickname = memberRepository.findByMemberNickname(changeInfoRequest.getUsername());
 
         if(findByNickname.isPresent()){
             throw new CustomException(CustomExceptionType.DUPLICATE_INFORMATION);
         }
 
+        Optional<Member> changeMember = memberRepository.findByMemberId(member.getMemberId());
+
+        if(member.isMemberInactive()){
+            throw new CustomException(CustomExceptionType.USER_NOT_FOUND);
+        }
+
         if(findInfo.isPresent()){
             findInfo.get().setComment(changeInfoRequest.getComment());
-            member.setMemberNickname(changeInfoRequest.getUsername());
+            changeMember.get().setMemberNickname(changeInfoRequest.getUsername());
         }else{
             MemberInfo memberInfo = MemberInfo.builder()
                     .memberId(member)
@@ -213,7 +221,7 @@ public class MemberServiceImpl implements  MemberService{
                     .build();
 
             memberInfoRepository.save(memberInfo);
-            member.setMemberNickname(changeInfoRequest.getUsername());
+            changeMember.get().setMemberNickname(changeInfoRequest.getUsername());
         }
 
 
