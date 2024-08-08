@@ -17,6 +17,7 @@ public interface RecordRepository extends JpaRepository<Record, Long> {
     List<Record> findAll();
     List<Record> findByTraining_TrainingId(Long trainingId);
 
+    List<Record> findAllByMember(Member member);
     Page<Record> findAllByMember(Member member, Pageable pageable);
 
     Page<Record> findByExerciseDateBetweenAndMember(LocalDate start, LocalDate end, Member member, Pageable pageable);
