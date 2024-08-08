@@ -1,0 +1,45 @@
+.sliderContainer {
+    width: 100%;
+    max-width: 85%;
+    height: auto;
+    max-height: 400px;
+    margin: 0 auto;
+    overflow: hidden;
+    position: relative;
+    margin-bottom: 20px;
+}
+
+.centerModeSliderContainer {
+    margin: 20px auto;
+}
+
+.navContainer {
+    display: flex;
+    justify-content: space-around;
+    padding: 20px 50px;
+    border-radius: 5px;
+}
+
+.navLink {
+    color: #515354;
+    text-align: center;
+    padding: 10px 20px;
+    border-radius: 5px;
+    text-decoration: none;
+    position: relative;
+    transition: color 0.3s ease;
+}
+
+.navLink:hover,
+.navLink.active {
+    // color: #ff0000;
+}
+
+.slick-slide {
+    padding: 0 10px;
+}
+
+.slick-track {
+    display: flex;
+
+}

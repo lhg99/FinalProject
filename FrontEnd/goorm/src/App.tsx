@@ -1,4 +1,4 @@
-import React, { Suspense } from 'react';
+import React from 'react';
 import { BrowserRouter, Route, Routes, Outlet } from 'react-router-dom';
 import Header from './components/Header/Header';
 import Chat from './pages/Chat/components/Chat';
@@ -9,8 +9,10 @@ import Login from './pages/Login/Login';
 import SignUp from './pages/SignUp/SignUp';
 import Main from './pages/MyPage/Main/Main';
 import MyPage from './pages/MyPage/MyPage/MyPage';
+import MyPageEdit from './pages/MyPage/MyPage/MyPageEdit';
 import { AuthProvider } from './pages/Login/auth/AuthContext';
 import ProtectedRoute from './pages/Login/auth/ProtectedRoute';
+import ExerciseVideo from './pages/HealthVideo/ExerciseVideo/ExerciseVideo';
 
 const Layout: React.FC = () => (
   <>
@@ -23,6 +25,14 @@ const Layout: React.FC = () => (
 );
 
 const App: React.FC = () => {
+  // 예시 초기 데이터와 콜백 함수
+  const initialUsername = "현재 사용자명"; // 실제 값으로 대체하세요
+  const initialComment = "현재 사용자 소개"; // 실제 값으로 대체하세요
+
+  const handleUpdate = () => {
+    console.log("업데이트가 완료되었습니다.");
+  };
+
   return (
     <AuthProvider>
       <BrowserRouter>
@@ -60,10 +70,28 @@ const App: React.FC = () => {
                 </ProtectedRoute>
               } 
             />
-              <Route path="/mypage" 
+            <Route path="/mypage" 
               element={
                 <ProtectedRoute>
-                  <Suspense><MyPage /></Suspense>
+                  <MyPage />
+                </ProtectedRoute>
+              } 
+            />
+            <Route path="/exvideo" 
+              element={
+                <ProtectedRoute>
+                  <ExerciseVideo />
+                </ProtectedRoute>
+              } 
+            />
+            <Route path="/edit" 
+              element={
+                <ProtectedRoute>
+                  <MyPageEdit
+                    initialUsername={initialUsername}
+                    initialComment={initialComment}
+                    onUpdate={handleUpdate}
+                  />
                 </ProtectedRoute>
               } 
             />
