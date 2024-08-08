@@ -3,15 +3,14 @@ import { Category, ExerciseData, ExerciseRecords } from '../pages/Exercise/Exerc
 import { FoodData, FoodCategory, FoodRecord } from '../pages/Food/FoodTypes';
 
 interface FoodState {
-    food: FoodData[];
-    customFood: FoodData[];
-    selectedFood: FoodData[];
-    foodCategories: FoodCategory[];
+    food: FoodData[]; // 모든 음식을 저장
+    customFood: FoodData[]; // 사용자가 자유 입력으로 추가할 음식
+    selectedFood: FoodData[]; // FoodSearch에서 클릭한 음식
+    foodCategories: FoodCategory[]; // 아침, 점심, 저녁, 간식 카테고리
     foodRecords: FoodRecord[]; // 모든 식단 기록을 저장
     foodDetails: FoodRecord[]; // 유저가 추가한 식단 기록
-    selectedFoodRecords: FoodRecord[];
-    mealType: string;
-
+    selectedFoodRecords: FoodRecord[]; // 식단 기록에서 수정할 부분이 있는 기록들
+    mealType: string; // BREAKFAST, LUNCH, DINNER, SNACK
 }
 
 const initialState: FoodState = {
@@ -66,11 +65,10 @@ export const FoodProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     }
     
 
-    const addFood = (food: FoodData) => {
+    const addFood = (foodData: FoodData) => {
         setState(prevState => ({
             ...prevState,
-            food: [...prevState.food, food],
-            selectedFood: [...prevState.selectedFood, food] // mealType 포함
+            food: [...prevState.food, foodData],
         }));
     }
 

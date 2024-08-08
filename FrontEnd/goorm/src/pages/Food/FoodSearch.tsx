@@ -19,7 +19,7 @@ const FoodSearch = ({ onAddFood, onAddCustomFood } : FoodSearchProps) => {
     const [filteredData, setFilteredData] = useState<FoodData[]>([]);
     const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
 
-    const { state: { food, selectedFood, foodCategories, mealType }, setFoodCategories, setFood, setMealType } = useFood();
+    const { state: { food, selectedFood, foodCategories, mealType }, setFoodCategories, setFood, setMealType, addSelectedFood } = useFood();
     const { modals, openModal, closeModal } = ModalStore();
 
     const [nutritionDetails, setNutritionDetails] = useState<Omit<FoodData, 'foodId' | 'foodName'>>({
@@ -116,9 +116,9 @@ const FoodSearch = ({ onAddFood, onAddCustomFood } : FoodSearchProps) => {
     }
 
     const handleAddFoodClick = (food: FoodData) => {
-        const isExerciseSelected = selectedFood.some(selected => selected.foodName.toLowerCase() === food.foodName.toLowerCase());
-        if (!isExerciseSelected) {
-            onAddFood(food);
+        const isFoodSelected = selectedFood.some(selected => selected.foodName.toLowerCase() === food.foodName.toLowerCase());
+        if (!isFoodSelected) {
+            addSelectedFood(food, mealType);
         }
     };
 
