@@ -6,7 +6,6 @@ import { ExerciseData, ExerciseRecords } from "../../ExerciseTypes";
 import {
   getExerciseRecords,
 } from "../../../../api/Exercise/exerciseApi";
-import { RecordResponse } from "../../../../api/Exercise/dto/RecordResponse";
 interface ExerciseListProps {
   exercises: ExerciseData[];
   dateInfo: {
@@ -29,12 +28,8 @@ const ExerciseList = ({exercises,dateInfo}: ExerciseListProps) => {
     useEffect(() => {
         const fetchRecords = async () => {
           try {
-            if (dateInfo) {
-              const { formattedDate } = dateInfo;
-              const records: RecordResponse = await getExerciseRecords();
-
-              setExerciseRecords(records); // Set records as an array
-            }
+            const records = await getExerciseRecords();
+            setExerciseRecords(records); // Set records as an array
           } catch (error) {
             console.error('Failed to fetch exercise records', error);
           }

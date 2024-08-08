@@ -1,6 +1,5 @@
 import React, { createContext, useContext, useState, ReactNode } from 'react';
 import { Category, ExerciseData, ExerciseRecords, Memo } from '../pages/Exercise/ExerciseTypes';
-import { RecordResponse } from '../api/Exercise/dto/RecordResponse';
 
 interface ExerciseState {
     exercises: ExerciseData[];
@@ -44,11 +43,10 @@ interface ExerciseContextProps {
     addCustomExercises: (exercise: ExerciseData) => void;
     addSelectedExercises: (exercise: ExerciseData) => void;
     addExerciseRecord: (record: ExerciseRecords) => void;
-    // addMemo: (recordId: number, memo: string) => void;
     setExercises: (exercises: ExerciseData[]) => void;
     setCategories: (categories: Category[]) => void;
     setImageFile: (file: File | null) => void;
-    setExerciseRecords: (records: RecordResponse) => void;
+    setExerciseRecords: (records: ExerciseRecords[]) => void;
     setIsAddingExercise: (adding: boolean) => void;
     setStartDate: (date: Date) => void;
     setEndDate: (date: Date) => void;
@@ -110,10 +108,10 @@ export const ExerciseProvider: React.FC<{ children: ReactNode }> = ({ children }
         setState(prevState => ({ ...prevState, imageFile: file }));
     };
 
-    const setExerciseRecords = (recordResponse: RecordResponse) => {
+    const setExerciseRecords = (records: ExerciseRecords[]) => {
         setState(prevState => ({
             ...prevState,
-            exerciseRecords: recordResponse.content // RecordResponse 객체의 content를 설정
+            exerciseRecords: records
         }));
     };
 
