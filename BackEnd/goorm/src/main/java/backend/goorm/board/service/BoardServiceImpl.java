@@ -72,7 +72,6 @@ public class BoardServiceImpl implements BoardService {
 
         Board saveBoard = boardRepository.save(board);
         //saveImage(saveRequest.getImageUrls(), saveBoard.getBoardId());
-
     }
 
 
@@ -128,7 +127,7 @@ public class BoardServiceImpl implements BoardService {
                 .writer(board.getMemberId().getMemberNickname())
                 .boardTitle(board.getBoardTitle())
                 .boardContent(board.getBoardContent())
-                .boardRegDate(dateConvertUtil.convertDateToString(board.getBoardRegDate()))
+                .boardRegDate(dateConvertUtil.convertDateToStringWithTime(board.getBoardRegDate()))
                 .viewCnt(board.getViewCnt())
                 .likesCnt(board.getLikesCnt())
                 .reportsCnt(board.getReportsCnt())
@@ -233,7 +232,7 @@ public class BoardServiceImpl implements BoardService {
                 .boardId(board.getBoardId())
                 .writer(board.getBoardWriter())
                 .boardTitle(board.getBoardTitle())
-                .boardRegDate(dateConvertUtil.convertDateToString(board.getBoardRegDate()))
+                .boardRegDate(dateConvertUtil.convertDateToStringWithTime(board.getBoardRegDate()))
                 .boardCategory(board.getBoardCategory())
                 .boardType(board.getBoardType())
                 .viewCnt(board.getViewCnt())
