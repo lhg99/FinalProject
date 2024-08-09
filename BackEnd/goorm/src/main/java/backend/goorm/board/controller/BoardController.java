@@ -63,12 +63,12 @@ public class BoardController {
         return ResponseEntity.ok(boardList);
     }
 
-    @GetMapping("/detail/{number}")
-    public ResponseEntity getBoardDetail(@PathVariable Long number, Authentication authentication){
+    @GetMapping("/detail/{boardId}")
+    public ResponseEntity getBoardDetail(@PathVariable Long boardId, Authentication authentication){
 
         PrincipalDetails principalDetails = (PrincipalDetails) authentication.getPrincipal();
 
-        BoardDetailResponse detailResponse = boardService.getBoardDetail(number, principalDetails.member());
+        BoardDetailResponse detailResponse = boardService.getBoardDetail(boardId, principalDetails.member());
 
         return ResponseEntity.ok(detailResponse);
     }
