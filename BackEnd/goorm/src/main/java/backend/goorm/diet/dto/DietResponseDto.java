@@ -12,43 +12,56 @@ import java.util.stream.Collectors;
 @Builder
 public class DietResponseDto {
     private Long dietId;
-    private String mealType;
+    private String mealTime;
     private LocalDate dietDate;
     private Float quantity;
     private Float gram;
     private FoodResponseDto foodRes;
-    private Float totalCalories;  // 추가된 필드
+    private Float totalCalories;
+    private Float totalGram;
     private String memo;
 
     // 메모와 칼로리를 모두 포함한 변환
     public static DietResponseDto fromEntityWithMemo(Diet diet, String memoContent) {
         return DietResponseDto.builder()
                 .dietId(diet.getDietId())
-                .mealType(diet.getMealTime().toString())
+                .mealTime(diet.getMealTime().toString())
                 .dietDate(diet.getDietDate())
                 .quantity(diet.getQuantity())
                 .gram(diet.getGram())
                 .foodRes(FoodResponseDto.fromEntity(diet.getFood()))
-                .totalCalories(diet.getTotalCalories())  // 저장된 칼로리 사용
-                .memo(memoContent)  // 전달된 메모 사용
+                .totalCalories(diet.getTotalCalories())
+                .totalGram(calculateTotalGram(diet))
+                .memo(memoContent)
                 .build();
     }
 
     public static DietResponseDto fromEntity(Diet diet) {
-        return fromEntity(diet, null); // 메모가 없을 때 사용
+        return fromEntity(diet, null);
     }
 
     public static DietResponseDto fromEntity(Diet diet, String memoContent) {
         return DietResponseDto.builder()
                 .dietId(diet.getDietId())
-                .mealType(diet.getMealTime().toString())
+                .mealTime(diet.getMealTime().toString())
                 .dietDate(diet.getDietDate())
                 .quantity(diet.getQuantity())
                 .gram(diet.getGram())
-                .foodRes(FoodResponseDto.fromEntity(diet.getFood()))  // 음식 정보 추가
-                .totalCalories(diet.getTotalCalories())  // 저장된 총 칼로리 정보 추가
+                .foodRes(FoodResponseDto.fromEntity(diet.getFood()))
+                .totalCalories(diet.getTotalCalories())
+                .totalGram(calculateTotalGram(diet))
                 .memo(memoContent != null ? memoContent : (diet.getDietMemo() != null ? diet.getDietMemo().getContent() : null))
                 .build();
+    }
+
+    private static Float calculateTotalGram(Diet diet) {
+        if (diet.getGram() != null) {
+            return diet.getGram();  // 사용자가 gram을 입력한 경우
+        } else if (diet.getQuantity() != null && diet.getFood() != null) {
+            return diet.getQuantity() * diet.getFood().getGram();  // 사용자가 quantity를 입력한 경우
+        } else {
+            return 0f;  // default
+        }
     }
 
 

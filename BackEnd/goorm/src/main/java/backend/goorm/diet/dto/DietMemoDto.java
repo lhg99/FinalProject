@@ -18,7 +18,6 @@ public class DietMemoDto {
     private Long memberId; // Member 객체 대신 memberId만 포함
     private String content;
     private LocalDate date;
-    private LocalDateTime createdAt;
 
     public static DietMemoDto fromEntity(DietMemo memo) {
         return DietMemoDto.builder()
@@ -26,7 +25,6 @@ public class DietMemoDto {
                 .memberId(memo.getMember().getMemberId()) // Member 객체 대신 memberId만 설정
                 .content(memo.getContent())
                 .date(memo.getDate())
-                .createdAt(memo.getCreatedAt())
                 .build();
     }
 }
