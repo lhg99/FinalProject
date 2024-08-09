@@ -13,13 +13,19 @@ import java.time.LocalDate;
 @NoArgsConstructor
 @Builder
 public class DietMemoDto {
+    private Long memoId;
+    private Long memberId; // Member 객체 대신 memberId만 포함
     private String content;
     private LocalDate date;
+    private LocalDate createdAt;
 
-    public static DietMemo fromEntity(DietMemo memo) {
-        return DietMemo.builder()
+    public static DietMemoDto fromEntity(DietMemo memo) {
+        return DietMemoDto.builder()
+                .memoId(memo.getMemoId())
+                .memberId(memo.getMember().getMemberId()) // Member 객체 대신 memberId만 설정
                 .content(memo.getContent())
                 .date(memo.getDate())
+                .createdAt(memo.getCreatedAt())
                 .build();
     }
 }

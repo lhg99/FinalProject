@@ -6,6 +6,7 @@ import org.springframework.data.annotation.CreatedDate;
 
 import jakarta.persistence.*;
 import java.time.LocalDate;
+import java.util.List;
 
 @Getter
 @Setter
@@ -25,11 +26,16 @@ public class DietMemo {
     @JoinColumn(name = "member_id")
     private Member member;
 
-    @Column(name = "content", columnDefinition = "TEXT")
-    private String content;
+    @OneToMany(mappedBy = "dietMemo", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Diet> diets;
+
 
     @Column(name = "date", nullable = false)
     private LocalDate date;
+
+    @Column(name = "content", columnDefinition = "TEXT")
+    private String content;
+
 
     @CreatedDate
     @Column(name = "created_at", updatable = false)

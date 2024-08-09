@@ -37,7 +37,7 @@ public class Diet {
     @JoinColumn(name = "memo_id")
     private DietMemo dietMemo;
 
-    @Column(name = "quantity", nullable = false)
+    @Column(name = "quantity")
     private Float quantity;
 
     @Column(name = "gram")

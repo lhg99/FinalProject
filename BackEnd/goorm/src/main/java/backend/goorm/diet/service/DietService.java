@@ -69,6 +69,7 @@ public class DietService {
 
             Diet savedDiet = dietRepository.save(diet);
 
+
             return DietResponseDto.fromEntity(savedDiet);
         }).collect(Collectors.toList());
 
@@ -114,13 +115,6 @@ public class DietService {
             request.updateEntity(diet, foodRepository);
             Diet saved = dietRepository.save(diet);
 
-            // 식단을 저장한 후 다시 로드하여 연관된 Food 객체를 포함
-            Diet savedDietWithFood = dietRepository.findById(saved.getDietId())
-                    .orElseThrow(() -> new IllegalArgumentException("Diet not found after save with id: " + saved.getDietId()));
-
-            // Food 정보를 포함한 DietResponseDto 생성
-            updatedDiets.add(DietResponseDto.fromEntity(savedDietWithFood));
-
             // 메모 정보를 업데이트하기 위해 날짜와 메모 내용을 저장
             if (memoDate == null) {
                 memoDate = request.getDietDate();
@@ -149,8 +143,21 @@ public class DietService {
             }
         }
 
+        // 수정된 식단에 대한 응답 생성
+        for (DietUpdateRequestDto request : requests) {
+            Diet diet = dietRepository.findById(request.getDietId())
+                    .orElseThrow(() -> new IllegalArgumentException("Diet not found with id: " + request.getDietId()));
+
+            String memoContentForDto = dietMemoRepository.findByMemberAndDate(member, diet.getDietDate())
+                    .map(DietMemo::getContent)
+                    .orElse(null);
+
+            updatedDiets.add(DietResponseDto.fromEntity(diet, memoContentForDto));
+        }
+
         return updatedDiets;
     }
+
 
 
 
@@ -168,7 +175,7 @@ public class DietService {
         return true;
     }
 
-    public DietMemo addOrUpdateDietMemo(DietMemoDto memoDto, Member member) {
+    public DietMemoDto addOrUpdateDietMemo(DietMemoDto memoDto, Member member) {
         Optional<DietMemo> existingMemoOpt = dietMemoRepository.findByMemberAndDate(member, memoDto.getDate());
 
         DietMemo memo;
@@ -183,8 +190,10 @@ public class DietService {
                     .build();
         }
 
-        return dietMemoRepository.save(memo);
+        DietMemo savedMemo = dietMemoRepository.save(memo);
+        return DietMemoDto.fromEntity(savedMemo);
     }
+
 
     public String getDietMemo(Member member, LocalDate date) {
         return dietMemoRepository.findByMemberAndDate(member, date)

@@ -75,9 +75,9 @@ public class DietController {
 
     // 새로운 메모 추가
     @PostMapping("/dietMemo")
-    public ResponseEntity<DietMemo> addOrUpdateMemo(@RequestBody DietMemoDto memoDto,
+    public ResponseEntity<DietMemoDto> addOrUpdateMemo(@RequestBody DietMemoDto memoDto,
                                                     @AuthenticationPrincipal PrincipalDetails principalDetails) {
-        DietMemo response = dietService.addOrUpdateDietMemo(memoDto, principalDetails.member());
+        DietMemoDto response = dietService.addOrUpdateDietMemo(memoDto, principalDetails.member());
         return ResponseEntity.ok(response);
     }
 
