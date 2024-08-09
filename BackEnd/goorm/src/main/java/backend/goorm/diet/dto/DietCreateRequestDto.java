@@ -16,6 +16,7 @@ public class DietCreateRequestDto {
     private String mealTime;
     private List<FoodQuantity> foodQuantities;
 
+
     @NoArgsConstructor
     @AllArgsConstructor
     @Builder
@@ -25,5 +26,8 @@ public class DietCreateRequestDto {
     public static class FoodQuantity {
         private Long foodId;
         private Float quantity;
+        private Float gram;
+
+
     }
 }

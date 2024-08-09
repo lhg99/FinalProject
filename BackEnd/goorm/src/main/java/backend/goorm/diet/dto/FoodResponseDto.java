@@ -16,7 +16,6 @@ public class FoodResponseDto {
     private String userName;
     private String foodType;
     private String foodName;
-    private Double amount;
     private Float gram;
     private Float calories;
     private Float carbohydrate;
@@ -36,7 +35,6 @@ public class FoodResponseDto {
                 .userName(food.getMember() != null ? food.getMember().getMemberNickname() : "admin")
                 .foodType(food.getFoodType())
                 .foodName(food.getFoodName())
-                .amount(food.getAmount())
                 .gram(food.getGram())
                 .calories(food.getCalories())
                 .carbohydrate(food.getCarbohydrate())

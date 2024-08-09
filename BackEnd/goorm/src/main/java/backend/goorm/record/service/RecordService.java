@@ -135,6 +135,20 @@ public class RecordService {
         });
     }
 
+    public List<RecordDto> getAllRecords(Member member) {
+        List<Record> records = recordRepository.findAllByMember(member);
+
+        return records.stream().map(record -> {
+            // 메모를 해당 기록 날짜에 맞춰 조회
+            Optional<Memo> memoOpt = memoRepository.findByMemberAndDate(member, record.getExerciseDate());
+            String memoContent = memoOpt.map(Memo::getContent).orElse(null);
+            // RecordDto로 변환하여 메모 내용 포함
+            return RecordDto.fromEntity(record, memoContent);
+        }).collect(Collectors.toList());
+    }
+
+
+
     public int getTotalCaloriesBurnedByDateAndMember(LocalDate date, Member member) {
         return recordRepository.findAllByExerciseDateAndMember(date, member).stream()
                 .mapToInt(record -> record.getCaloriesBurned() != null ? record.getCaloriesBurned().intValue() : 0)
