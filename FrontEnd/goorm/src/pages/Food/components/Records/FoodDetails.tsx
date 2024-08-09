@@ -13,7 +13,7 @@ interface FoodDetailProps {
 }
 
 const FoodDetails: React.FC<FoodDetailProps> = ({ food }) => {
-  const [quantity, setQuantity] = useState<string>(food.quantity?.toString() || "1");
+  const [quantity, setQuantity] = useState<string>(food.quantity?.toString() || "");
   const [gram, setGram] = useState<string>(food.gram?.toString() || "");
   const prevDetailsRef = useRef(food);
 
@@ -28,9 +28,14 @@ const FoodDetails: React.FC<FoodDetailProps> = ({ food }) => {
   const { modals, openModal, closeModal } = ModalStore();
 
   useEffect(() => {
+    console.log("Updated quantity:", quantity);
+    console.log("Updated gram:", gram);
+  }, [quantity, gram]);
+
+  useEffect(() => {
     const updatedDetails = {
       ...food,
-      quantity: quantity ? parseInt(quantity) : 1,
+      quantity: quantity ? parseInt(quantity) : 0,
       gram: gram ? parseInt(gram) : 0
     };
 
@@ -50,7 +55,7 @@ const FoodDetails: React.FC<FoodDetailProps> = ({ food }) => {
       }
     }
     prevDetailsRef.current = updatedDetails;
-  }, [gram, quantity, updateFoodDetails, updateFoodRecords]);
+  }, [gram, quantity]);
 
   const handleModalClick = () => {
     openModal("deleteModal");
@@ -98,6 +103,7 @@ const FoodDetails: React.FC<FoodDetailProps> = ({ food }) => {
             type="number"
             placeholder="gram"
             value={gram}
+            step="10"
             onChange={(e) => {
               setGram(e.target.value);
               const newGram = parseInt(e.target.value, 10);
@@ -147,38 +153,37 @@ const CategoryBadge = styled.span`
   margin-left: 0.625rem;
   padding: 0.25rem;
   font-size: 0.875rem;
+  pointer-events: none;  /* Hover 효과가 적용되지 않도록 설정 */
 `;
 
 const FoodTitle = styled.h3`
   font-size: 1.125rem;
-  font-weight: bold;
   margin-left: 0.625rem;
-`;
-
-const FoodLabel = styled.label`
-  margin-left: 0.625rem;
-  display: block;
-  flex-direction: row;
-  margin-bottom: 1rem;
-  width: 5.625rem;
-  gap: 0;
 `;
 
 const InputContainer = styled.div`
   display: flex;
   align-items: center;
+  flex-direction: row;
   gap: 0.625rem;
 `;
 
-const FoodInput = styled.input`
+const FoodLabel = styled.label`
   display: flex;
-  width: 100%;
+  align-items: center;
+  margin-left: 1.25rem;
+  margin-bottom: 1rem;
+  gap: 0.5rem;  /* Input과 Text 사이의 간격을 조정 */
+`;
+
+const FoodInput = styled.input`
+  width: 6.25rem;  /* 입력 필드의 너비를 줄임 */
   padding: 0.3125rem;
-  margin-top: 1.25rem;
   border: 1px solid #afafaf;
   border-radius: 0.625rem;
   font-size: 0.875rem;
   margin-left: 0.3125rem;
+  margin-top: 20px;
 
   // 스핀버튼 항상 보이게 설정하는 CSS
   -webkit-appearance: none;
@@ -192,18 +197,13 @@ const FoodInput = styled.input`
 `;
 
 const FoodText = styled.span`
-  margin-left:30px;
-`;
-
-const SetContainer = styled.div`
-  display: flex;
-  flex-direction: row;
-  align-items: center;
+  font-size: 0.875rem;
+  margin-top: 1.25rem;
 `;
 
 const DeleteButton = styled.button`
   margin-right: 0.625rem;
-  margin-left: 0.625rem;
+  margin-left: 1.25rem;
   height: 20%;
   background-color: #ff4d4d;
   color: white;

@@ -26,10 +26,10 @@ export interface DietMemo {
 export interface FoodRecord {
     dietId: number;
     mealTime: string;
-    quantity: number;
+    quantity: number | null;
     dietMemo?: string;
     dietDate: string;
-    gram: number;
+    gram: number | null;
     foodRes: {
         foodId: number,
         foodName: string,
