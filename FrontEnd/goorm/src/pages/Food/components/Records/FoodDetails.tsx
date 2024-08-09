@@ -98,6 +98,7 @@ const FoodDetails: React.FC<FoodDetailProps> = ({ food }) => {
             type="number"
             placeholder="gram"
             value={gram}
+            step="10"
             onChange={(e) => {
               setGram(e.target.value);
               const newGram = parseInt(e.target.value, 10);
@@ -133,6 +134,10 @@ const FoodDetailsContainer = styled.div`
   align-items: center;
   text-align: center;
   font-size: 0.875rem;
+  :hover {
+    background-color: #f0f0f0;
+    cursor: pointer;
+  }
 `;
 
 const FoodInfo = styled.div`
@@ -151,34 +156,32 @@ const CategoryBadge = styled.span`
 
 const FoodTitle = styled.h3`
   font-size: 1.125rem;
-  font-weight: bold;
   margin-left: 0.625rem;
-`;
-
-const FoodLabel = styled.label`
-  margin-left: 0.625rem;
-  display: block;
-  flex-direction: row;
-  margin-bottom: 1rem;
-  width: 5.625rem;
-  gap: 0;
 `;
 
 const InputContainer = styled.div`
   display: flex;
   align-items: center;
+  flex-direction: row;
   gap: 0.625rem;
 `;
 
-const FoodInput = styled.input`
+const FoodLabel = styled.label`
   display: flex;
-  width: 100%;
+  align-items: center;
+  margin-left: 1.25rem;
+  margin-bottom: 1rem;
+  gap: 0.5rem;  /* Input과 Text 사이의 간격을 조정 */
+`;
+
+const FoodInput = styled.input`
+  width: 6.25rem;  /* 입력 필드의 너비를 줄임 */
   padding: 0.3125rem;
-  margin-top: 1.25rem;
   border: 1px solid #afafaf;
   border-radius: 0.625rem;
   font-size: 0.875rem;
   margin-left: 0.3125rem;
+  margin-top: 20px;
 
   // 스핀버튼 항상 보이게 설정하는 CSS
   -webkit-appearance: none;
@@ -192,18 +195,13 @@ const FoodInput = styled.input`
 `;
 
 const FoodText = styled.span`
-  margin-left:30px;
-`;
-
-const SetContainer = styled.div`
-  display: flex;
-  flex-direction: row;
-  align-items: center;
+  font-size: 0.875rem;
+  margin-top: 1.25rem;
 `;
 
 const DeleteButton = styled.button`
   margin-right: 0.625rem;
-  margin-left: 0.625rem;
+  margin-left: 1.25rem;
   height: 20%;
   background-color: #ff4d4d;
   color: white;

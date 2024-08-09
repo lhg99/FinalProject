@@ -18,13 +18,9 @@ interface FoodListProps {
 
 const FoodList = ({ food, dateInfo }: FoodListProps) => {
   const {
-    state: {
-      selectedFood,
-      foodRecords,
-      selectedFoodRecords,
-    },
+    state: { selectedFood, foodRecords, selectedFoodRecords },
     setFoodRecord,
-    setSelectedFoodRecords
+    setSelectedFoodRecords,
   } = useFood();
 
   useEffect(() => {
@@ -33,24 +29,26 @@ const FoodList = ({ food, dateInfo }: FoodListProps) => {
         const records = await getFoodRecord();
         setFoodRecord(records); // Set records as an array
       } catch (error) {
-        console.error('Failed to fetch exercise records', error);
+        console.error("Failed to fetch exercise records", error);
       }
     };
     fetchRecords();
   }, [dateInfo]);
 
-  const filteredRecords = useMemo(() => {
+  useEffect(() => {
     if (!dateInfo) {
-      console.log('No dateInfo provided');
-      return [];
+      console.log("No dateInfo provided");
+      setSelectedFoodRecords([]); // 상태 초기화
+      return;
     }
 
     const { year, month, day } = dateInfo;
     const selectedDate = new Date(year, month - 1, day);
 
     if (!Array.isArray(foodRecords)) {
-      console.log('No food records found');
-      return [];
+      console.log("No food records found");
+      setSelectedFoodRecords([]); // 상태 초기화
+      return;
     }
 
     const records = foodRecords.filter((record) => {
@@ -63,8 +61,10 @@ const FoodList = ({ food, dateInfo }: FoodListProps) => {
     });
 
     setSelectedFoodRecords(records);
+  }, [dateInfo, foodRecords]);
 
-    return records.map((record) => {
+  const filteredRecords = useMemo(() => {
+    return selectedFoodRecords.map((record) => {
       const foodInfo = food.find(
         (ex) =>
           ex.foodName.replace(/\s+/g, "").toLowerCase() ===
@@ -81,15 +81,18 @@ const FoodList = ({ food, dateInfo }: FoodListProps) => {
         return { ...record, id: 0, name: "Unknown Food", isNew: false };
       }
     });
-  }, [dateInfo, foodRecords, food]);
+  }, [selectedFoodRecords, food]);
 
   const combinedRecords = useMemo(() => {
     if (!Array.isArray(foodRecords)) {
-      console.log('No food records found');
+      console.log("No food records found");
       return [];
     }
 
-    const maxRecordId = Math.max(0, ...foodRecords.map(record => record.dietId));
+    const maxRecordId = Math.max(
+      0,
+      ...foodRecords.map((record) => record.dietId)
+    );
 
     const selectedFoodRecords: FoodRecord[] = selectedFood.map((food) => {
       return {
@@ -110,7 +113,7 @@ const FoodList = ({ food, dateInfo }: FoodListProps) => {
           sugar: food.sugar,
           cholesterol: food.cholesterol,
           saturatedFat: food.saturatedFat,
-          transFat: food.transFat
+          transFat: food.transFat,
         },
         totalCalories: food.calories * 0,
         memo: "",
