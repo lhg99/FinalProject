@@ -20,7 +20,7 @@ const Login: React.FC = () => {
 
     try {
       const response = await login({ loginId, loginPw });
-      navigate('/');
+      navigate('/main');
       console.log("로그인 성공", response);
     } catch (error: any) {
       console.error('로그인에 실패했습니다:', error);
