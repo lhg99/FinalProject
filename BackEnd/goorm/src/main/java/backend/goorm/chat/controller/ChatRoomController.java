@@ -1,6 +1,7 @@
 package backend.goorm.chat.controller;
 
 import backend.goorm.chat.model.entity.ChatRoom;
+import backend.goorm.chat.model.request.ChatRoomInviteRequest;
 import backend.goorm.chat.model.request.ChatRoomJoinRequest;
 import backend.goorm.chat.model.request.ChatRoomRequest;
 import backend.goorm.chat.model.response.ChatRoomResponse;
@@ -53,4 +54,9 @@ public class ChatRoomController {
         return new ResponseEntity<>(joinMessage, HttpStatus.OK);
     }
 
+    //채팅방 초대
+    @PostMapping("/invite")
+    public void inviteChatRoom(@RequestBody ChatRoomInviteRequest chatRoomInviteRequest, Authentication authentication) {
+        chatRoomService.inviteChatRoom(chatRoomInviteRequest, authentication);
+    }
 }

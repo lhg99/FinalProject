@@ -3,6 +3,7 @@ package backend.goorm.chat.service;
 import backend.goorm.chat.model.entity.ChatRoom;
 import backend.goorm.chat.model.entity.enums.ChatRoomStatus;
 import backend.goorm.chat.model.entity.enums.ChatRoomType;
+import backend.goorm.chat.model.request.ChatRoomInviteRequest;
 import backend.goorm.chat.model.request.ChatRoomJoinRequest;
 import backend.goorm.chat.model.request.ChatRoomRequest;
 import backend.goorm.chat.model.response.ChatRoomResponse;
@@ -20,6 +21,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -105,5 +107,34 @@ public class ChatRoomService {
         chatRoomRepository.save(findChatRoom);
 
         return findChatRoom.getChatRoomId() + "번 채팅방에" + findMember.getMemberName() + "님이 참가하였습니다.";
+    }
+
+    //채팅방 초대
+    public void inviteChatRoom(ChatRoomInviteRequest chatRoomInviteRequest, Authentication authentication) {
+        PrincipalDetails principalDetails = (PrincipalDetails) authentication.getPrincipal();
+        Member sender = principalDetails.member();
+
+        Member receiver = memberRepository.findByMemberNickname(chatRoomInviteRequest.getReceiverName())
+                .orElseThrow(() -> new CustomException(CustomExceptionType.USER_NOT_FOUND));
+
+        //지연로딩 컬렉션 초기화
+        sender.getChatRooms().size();
+        receiver.getChatRooms().size();
+
+        //채팅방 생성
+        ChatRoom chatRoom = new ChatRoom();
+        chatRoom.setChatRoomName(sender.getMemberNickname());
+        chatRoom.setChatRoomType(ChatRoomType.PRIVATE);
+        chatRoom.setChatRoomStatus(ChatRoomStatus.ACTIVE);
+
+        //채팅방 참여
+        chatRoom.getMembers().add(sender);
+        sender.getChatRooms().add(chatRoom);
+        chatRoom.getMembers().add(receiver);
+        receiver.getChatRooms().add(chatRoom);
+
+        memberRepository.save(sender);
+        memberRepository.save(receiver);
+        chatRoomRepository.save(chatRoom);
     }
 }
