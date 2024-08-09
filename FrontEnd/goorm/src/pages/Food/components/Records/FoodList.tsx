@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo } from "react";
 import styled from "styled-components";
-import { FoodData } from "../../FoodTypes";
-// import { getDietRecord } from '../../api/foodApi';
+import FoodDetails from "./FoodDetails";
+import { FoodData, FoodRecord } from "../../FoodTypes";
 import { useFood } from "../../../../contexts/foodContext";
 import { getFoodRecord } from "../../../../api/Food/foodApi";
 
@@ -12,102 +12,142 @@ interface FoodListProps {
     month: number;
     day: number;
     weekday: string;
+    formattedDate: string;
   } | null;
 }
 
-// 운동을 나열하는 컴포넌트
 const FoodList = ({ food, dateInfo }: FoodListProps) => {
-  // const {
-  //   state: { selectedFood, foodRecords },
-  //   setFoodRecord
-  // } = useFood();
-  // useEffect(() => {
-  //   const fetchRecords = async () => {
-  //     try {
-  //       const records = await getFoodRecord();
-  //       setFoodRecord(records);
-  //     } catch (error) {
-  //       console.error('Failed to fetch exercise records', error);
-  //     }
-  //   };
-  //   fetchRecords();
-  // }, []);
-  // const filteredRecords = useMemo(() => {
-  //   if (!dateInfo) {
-  //     console.log('No dateInfo provided');
-  //     return [];
-  //   }
-  //   const { year, month, day } = dateInfo;
-  //   const selectedDate = new Date(year, month - 1, day);
-  //   const records = foodRecords.filter(record => {
-  //     const recordDate = new Date(record.recordDate);
-  //     return (
-  //       recordDate.getFullYear() === selectedDate.getFullYear() &&
-  //       recordDate.getMonth() === selectedDate.getMonth() &&
-  //       recordDate.getDate() === selectedDate.getDate()
-  //     );
-  //   });
-  //   return records.map(record => {
-  //     const foodData = food.find(ex => ex.foodName.replace(/\s+/g, '').toLowerCase() === record.trainingName.replace(/\s+/g, '').toLowerCase());
-  //     if (food) {
-  //       return { ...record, id: food.foodId, name: food.foodName, isNew: false };
-  //     } else {
-  //       return { ...record, id: 0, name: "Unknown Exercise", isNew: false }; // Provide default values for id and name
-  //     }
-  //   });
-  // }, [dateInfo, exerciseRecords, exercises]);
-  // const combinedRecords = useMemo(() => {
-  //   const maxRecordId = Math.max(0, ...exerciseRecords.map(record => record.recordId));
-  //   const selectedExerciseRecords: ExerciseRecords[] = selectedExercises.map((exercise) => ({
-  //     recordId: maxRecordId + 1, // 기존 maxRecordId에 index를 더해 recordId를 증가
-  //     trainingName: exercise.name,
-  //     exerciseDate: new Date().toISOString(), // 현재 날짜로 설정
-  //     sets: 0,
-  //     weight: 0,
-  //     distance: 0,
-  //     durationMinutes: 0,
-  //     caloriesBurned: 0,
-  //     incline: 0,
-  //     reps: 0,
-  //     satisfaction: 0, // 기본값 설정, 실제 값을 설정해야 할 수 있음
-  //     intensity: '',
-  //     categoryName: exercise.categoryName,
-  //     trainingId: exercise.id,
-  //     isAddingExercise: exercise.isAddingExercise ? true : false
-  //   }));
-  //   return [...filteredRecords, ...selectedExerciseRecords];
-  // }, [filteredRecords, exerciseRecords, selectedExercises]); // Add selectedExercises to the dependency array
-  // return (
-  //   <FoodListWrapper>
-  //     <FoodTextContainer>
-  //       <FoodText>오늘의 운동 목록</FoodText>
-  //     </FoodTextContainer>
-  //     <FoodListContainer>
-  //       {combinedRecords.length > 0 ? (
-  //         combinedRecords.map(record => (
-  //           <FoodDetails
-  //             key={record.recordId}
-  //             exercise={record}
-  //             isAddingExercise={record.isAddingExercise as boolean}
-  //             details={record}
-  //             onExerciseNameChange={onExerciseNameChange}
-  //           />
-  //         ))
-  //       ) : (
-  //         <FoodTextContainer>
-  //           <FoodText>운동기록 없음</FoodText>
-  //         </FoodTextContainer>
-  //       )}
-  //     </FoodListContainer>
-  //   </FoodListWrapper>
-  // );
+  const {
+    state: {
+      selectedFood,
+      foodRecords,
+      selectedFoodRecords,
+    },
+    setFoodRecord,
+    setSelectedFoodRecords
+  } = useFood();
+
+  useEffect(() => {
+    const fetchRecords = async () => {
+      try {
+        const records = await getFoodRecord();
+        setFoodRecord(records); // Set records as an array
+      } catch (error) {
+        console.error('Failed to fetch exercise records', error);
+      }
+    };
+    fetchRecords();
+  }, [dateInfo]);
+
+  const filteredRecords = useMemo(() => {
+    if (!dateInfo) {
+      console.log('No dateInfo provided');
+      return [];
+    }
+
+    const { year, month, day } = dateInfo;
+    const selectedDate = new Date(year, month - 1, day);
+
+    if (!Array.isArray(foodRecords)) {
+      console.log('No food records found');
+      return [];
+    }
+
+    const records = foodRecords.filter((record) => {
+      const recordDate = new Date(record.dietDate);
+      return (
+        recordDate.getFullYear() === selectedDate.getFullYear() &&
+        recordDate.getMonth() === selectedDate.getMonth() &&
+        recordDate.getDate() === selectedDate.getDate()
+      );
+    });
+
+    setSelectedFoodRecords(records);
+
+    return records.map((record) => {
+      const foodInfo = food.find(
+        (ex) =>
+          ex.foodName.replace(/\s+/g, "").toLowerCase() ===
+          record.foodRes.foodName.replace(/\s+/g, "").toLowerCase()
+      );
+      if (foodInfo) {
+        return {
+          ...record,
+          id: foodInfo.foodId,
+          name: foodInfo.foodName,
+          isNew: false,
+        };
+      } else {
+        return { ...record, id: 0, name: "Unknown Food", isNew: false };
+      }
+    });
+  }, [dateInfo, foodRecords, food]);
+
+  const combinedRecords = useMemo(() => {
+    if (!Array.isArray(foodRecords)) {
+      console.log('No food records found');
+      return [];
+    }
+
+    const maxRecordId = Math.max(0, ...foodRecords.map(record => record.dietId));
+
+    const selectedFoodRecords: FoodRecord[] = selectedFood.map((food) => {
+      return {
+        dietId: maxRecordId + 1,
+        dietDate: dateInfo?.formattedDate || "",
+        mealTime: food.mealTime || "",
+        quantity: 0,
+        dietMemo: "",
+        gram: 0,
+        foodRes: {
+          foodId: food.foodId,
+          foodName: food.foodName,
+          calories: food.calories,
+          fat: food.fat,
+          protein: food.protein,
+          carbohydrate: food.carbohydrate,
+          salt: food.salt,
+          sugar: food.sugar,
+          cholesterol: food.cholesterol,
+          saturatedFat: food.saturatedFat,
+          transFat: food.transFat
+        },
+        totalCalories: food.calories * 0,
+        memo: "",
+      };
+    });
+
+    return [...filteredRecords, ...selectedFoodRecords];
+  }, [filteredRecords, foodRecords, selectedFood, dateInfo]);
+
+  return (
+    <FoodListWrapper>
+      <FoodTextContainer>
+        <FoodText>오늘의 음식 목록</FoodText>
+      </FoodTextContainer>
+      <FoodListContainer>
+        {combinedRecords.length > 0 ? (
+          combinedRecords.map((record) => (
+            <FoodDetails
+              key={record.dietId}
+              food={record}
+            />
+          ))
+        ) : (
+          <FoodTextContainer>
+            <FoodText>음식 기록 없음</FoodText>
+          </FoodTextContainer>
+        )}
+      </FoodListContainer>
+    </FoodListWrapper>
+  );
 };
 
 export default FoodList;
 
 const FoodListWrapper = styled.div`
   width: 100%;
-  max-height: 34.6875rem;
+  max-height: 36.25rem;
   overflow-y: auto;
   border: 1px solid #afafaf;
   border-radius: 5px;
@@ -125,7 +165,6 @@ const FoodText = styled.span`
   margin-left: 0.9375rem;
 `;
 
-// 스크롤 넣는 css
 const FoodListContainer = styled.div`
   display: flex;
   flex-direction: column;
