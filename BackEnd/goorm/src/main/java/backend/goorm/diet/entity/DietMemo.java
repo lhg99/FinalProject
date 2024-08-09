@@ -6,6 +6,7 @@ import org.springframework.data.annotation.CreatedDate;
 
 import jakarta.persistence.*;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Getter
@@ -39,5 +40,5 @@ public class DietMemo {
 
     @CreatedDate
     @Column(name = "created_at", updatable = false)
-    private LocalDate createdAt;
+    private LocalDateTime createdAt;
 }

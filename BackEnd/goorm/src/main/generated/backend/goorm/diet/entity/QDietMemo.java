@@ -24,7 +24,7 @@ public class QDietMemo extends EntityPathBase<DietMemo> {
 
     public final StringPath content = createString("content");
 
-    public final DatePath<java.time.LocalDate> createdAt = createDate("createdAt", java.time.LocalDate.class);
+    public final DateTimePath<java.time.LocalDateTime> createdAt = createDateTime("createdAt", java.time.LocalDateTime.class);
 
     public final DatePath<java.time.LocalDate> date = createDate("date", java.time.LocalDate.class);
 
