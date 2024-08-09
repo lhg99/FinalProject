@@ -13,6 +13,7 @@ import MyPageEdit from './pages/MyPage/MyPage/MyPageEdit';
 import { AuthProvider } from './pages/Login/auth/AuthContext';
 import ProtectedRoute from './pages/Login/auth/ProtectedRoute';
 import ExerciseVideo from './pages/HealthVideo/ExerciseVideo/ExerciseVideo';
+import CareVideo from './pages/HealthVideo/CareVideo/CareVideo';
 
 const Layout: React.FC = () => (
   <>
@@ -90,6 +91,13 @@ const App: React.FC = () => {
                     initialComment={initialComment}
                     onUpdate={handleUpdate}
                   />
+                </ProtectedRoute>
+              } 
+            />
+            <Route path="/carevideo" 
+              element={
+                <ProtectedRoute>
+                  <CareVideo />
                 </ProtectedRoute>
               } 
             />
