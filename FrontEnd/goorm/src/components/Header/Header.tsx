@@ -38,7 +38,7 @@ const Header: React.FC = () => {
             <li onClick={() => { navigate('/exercise'); closeDropdown(); }}>운동 기록 작성</li>
             <li onClick={() => { navigate('/exercise/records/AUG'); closeDropdown(); }}>운동 기록 목록</li>
             <li onClick={() => { navigate('/exercise/chart/AUG'); closeDropdown(); }}>운동 기록 차트</li>
-            <li onClick={() => { navigate('/'); closeDropdown(); }}>운동 영상</li>
+            <li onClick={() => { navigate('/exvideo'); closeDropdown(); }}>운동 영상</li>
             <li onClick={() => { navigate('/'); closeDropdown(); }}>재활</li>
           </ul>
         )}

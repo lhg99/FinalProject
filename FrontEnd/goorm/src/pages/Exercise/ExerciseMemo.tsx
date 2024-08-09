@@ -125,5 +125,4 @@ const DetailsText = styled.p`
   margin-right: 1.25rem;
   flex-direction: row;
   font-size: 0.875rem;
-  font-weight: bold;
 `;
