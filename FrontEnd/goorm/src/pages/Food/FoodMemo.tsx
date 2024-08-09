@@ -6,8 +6,9 @@ import { useExercise } from "../../contexts/exerciseContext";
 import { ModalStore } from "../../store/store";
 import axiosInstance from "../../api/axiosInstance";
 import { formatDateInfo } from "../../utils/DateUtils";
+import { useFood } from "../../contexts/foodContext";
 
-interface ExerciseMemoProps {
+interface FoodMemoProps {
   dateInfo: {
     year: number;
     month: number;
@@ -17,19 +18,19 @@ interface ExerciseMemoProps {
   } | null;
 }
 
-const ExerciseMemo = ({dateInfo}:ExerciseMemoProps) => {
+const FoodMemo = ({ dateInfo }: FoodMemoProps) => {
   const {
-    state: { exerciseRecords },
-    setMemo
-  } = useExercise();
+    state: { foodRecords },
+    setMemo,
+  } = useFood();
   const { isAnyModalOpen } = ModalStore();
   const [editorData, setEditorData] = useState<string>("");
 
   useEffect(() => {
     if (dateInfo) {
       const formattedDate = formatDateInfo(dateInfo);
-      const record = exerciseRecords.find(
-        (record) => record.exerciseDate === formattedDate
+      const record = foodRecords.find(
+        (record) => record.dietDate === formattedDate
       );
       const memoContent = record?.memo || ""; // Default to empty if no memo is found
       setEditorData(memoContent);
@@ -40,7 +41,7 @@ const ExerciseMemo = ({dateInfo}:ExerciseMemoProps) => {
         date: formattedDate,
       });
     }
-  }, [dateInfo, exerciseRecords]); // Depend on dateInfo and exerciseRecords
+  }, [dateInfo, foodRecords]); // Depend on dateInfo and exerciseRecords
 
   return (
     <MemoContainer>
@@ -85,7 +86,7 @@ const ExerciseMemo = ({dateInfo}:ExerciseMemoProps) => {
   );
 };
 
-export default ExerciseMemo;
+export default FoodMemo;
 
 const MemoContainer = styled.div`
   display: flex;

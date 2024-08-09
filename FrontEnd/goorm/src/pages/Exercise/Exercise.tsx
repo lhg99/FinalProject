@@ -152,8 +152,6 @@ const Exercise: React.FC = () => {
       console.error("운동기록 저장 실패", err);
     }
   };
-  
-  
 
   const handleEdit = async () => {
     try {
@@ -205,12 +203,10 @@ const Exercise: React.FC = () => {
         </div>
       </div>
       <ExerciseMemo dateInfo={dateInfo} />
-      <button className={styles.saveButton} onClick={handleSave}>
-        저장하기
-      </button>
-      <button className={styles.saveButton} onClick={handleEdit}>
-        수정하기
-      </button>
+      <div className={styles.buttonContainer}>
+        <button className={styles.saveButton} onClick={handleEdit}>수정하기</button>
+        <button className={styles.saveButton} onClick={handleSave}>저장하기</button>
+      </div>
     </div>
   );
 };

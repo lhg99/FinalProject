@@ -1,24 +1,25 @@
-import React, { useCallback, useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react';
 import { FoodData, FoodCategory } from './FoodTypes';
 import styled from 'styled-components';
 import { SearchIcon } from '../../image/SearchIcon';
 import { useFood } from '../../contexts/foodContext';
-import CustomFoodModal from './components/Modal/CustomFoodModal';
-import { getFoodData, postSearhFood } from '../../api/Food/foodApi';
+import CustomFoodModal from '../../components/Modal/Food/CustomFoodModal';
+import { getFoodByName, getFoodData } from '../../api/Food/foodApi';
 import { ModalStore } from '../../store/store';
+import { MEAL_TIMES } from '../../constants/Food/MealTime';
 
 interface FoodSearchProps {
     onAddFood: (food: FoodData) => void;
-    onAddCustomFood: (food: FoodData) => void;
+    onAddCustomFood: (food: FoodData, MealTime: string) => void;
 }
 
-const FoodSearch = ({onAddFood, onAddCustomFood} : FoodSearchProps) => {
+const FoodSearch = ({ onAddFood, onAddCustomFood } : FoodSearchProps) => {
     const [loading, setLoading] = useState<boolean>(true);
     const [searchQuery, setSearchQuery] = useState<string>("");
     const [filteredData, setFilteredData] = useState<FoodData[]>([]);
     const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
 
-    const { state: {food, selectedFood, foodCategories}, setFoodCategories, setFood} = useFood();
+    const { state: { food, selectedFood, foodCategories, mealTime }, setFoodCategories, setFood, setMealTime, addSelectedFood } = useFood();
     const { modals, openModal, closeModal } = ModalStore();
 
     const [nutritionDetails, setNutritionDetails] = useState<Omit<FoodData, 'foodId' | 'foodName'>>({
@@ -27,10 +28,15 @@ const FoodSearch = ({onAddFood, onAddCustomFood} : FoodSearchProps) => {
         carbohydrate: 0,
         protein: 0,
         fat: 0,
+        cholesterol: 0,
+        sugar: 0,
+        salt: 0,
+        saturatedFat: 0,
+        transFat: 0,
     });
 
     useEffect(() => {
-        const fetchdata = async() => {
+        const fetchdata = async () => {
             try {
                 const foodData = await getFoodData();
                 setFood(foodData);
@@ -52,7 +58,30 @@ const FoodSearch = ({onAddFood, onAddCustomFood} : FoodSearchProps) => {
         fetchdata();
     }, []);
 
+    useEffect(() => {
+        if (selectedCategories.length > 0) {
+            const lastCategory = selectedCategories[selectedCategories.length - 1];
+            switch (lastCategory) {
+                case '아침':
+                    setMealTime(MEAL_TIMES.BREAKFAST);
+                    break;
+                case '점심':
+                    setMealTime(MEAL_TIMES.LUNCH);
+                    break;
+                case '저녁':
+                    setMealTime(MEAL_TIMES.DINNER);
+                    break;
+                case '간식':
+                    setMealTime(MEAL_TIMES.SNACK);
+                    break;
+                default:
+                    setMealTime(MEAL_TIMES.OTHER);
+            }
+        }
+    }, [selectedCategories]);
+
     const handleCategoryChange = (categoryName: string) => {
+        console.log("Selected category:", categoryName); // 선택된 카테고리 확인
         if (categoryName === "전체") {
             if (selectedCategories.includes("전체")) {
                 setSelectedCategories([]);
@@ -61,26 +90,47 @@ const FoodSearch = ({onAddFood, onAddCustomFood} : FoodSearchProps) => {
             }
         } else {
             const newSelectedCategories = selectedCategories.includes(categoryName)
-                ? selectedCategories.filter(name => name !== categoryName) 
+                ? selectedCategories.filter(name => name !== categoryName)
                 : [...selectedCategories, categoryName];
             setSelectedCategories(newSelectedCategories);
         }
     };
 
-    const handleSearchClick = async(searchQuery: string) => {
-        const response = await postSearhFood(searchQuery);
-    }
+    const handleSearchClick = async () => {
+        if (searchQuery.trim() === "") {
+            setFilteredData(food); // 검색어가 없을 경우 모든 데이터를 표시
+            return;
+        }
+        try {
+            const response = await getFoodByName(searchQuery);
+            if (response) {
+                setFilteredData(response); // 검색 결과로 filteredData 업데이트
+                console.log("handleSearch 결과: ", response);
+            }
+        } catch (error) {
+            console.error("검색 중 오류 발생:", error);
+        }
+    };
+
+    useEffect(() => {
+        handleSearchClick();
+    }, [searchQuery]);
 
     const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         setSearchQuery(event.target.value);
     }
 
     const handleAddFoodClick = (food: FoodData) => {
+        if (selectedCategories.length === 0) {
+            alert("카테고리를 선택하세요");
+            return;
+        }
+    
         const isFoodSelected = selectedFood.some(selected => selected.foodName.toLowerCase() === food.foodName.toLowerCase());
         if (!isFoodSelected) {
-            onAddFood(food);
+            addSelectedFood(food, mealTime);
         }
-    }
+    };
 
     const handleModalClose = () => {
         closeModal("customFoodModal");
@@ -107,7 +157,7 @@ const FoodSearch = ({onAddFood, onAddCustomFood} : FoodSearchProps) => {
             ...nutritionDetails // 영양소 정보 추가
         };
 
-        onAddCustomFood(newCustomFood);
+        onAddCustomFood(newCustomFood, mealTime); // 선택된 MealTime을 함께 전달
         console.log("newCustomFood: ", newCustomFood);
     };
 
@@ -125,7 +175,9 @@ const FoodSearch = ({onAddFood, onAddCustomFood} : FoodSearchProps) => {
                     </label>
                 ))}
             </CategoriesContainer>
-            <SearchForm onSubmit={() => handleSearchClick(searchQuery)}>
+            <SearchForm onSubmit={(e) => {
+                e.preventDefault();
+            }}>
                 <SearchInput 
                     type="text" 
                     placeholder='식단 검색' 
@@ -159,8 +211,8 @@ const FoodSearchContainer = styled.div`
     display: flex;
     flex-direction: column;
     padding: .625rem;
-    width: 22%;
-    max-height: 33.4375rem;
+    width: 26%;
+    max-height: 35rem;
     overflow-y: auto;
     border: 1px solid #AFAFAF;
     border-radius: 5px;
@@ -189,6 +241,7 @@ const FoodSearchContainer = styled.div`
 const CategoriesContainer = styled.div`
     margin-top: .625rem;
     font-size: 0.875rem;
+    display: flex;
 `;
 
 const SearchForm = styled.form`
@@ -221,7 +274,7 @@ const FoodListContainer = styled.div`
 
 const FoodItemButton = styled.button`
     width: 100%;
-    height: 100%;
+    height: 2.1875rem;
     justify-content: center;
     align-items: center;
     border-radius: 0.9375rem;
