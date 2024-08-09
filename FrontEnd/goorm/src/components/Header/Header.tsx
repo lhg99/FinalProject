@@ -66,7 +66,8 @@ const Header: React.FC = () => {
             <li onClick={() => { navigate('/Board/diet'); closeDropdown(); }}>식단게시판</li>
           </ul>
         )}
-      </li>
+          </li>
+        <li className={styles.navItem}><a href="/findgym">헬스장 찾기</a></li>
     </ul>
     <div className={styles.authButton}>
       {user ? (
