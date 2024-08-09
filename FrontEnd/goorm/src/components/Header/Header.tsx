@@ -50,7 +50,7 @@ const Header: React.FC = () => {
         {activeDropdown === 'diet' && (
           <ul className={styles.dropdownMenu}>
             <li onClick={() => { navigate('/food'); closeDropdown(); }}>식단 기록 작성</li>
-            <li onClick={() => { navigate('/'); closeDropdown(); }}>식단 기록 목록</li>
+            <li onClick={() => { navigate('/food/records/AUG'); closeDropdown(); }}>식단 기록 목록</li>
             <li onClick={() => { navigate('/'); closeDropdown(); }}>식단 정보</li>
           </ul>
         )}

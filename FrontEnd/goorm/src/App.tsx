@@ -16,9 +16,10 @@ import DetailPost from './pages/Board/Post/DetailPost';
 import UpdatePost from './pages/Board/Post/UpdatePost';
 import CreatePost from './pages/Board/Post/CreatePost';
 import ExerciseChartPage from './pages/Chart/ExerciseChart/ExerciseChartPage';
-import ExerciseRecordPage from './pages/Exercise/components/ExerciseRecordList/ExerciseRecordPage';
+import ExerciseRecordPage from './pages/Exercise/ExerciseRecordList/ExerciseRecordPage';
 import ExerciseVideo from './pages/HealthVideo/ExerciseVideo/ExerciseVideo';
 import MyPageEdit from './pages/MyPage/MyPage/MyPageEdit';
+import DietRecordList from './pages/Food/DietRecordList/DietRecordList';
 
 const Layout: React.FC = () => (
   <>
@@ -44,13 +45,16 @@ const App: React.FC = () => {
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<SignUp />} />
           <Route element={<Layout />}>
-            <Route path="/" element={<Main />} />
+            <Route path="/main" element={<Main />} />
             <Route path="/chat" element={<ProtectedRoute><Chat /></ProtectedRoute>} />
             <Route path="/findgym" element={<ProtectedRoute><Map /></ProtectedRoute>} />
             <Route path="/exercise" element={<ProtectedRoute><Exercise /></ProtectedRoute>} />
             <Route path="/exercise/records/:month" element={<ProtectedRoute><ExerciseRecordPage /></ProtectedRoute>} />
             <Route path="/exercise/chart/:month" element={<ProtectedRoute><ExerciseChartPage /></ProtectedRoute>} />
+            
             <Route path="/food" element={<Food />} />
+            <Route path="/food/records/:month" element={<ProtectedRoute><DietRecordList /></ProtectedRoute>} />
+
 
             <Route path="/Board" element={<Outlet />}>
               <Route path="free" element={<FreeBoardPage />} />
