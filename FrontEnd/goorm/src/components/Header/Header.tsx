@@ -71,6 +71,18 @@ const Header: React.FC = () => {
               </ul>
             )}
           </li>
+          <li className={styles.navItem}>
+            <button onClick={() => toggleDropdown('board')} className={styles.dropdownToggle}>
+              게시판
+            </button>
+            {activeDropdown === 'board' && (
+              <ul className={styles.dropdownMenu}>
+                <li onClick={() => { navigate('/Board/free'); closeDropdown(); }}>자유게시판</li>
+                <li onClick={() => { navigate('/Board/exercise'); closeDropdown(); }}>운동게시판</li>
+                <li onClick={() => { navigate('/Board/diet'); closeDropdown(); }}>식단게시판</li>
+              </ul>
+            )}
+          </li>
           <li className={styles.navItem}><a href="/findgym">헬스장 찾기</a></li>
           <li className={`${styles.navItem} ${styles.authItem}`}>
             {user ? (
