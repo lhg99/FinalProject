@@ -13,7 +13,7 @@ interface FoodDetailProps {
 }
 
 const FoodDetails: React.FC<FoodDetailProps> = ({ food }) => {
-  const [quantity, setQuantity] = useState<string>(food.quantity?.toString() || "1");
+  const [quantity, setQuantity] = useState<string>(food.quantity?.toString() || "");
   const [gram, setGram] = useState<string>(food.gram?.toString() || "");
   const prevDetailsRef = useRef(food);
 
@@ -28,9 +28,14 @@ const FoodDetails: React.FC<FoodDetailProps> = ({ food }) => {
   const { modals, openModal, closeModal } = ModalStore();
 
   useEffect(() => {
+    console.log("Updated quantity:", quantity);
+    console.log("Updated gram:", gram);
+  }, [quantity, gram]);
+
+  useEffect(() => {
     const updatedDetails = {
       ...food,
-      quantity: quantity ? parseInt(quantity) : 1,
+      quantity: quantity ? parseInt(quantity) : 0,
       gram: gram ? parseInt(gram) : 0
     };
 
@@ -50,7 +55,7 @@ const FoodDetails: React.FC<FoodDetailProps> = ({ food }) => {
       }
     }
     prevDetailsRef.current = updatedDetails;
-  }, [gram, quantity, updateFoodDetails, updateFoodRecords]);
+  }, [gram, quantity]);
 
   const handleModalClick = () => {
     openModal("deleteModal");
@@ -134,10 +139,6 @@ const FoodDetailsContainer = styled.div`
   align-items: center;
   text-align: center;
   font-size: 0.875rem;
-  :hover {
-    background-color: #f0f0f0;
-    cursor: pointer;
-  }
 `;
 
 const FoodInfo = styled.div`
@@ -152,6 +153,7 @@ const CategoryBadge = styled.span`
   margin-left: 0.625rem;
   padding: 0.25rem;
   font-size: 0.875rem;
+  pointer-events: none;  /* Hover 효과가 적용되지 않도록 설정 */
 `;
 
 const FoodTitle = styled.h3`

@@ -3,6 +3,7 @@ import { memo } from "react";
 import { DietMemo, FoodData, FoodRecord } from "../../pages/Food/FoodTypes";
 import { formatDate } from "../../utils/DateUtils";
 import axiosInstance from "../axiosInstance";
+import { NULL } from "sass";
 
 
 export const getFoodData = async (): Promise<FoodData[]> => {
@@ -53,19 +54,29 @@ export const postCustomFoodData = async (): Promise<number> => {
 
 export const postFoodRecord = async (foodId: number, record: FoodRecord) => {
     const formData = new FormData();
+    let foodQuantity = {};
+
+    if(record.quantity === 0) {
+        foodQuantity = {
+            foodId: foodId,
+            gram: record.gram
+        }
+    } else if (record.gram === 0) {
+        foodQuantity = {
+            foodId: foodId,
+            quantity: record.quantity
+        }
+    }
+    
     const data = {
         mealTime: record.mealTime,
         dietDate: record.dietDate,
-        foodQuantities: [
-            {
-                foodId: foodId,
-                quantity: record.quantity ? record.quantity : null,
-                gram: record.gram ? record.gram : null 
-            }
-        ],
+        foodQuantities: [foodQuantity],
         totalCalories: record.totalCalories,
         memo: record.memo
     }
+
+    console.log("data: ", data);
 
     formData.append("diet", JSON.stringify(data));
     try {
@@ -89,9 +100,9 @@ export const postFoodMemo = async(memo: string, dateInfo: Date) => {
     }
     try {
         const response = await axiosInstance.post(`/diet/dietMemo`, request);
-        console.log("운동 메모 post 성공!!", response.data);
+        console.log("식단 메모 post 성공!!", response.data);
     } catch (error) {
-        console.error("운동 메모 post 실패", error);
+        console.error("식단 메모 post 실패", error);
     }
 }
 

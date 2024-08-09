@@ -39,8 +39,6 @@ const Food: React.FC = () => {
             alert("날짜를 선택해주세요.");
             return;
         }
-
-        const date = new Date(dateInfo.formattedDate);
     
         for (const food of selectedFood) {
             const details = foodDetails[food.foodName] || {};
@@ -52,8 +50,8 @@ const Food: React.FC = () => {
                 dietId: existingRecord ? existingRecord.dietId : new Date().getTime(), // 새로운 기록일 경우 고유한 dietId 생성
                 mealTime: existingRecord ? existingRecord.mealTime : food.mealTime || "",
                 dietDate: dateInfo.formattedDate,
-                quantity: details.quantity,
-                gram: details.gram * details.quantity,
+                quantity: details.quantity || 0,
+                gram: details.gram || 0,  // 기존 gram 대신 foodDetails에서 가져온 값
                 totalCalories: food.calories * (details.quantity || 1), // 총 칼로리 계산
                 memo: details.memo || "",
                 foodRes: {
@@ -72,7 +70,7 @@ const Food: React.FC = () => {
             };
             try {
                 await postFoodRecord(record.foodRes.foodId, record);
-                await postFoodMemo(memo.content, date);
+                await postFoodMemo(memo.content, new Date(dateInfo.formattedDate)); // date 객체로 전달
                 alert("식단 기록이 저장되었습니다.");
             } catch (error) {
                 console.error("식단 기록 저장 실패:", error);
