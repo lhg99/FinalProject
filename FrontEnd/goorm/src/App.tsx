@@ -25,9 +25,8 @@ const Layout: React.FC = () => (
 );
 
 const App: React.FC = () => {
-  // 예시 초기 데이터와 콜백 함수
-  const initialUsername = "현재 사용자명"; // 실제 값으로 대체하세요
-  const initialComment = "현재 사용자 소개"; // 실제 값으로 대체하세요
+  const initialUsername = "현재 사용자명";
+  const initialComment = "현재 사용자 소개";
 
   const handleUpdate = () => {
     console.log("업데이트가 완료되었습니다.");
@@ -36,10 +35,9 @@ const App: React.FC = () => {
   return (
     <AuthProvider>
       <BrowserRouter>
-        <Routes>
+      <Routes>
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<SignUp />} />
-
           <Route element={<Layout />}>
             <Route path="/" element={<h1>Welcome to MyWebsite</h1>} />
             <Route path="/chat" 
@@ -70,7 +68,7 @@ const App: React.FC = () => {
                 </ProtectedRoute>
               } 
             />
-            <Route path="/mypage" 
+              <Route path="/mypage" 
               element={
                 <ProtectedRoute>
                   <MyPage />
