@@ -207,55 +207,55 @@ const ExerciseVideo: React.FC = () => {
     }
   };
 
-  // 현재 선택된 카테고리와 레벨에 해당하는 비디오 IDs를 추출합니다.
   const currentCategoryVideos = videoData[key] || {};
   const videosToDisplay = currentCategoryVideos[currentLevel] || [];
   
   return (
-  <div className={styles.videoWrapper}>
-    <div className={styles.sliderContainer}>
-      <h1>오늘의 추천 운동</h1>
-      <VideoSlider videoIds={["TMx-f-AIT58", "Y2hyGxh0QCk", "CAt37ltbjTI"]} />
+    <div className={styles.pageBackground}>
+      <div className={styles.videoWrapper}>
+        <div className={styles.sliderContainer}>
+          <h1>오늘의 추천 운동은? 🏃‍♀️</h1>
+          <VideoSlider videoIds={["TMx-f-AIT58", "Y2hyGxh0QCk", "CAt37ltbjTI"]} />
+        </div>
+
+        <Tab.Container
+          id="left-tabs-example"
+          activeKey={key}
+          onSelect={(k) => setKey(k || 'shoulders')}
+        >
+          <Nav variant="pills" className={styles.navContainer}>
+            {['shoulders', 'chest', 'back', 'legs'].map(category => (
+              <Nav.Item key={category}>
+                <Nav.Link
+                  eventKey={category}
+                  className={`${styles.navLink} ${key === category ? styles.active : ''}`}
+                >
+                  {category === 'shoulders' ? '어깨 운동' :
+                   category === 'chest' ? '가슴 운동' :
+                   category === 'back' ? '등 운동' : '하체 운동'}
+                </Nav.Link>
+              </Nav.Item>
+            ))}
+          </Nav>
+          <Tab.Content>
+            <Tab.Pane eventKey={key}>
+              {['beginner', 'intermediate', 'advanced'].map(level => (
+                <div key={level} className={`${styles.sliderContainer} ${level === 'advanced' ? styles.advancedSection : ''}`}>
+                  <h2>
+                    {level === 'beginner' ? '초급' :
+                     level === 'intermediate' ? '중급' : '상급'}
+                  </h2>
+                  <CenterModeSliderComponent
+                    videoIds={videoData[key][level as Level] || []}
+                  />
+                </div>
+              ))}
+            </Tab.Pane>
+          </Tab.Content>
+        </Tab.Container>
+      </div>
     </div>
-
-    <Tab.Container
-      id="left-tabs-example"
-      activeKey={key}
-      onSelect={(k) => setKey(k || 'shoulders')}
-    >
-      <Nav variant="pills" className={styles.navContainer}>
-        <Nav.Item>
-          <Nav.Link eventKey="shoulders" className={styles.navLink}>어깨 운동</Nav.Link>
-        </Nav.Item>
-        <Nav.Item>
-          <Nav.Link eventKey="chest" className={styles.navLink}>가슴 운동</Nav.Link>
-        </Nav.Item>
-        <Nav.Item>
-          <Nav.Link eventKey="back" className={styles.navLink}>등 운동</Nav.Link>
-        </Nav.Item>
-        <Nav.Item>
-          <Nav.Link eventKey="legs" className={styles.navLink}>하체 운동</Nav.Link>
-        </Nav.Item>
-      </Nav>
-      <Tab.Content>
-        <Tab.Pane eventKey={key}>
-          {['beginner', 'intermediate', 'advanced'].map(level => (
-            <div key={level} className={`${styles.sliderContainer} ${level === 'advanced' ? styles.advancedSection : ''}`}>
-              <h1>
-                {level === 'beginner' ? '초급' :
-                 level === 'intermediate' ? '중급' : '상급'}
-              </h1>
-              <CenterModeSliderComponent
-                videoIds={videoData[key][level as Level] || []}
-              />
-            </div>
-          ))}
-        </Tab.Pane>
-      </Tab.Content>
-    </Tab.Container>
-  </div>
-);
-
+  );
 };
 
 export default ExerciseVideo;
