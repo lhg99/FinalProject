@@ -25,7 +25,7 @@ const Header: React.FC = () => {
   return (
     <header className={styles.header}>
   <div className={styles.logo}>
-    <a href="/main">헬스</a>
+    <a href="/main">이디핏</a>
   </div>
   <nav className={styles.nav}>
     <ul>

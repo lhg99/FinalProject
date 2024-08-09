@@ -1,14 +1,22 @@
+.pageBackground {
+    background-color: #FFDE95;
+    background-size: cover;
+    background-position: center;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+}
+
 .container {
     width: 100vw;
     display: flex;
     height: 90vh;
-    //min-height: 100vh;
     flex-direction: row;
     justify-content: center;
     align-items: center;
     gap: 30px;
-    // background: none !important;
-    // background-color: lightblue !important;
 }
 
 .leftPane,
@@ -19,7 +27,7 @@
     gap: 20px;
     width: 800px;
     height: 640px;
-    border: 1px solid #ccc;
+    // border: 1px solid #000000;
     background-color: transparent;
 }
 
@@ -37,21 +45,57 @@
     gap: 50px;
 }
 
-.buttons button {
+.button1 {
     width: 350px;
-    height: 250px;
-    font-size: 16px;
+    height: 200px;
+    font-size: 55px;
     padding: 8px;
     border: none;
-    border-radius: 4px;
+    border-radius: 15px;
     cursor: pointer;
-    background-color: #007bff;
-    color: #fff;
+    background-color: #FFB1B1;
+    background-image: url('../../../../public/Button1.png');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    color: #885d5d;
     transition: background-color 0.3s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
-.buttons button:hover {
-    background-color: #0056b3;
+.button1:hover {
+    background-color: #f88e8e;
+}
+
+.button2 {
+    width: 350px;
+    height: 200px;
+    font-size: 55px;
+    padding: 8px;
+    border: none;
+    border-radius: 15px;
+    cursor: pointer;
+    background-color: #699732; // 기본 배경색
+    color: #fff;
+    transition: background-color 0.3s;
+    display: flex; // 버튼 내부 요소를 Flexbox로 배치
+    align-items: center; // 수직 중앙 정렬
+    justify-content: center; // 수평 중앙 정렬
+}
+
+.button2:hover {
+    background-color: #387F39; // 호버 시 배경색
+}
+
+.buttonContent {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    width: 100%;
+    height: 100%;
 }
 
 .calPane {
