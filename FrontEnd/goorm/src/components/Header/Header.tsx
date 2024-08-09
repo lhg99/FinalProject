@@ -39,7 +39,11 @@ const Header: React.FC = () => {
             <li onClick={() => { navigate('/exercise/records/AUG'); closeDropdown(); }}>운동 기록 목록</li>
             <li onClick={() => { navigate('/exercise/chart/AUG'); closeDropdown(); }}>운동 기록 차트</li>
             <li onClick={() => { navigate('/exvideo'); closeDropdown(); }}>운동 영상</li>
+<<<<<<< HEAD
             <li onClick={() => { navigate('/carevideo'); closeDropdown(); }}>재활</li>
+=======
+            <li onClick={() => { navigate('/'); closeDropdown(); }}>재활</li>
+>>>>>>> 9b6359aae26d65ca116855bae9691eeab23e5b4a
           </ul>
         )}
       </li>
