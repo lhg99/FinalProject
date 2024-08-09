@@ -1,30 +1,129 @@
 .header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 1rem 2rem;
-    background-color: #333;
-    color: #fff;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  padding: 18px 80px;
+  background-color: #333;
+  color: #fff;
 }
 
 .logo a {
-    color: #fff;
-    text-decoration: none;
-    font-size: 1.5rem;
-    font-weight: bold;
+  color: #fff;
+  text-decoration: none;
+  font-size: 32px;
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+  margin-left: 150px;
+  flex-grow: 1;
 }
 
 .nav ul {
-    list-style: none;
-    display: flex;
-    gap: 1rem;
+  list-style: none;
+  display: flex;
+  gap: 130px;
+  flex-grow: 1;
+  padding: 0;
+  margin: 0;
+}
+
+.navItem {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.navItem:hover .dropdownMenu {
+  display: flex;
 }
 
 .nav a {
-    color: #fff;
-    text-decoration: none;
+  color: #fff;
+  text-decoration: none;
+  font-size: 18px;
 }
 
 .nav a:hover {
-    text-decoration: underline;
+  text-decoration: underline;
+}
+
+.nav li:last-child {
+  margin-left: auto;
+}
+
+.nav li {
+  display: flex;
+  align-items: center;
+}
+
+.nav button {
+  background: none;
+  border: none;
+  color: #fff;
+  font-size: 18px;
+  cursor: pointer;
+}
+
+.dropdownToggle {
+  background: none;
+  border: none;
+  color: #fff;
+  font-size: 18px;
+  cursor: pointer;
+  padding: 10px 20px;
+  transition: background-color 0.3s;
+}
+
+.dropdownToggle:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.dropdownMenu {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  background-color: #fff;
+  color: #333;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+  padding: 0;
+  list-style: none;
+  margin: 0;
+  width: 150px;
+  border-radius: 1px;
+  border: 1px solid #000;
+  z-index: 1000;
+  display: none;
+  flex-direction: column;
+}
+
+.dropdownMenu li {
+  padding: 10px 20px;
+  margin: 0;
+  transition: background-color 0.3s;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  border-bottom: 1px solid #000;
+}
+
+.dropdownMenu li:last-child {
+  border-bottom: none;
+}
+
+.dropdownMenu li:hover {
+  background-color: rgba(0, 0, 0, 0.1);
+}
+
+.dropdownMenu li a {
+  color: #333;
+  text-decoration: none;
+  display: block;
+  width: 100%;
+  text-align: center;
+}
+
+.dropdownMenu li a:hover {
+  text-decoration: underline;
 }

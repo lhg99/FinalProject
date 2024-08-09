@@ -1,0 +1,18 @@
+.container {
+    padding: 0 20px; /* 좌우 여백 설정 */
+    max-width: 1200px;
+    margin: 0 auto;
+    text-align: center;
+  }
+  
+  .chartWrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 100px; /* 두 차트 사이의 간격 설정 */
+  }
+  
+  .chartContainer {
+    width: 45%; /* 각 차트의 너비 설정 */
+  }
+  
