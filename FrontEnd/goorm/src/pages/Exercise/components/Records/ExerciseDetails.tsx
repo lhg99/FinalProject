@@ -302,7 +302,6 @@ const CategoryBadge = styled.span`
 
 const ExerciseTitle = styled.h3`
   font-size: 1.125rem;
-  font-weight: bold;
   margin-left: 0.625rem;
 `;
 
