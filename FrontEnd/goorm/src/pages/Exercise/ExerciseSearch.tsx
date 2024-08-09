@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import { SearchIcon } from '../../image/SearchIcon';
 import { useExercise } from '../../contexts/exerciseContext';
 import { Category, ExerciseData } from './ExerciseTypes';
-import CustomExerciseModal from './components/Modal/CusomExerciseModal';
+import CustomExerciseModal from '../../components/Modal/Exercise/CusomExerciseModal';
 import { ModalStore } from '../../store/store';
 import { getExerciseData } from '../../api/Exercise/exerciseApi';
 
@@ -177,7 +177,7 @@ const ExerciseSearchContainer = styled.div`
     display: flex;
     flex-direction: column;
     padding: .625rem;
-    width: 22%;
+    width: 20%;
     max-height: 35rem;
     overflow-y: auto;
     border: 1px solid #AFAFAF;

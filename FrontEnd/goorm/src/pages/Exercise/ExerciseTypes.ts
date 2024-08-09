@@ -32,12 +32,11 @@ export interface ExerciseRecords {
     distance?: number;
     durationMinutes: number;
     caloriesBurned?: number;
-    incline?: number;
+    incline?: number; // 경사
     reps?: number;
     memo?: string;
     satisfaction: number;
     intensity: string; // 운동 강도(high, middle, low)
-    imageUrl?: string;
     categoryName: string;
     trainingId: number;
     isAddingExercise?: boolean;

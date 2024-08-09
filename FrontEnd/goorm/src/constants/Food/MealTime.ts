@@ -1,4 +1,4 @@
-export const MEAL_TYPES = {
+export const MEAL_TIMES = {
     BREAKFAST: 'BREAKFAST',
     LUNCH: 'LUNCH',
     DINNER: 'DINNER',

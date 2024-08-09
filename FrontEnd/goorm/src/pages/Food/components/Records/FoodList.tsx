@@ -91,14 +91,14 @@ const FoodList = ({ food, dateInfo }: FoodListProps) => {
 
     const maxRecordId = Math.max(0, ...foodRecords.map(record => record.dietId));
 
-    const selectedFoodRecords: FoodRecord[] = selectedFood.map((food, index) => {
+    const selectedFoodRecords: FoodRecord[] = selectedFood.map((food) => {
       return {
-        dietId: maxRecordId + index + 1,
+        dietId: maxRecordId + 1,
         dietDate: dateInfo?.formattedDate || "",
-        mealType: food.mealType || "",
+        mealTime: food.mealTime || "",
         quantity: 0,
         dietMemo: "",
-        gram: 0, // 새로운 필드 추가
+        gram: 0,
         foodRes: {
           foodId: food.foodId,
           foodName: food.foodName,
@@ -106,9 +106,14 @@ const FoodList = ({ food, dateInfo }: FoodListProps) => {
           fat: food.fat,
           protein: food.protein,
           carbohydrate: food.carbohydrate,
+          salt: food.salt,
+          sugar: food.sugar,
+          cholesterol: food.cholesterol,
+          saturatedFat: food.saturatedFat,
+          transFat: food.transFat
         },
-        totalCalories: food.calories * 0, // totalCalories 계산, 필요 시 조정
-        memo: "", // 새로운 필드 추가
+        totalCalories: food.calories * 0,
+        memo: "",
       };
     });
 

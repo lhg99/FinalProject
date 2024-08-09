@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useState, ReactNode } from 'react';
-import { FoodData, FoodCategory, FoodRecord } from '../pages/Food/FoodTypes';
+import { FoodData, FoodCategory, FoodRecord, DietMemo } from '../pages/Food/FoodTypes';
 
 interface FoodState {
     food: FoodData[]; // 모든 음식을 저장
@@ -9,7 +9,8 @@ interface FoodState {
     foodRecords: FoodRecord[]; // 모든 식단 기록을 저장
     foodDetails: { [key: string]: FoodRecord };
     selectedFoodRecords: FoodRecord[]; // 식단 기록에서 수정할 부분이 있는 기록들
-    mealType: string; // BREAKFAST, LUNCH, DINNER, SNACK
+    mealTime: string; // BREAKFAST, LUNCH, DINNER, SNACK
+    memo: DietMemo;
 }
 
 const initialState: FoodState = {
@@ -20,7 +21,8 @@ const initialState: FoodState = {
     foodRecords: [],
     foodDetails: {},
     selectedFoodRecords: [],
-    mealType: "",
+    mealTime: "",
+    memo: { content: '', date: '' },
 
 };
 
@@ -30,13 +32,15 @@ interface FoodContextProps {
     setFoodCategories: (categories: FoodCategory[]) => void;
     setFoodRecord: (foodRecord: FoodRecord[]) => void;
     setSelectedFoodRecords: (foodRecord: FoodRecord[]) => void;
-    setMealType: (mealType: string) => void;
+    setMealTime: (mealTime: string) => void;
+    setMemo: (memo: DietMemo) => void;
     addFood: (food: FoodData) => void;
-    addCustomFood: (food: FoodData, mealType: string) => void;
-    addSelectedFood: (food: FoodData, mealType: string) => void;
+    addCustomFood: (food: FoodData, mealTime: string) => void;
+    addSelectedFood: (food: FoodData, mealTime: string) => void;
     addSelectedFoodRecords: (records: FoodRecord[]) => void;
     updateFoodDetails: (details: FoodRecord) => void;
     updateFoodRecords: (recordId: number, updatedDetails: Partial<FoodRecord>) => void;
+    removeFood: (foodName: string) => void;
 }
 
 const FoodContext = createContext<FoodContextProps | undefined>(undefined);
@@ -60,9 +64,13 @@ export const FoodProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         setState(prevState => ({...prevState, selectedFoodRecords: foodRecord }));
     }
 
-    const setMealType = (mealType: string) => {
-        setState(prevState => ({...prevState, mealType}));
+    const setMealTime = (mealTime: string) => {
+        setState(prevState => ({...prevState, mealTime}));
     }
+
+    const setMemo = (memo: DietMemo) => {
+        setState(prevState => ({...prevState, memo }));
+    };
     
 
     const addFood = (foodData: FoodData) => {
@@ -72,18 +80,18 @@ export const FoodProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         }));
     }
 
-    const addCustomFood = (food: FoodData, mealType: string) => {
+    const addCustomFood = (food: FoodData, mealTime: string) => {
         setState(prevState => ({
             ...prevState,
             customFood: [...prevState.customFood, food], 
-            food: [...prevState.food, { ...food, mealType}]
+            food: [...prevState.food, { ...food, mealTime}]
         }));
     }
 
-    const addSelectedFood = (food: FoodData, mealType: string) => {
+    const addSelectedFood = (food: FoodData, mealTime: string) => {
         setState(prevState => {
             if (!prevState.selectedFood.some(selected => selected.foodName.toLowerCase() === food.foodName.toLowerCase())) {
-                return { ...prevState, selectedFood: [...prevState.selectedFood, { ...food, mealType }] }; // mealType 포함
+                return { ...prevState, selectedFood: [...prevState.selectedFood, { ...food, mealTime }] }; // mealTime 포함
             }
             return prevState;
         });
@@ -119,6 +127,14 @@ export const FoodProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         });
     };
 
+    const removeFood = (foodName: string) => {
+        setState(prevState => ({
+            ...prevState,
+            selectedFood: prevState.selectedFood.filter(ex => ex.foodName !== foodName),
+            foodRecords: prevState.foodRecords.filter(rec => rec.foodRes.foodName !== foodName)
+        }));
+    };
+
 
 
     return (
@@ -128,13 +144,15 @@ export const FoodProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
             setFoodCategories,
             setFoodRecord,
             setSelectedFoodRecords,
-            setMealType,
+            setMealTime,
+            setMemo,
             addFood,
             addCustomFood,
             addSelectedFood,
             addSelectedFoodRecords,
             updateFoodDetails,
-            updateFoodRecords
+            updateFoodRecords,
+            removeFood
         }}>
             {children}
         </FoodContext.Provider>

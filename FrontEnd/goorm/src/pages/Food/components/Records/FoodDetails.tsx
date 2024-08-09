@@ -5,20 +5,22 @@ import { ModalStore } from "../../../../store/store";
 // import { deleteRecord } from "../../../../api/Food/foodApi";
 import { FoodRecord } from "../../FoodTypes";
 import { DeleteModal } from "../../../Board/components/Modal";
+import DeleteFoodModal from "../../../../components/Modal/Food/DeleteFoodModal";
+import { deleteFoodRecord } from "../../../../api/Food/foodApi";
 
 interface FoodDetailProps {
   food: FoodRecord;
 }
 
 const FoodDetails: React.FC<FoodDetailProps> = ({ food }) => {
-  const [quantity, setQuantity] = useState<string>(food.quantity?.toString() || "");
+  const [quantity, setQuantity] = useState<string>(food.quantity?.toString() || "1");
   const [gram, setGram] = useState<string>(food.gram?.toString() || "");
   const prevDetailsRef = useRef(food);
 
   const {
     state: { foodRecords },
     updateFoodDetails,
-    // removeFood,
+    removeFood,
     // setSelectedRecord,
     updateFoodRecords
   } = useFood();
@@ -28,6 +30,8 @@ const FoodDetails: React.FC<FoodDetailProps> = ({ food }) => {
   useEffect(() => {
     const updatedDetails = {
       ...food,
+      quantity: quantity ? parseInt(quantity) : 1,
+      gram: gram ? parseInt(gram) : 0
     };
 
     const prevDetails = prevDetailsRef.current;
@@ -46,7 +50,7 @@ const FoodDetails: React.FC<FoodDetailProps> = ({ food }) => {
       }
     }
     prevDetailsRef.current = updatedDetails;
-  }, [food, foodRecords, updateFoodDetails, updateFoodRecords]);
+  }, [gram, quantity, updateFoodDetails, updateFoodRecords]);
 
   const handleModalClick = () => {
     openModal("deleteModal");
@@ -58,8 +62,8 @@ const FoodDetails: React.FC<FoodDetailProps> = ({ food }) => {
 
   const handleDeleteModalConfirm = async () => {
     try {
-      // await deleteRecord(food.dietId);
-      // removeFood(food.foodRes.foodName);
+      await deleteFoodRecord(food.dietId);
+      removeFood(food.foodRes.foodName);
       closeModal("deleteModal");
     } catch (err) {
       throw err;
@@ -69,7 +73,7 @@ const FoodDetails: React.FC<FoodDetailProps> = ({ food }) => {
   return (
     <FoodDetailsContainer>
       <FoodInfo>
-        <CategoryBadge>{food.mealType}</CategoryBadge>
+        <CategoryBadge>{food.mealTime}</CategoryBadge>
         <FoodTitle>{food.foodRes.foodName}</FoodTitle>
       </FoodInfo>
       <InputContainer>
@@ -107,11 +111,11 @@ const FoodDetails: React.FC<FoodDetailProps> = ({ food }) => {
         </FoodLabel>
         <DeleteButton onClick={handleModalClick}>삭제</DeleteButton>
       </InputContainer>
-      {/* <DeleteModal
+      <DeleteFoodModal
         isOpen={modals.deleteModal?.isOpen}
         onClose={handleModalClose}
         onConfirm={handleDeleteModalConfirm}
-      /> */}
+      />
     </FoodDetailsContainer>
   );
 };
@@ -188,7 +192,7 @@ const FoodInput = styled.input`
 `;
 
 const FoodText = styled.span`
-  margin-left: 1.3125rem;
+  margin-left:30px;
 `;
 
 const SetContainer = styled.div`

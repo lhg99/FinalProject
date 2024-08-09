@@ -5,8 +5,10 @@ import FoodSearch from './FoodSearch';
 import { useFood } from '../../contexts/foodContext';
 import { FoodData, FoodRecord } from './FoodTypes';
 import FoodList from './components/Records/FoodList';
+import FoodMemo from './FoodMemo'
 import { formatDateInfo } from '../../utils/DateUtils';
-import { postFoodRecord } from '../../api/Food/foodApi';
+import { EditFoodRecord, postFoodMemo, postFoodRecord } from '../../api/Food/foodApi';
+import { formatDate } from 'react-datepicker/dist/date_utils';
 
 const Food: React.FC = () => {
 
@@ -19,16 +21,16 @@ const Food: React.FC = () => {
         },[]
     );
 
-    const {state: {foodRecords, selectedFood, foodDetails}, addFood, addCustomFood} = useFood();
+    const {state: {foodRecords, selectedFood, foodDetails, memo, selectedFoodRecords}, addFood, addCustomFood} = useFood();
 
     const handleAddFood = useCallback((food: FoodData) => {
         console.log("handleAddFood 호출", food);
         addFood(food);
     }, [addFood]);
 
-    const handleAddCustomFood = useCallback((food: FoodData, mealType: string) => {
-        console.log("handleAddCustomFood 호출", food, mealType);
-        addCustomFood(food, mealType);
+    const handleAddCustomFood = useCallback((food: FoodData, MealTime: string) => {
+        console.log("handleAddCustomFood 호출", food, MealTime);
+        addCustomFood(food, MealTime);
         addFood(food);
     }, [addCustomFood, addFood]);
 
@@ -37,6 +39,8 @@ const Food: React.FC = () => {
             alert("날짜를 선택해주세요.");
             return;
         }
+
+        const date = new Date(dateInfo.formattedDate);
     
         for (const food of selectedFood) {
             const details = foodDetails[food.foodName] || {};
@@ -46,10 +50,10 @@ const Food: React.FC = () => {
     
             const record: FoodRecord = {
                 dietId: existingRecord ? existingRecord.dietId : new Date().getTime(), // 새로운 기록일 경우 고유한 dietId 생성
-                mealType: existingRecord ? existingRecord.mealType : food.mealType || "",
+                mealTime: existingRecord ? existingRecord.mealTime : food.mealTime || "",
                 dietDate: dateInfo.formattedDate,
-                quantity: details.quantity || 1,
-                gram: details.gram || 100, // 기본 gram 값 설정 (필요시 수정)
+                quantity: details.quantity,
+                gram: details.gram * details.quantity,
                 totalCalories: food.calories * (details.quantity || 1), // 총 칼로리 계산
                 memo: details.memo || "",
                 foodRes: {
@@ -59,12 +63,16 @@ const Food: React.FC = () => {
                     fat: food.fat,
                     protein: food.protein,
                     carbohydrate: food.carbohydrate,
+                    sugar: food.sugar,
+                    salt: food.salt,
+                    cholesterol: food.cholesterol,
+                    saturatedFat: food.saturatedFat,
+                    transFat: food.transFat
                 }
             };
-    
             try {
-                await postFoodRecord(record.foodRes.foodId.toString(), record);
-                console.log("식단 기록 저장 성공:", record);
+                await postFoodRecord(record.foodRes.foodId, record);
+                await postFoodMemo(memo.content, date);
                 alert("식단 기록이 저장되었습니다.");
             } catch (error) {
                 console.error("식단 기록 저장 실패:", error);
@@ -72,6 +80,17 @@ const Food: React.FC = () => {
             }
         }
     };
+
+    const handleEdit = async () => {
+        try {
+          // Loop through exerciseRecords to send each record for editing
+          await EditFoodRecord(selectedFoodRecords, memo);
+          // await postExerciseMemo(memo.content);
+          alert("식단 기록이 수정되었습니다.");
+        } catch (err) {
+          console.error("식단기록 수정 실패", err);
+        }
+      };
 
     return (
         <div className={styles.food}>
@@ -98,7 +117,15 @@ const Food: React.FC = () => {
                     </div>
                 </div>
             </div>
-            <button className={styles.saveButton} onClick={handleSave}>저장하기</button>
+            <FoodMemo dateInfo={dateInfo}/>
+            <div className={styles.buttonContainer}>
+                <button className={styles.saveButton} onClick={handleEdit}>
+                수정하기
+                </button>
+                <button className={styles.saveButton} onClick={handleSave}>
+                저장하기
+                </button>
+            </div>
         </div>
     );
 };

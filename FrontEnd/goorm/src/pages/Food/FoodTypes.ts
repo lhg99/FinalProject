@@ -6,16 +6,26 @@ export interface FoodData {
     carbohydrate: number;
     protein: number;
     fat: number;
-    mealType?: string;
+    mealTime?: string;
+    sugar: number;
+    salt: number;
+    cholesterol: number;
+    saturatedFat: number;
+    transFat: number;
 }
 
 export interface FoodCategory {
     categoryName: string;
 }
 
+export interface DietMemo {
+    content: string;
+    date: string;
+}
+
 export interface FoodRecord {
     dietId: number;
-    mealType: string;
+    mealTime: string;
     quantity: number;
     dietMemo?: string;
     dietDate: string;
@@ -26,8 +36,14 @@ export interface FoodRecord {
         calories: number,
         fat: number,
         protein: number,
-        carbohydrate: number
+        carbohydrate: number,
+        sugar: number,
+        salt: number,
+        cholesterol: number,
+        saturatedFat: number,
+        transFat: number
     };
     totalCalories: number;
+    totalGram?: number;
     memo?: string;
 }

@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import styled from "styled-components";
 import { useExercise } from "../../../../contexts/exerciseContext";
 import { ExerciseRecords } from "../../ExerciseTypes";
-import DeleteModal from "../Modal/DeleteModal";
+import DeleteModal from "../../../../components/Modal/Exercise/DeleteModal";
 import { ModalStore } from "../../../../store/store";
 import { deleteRecord } from "../../../../api/Exercise/exerciseApi";
 
@@ -39,10 +39,9 @@ const ExerciseDetails: React.FC<ExerciseDetailProps> = ({
   const prevDetailsRef = useRef(exercise);
 
   const {
-    state: { selectedRecords, exerciseRecords },
+    state: { exerciseRecords },
     updateExerciseDetails,
     removeExercise,
-    setSelectedRecord,
     updateExerciseRecords
   } = useExercise();
 

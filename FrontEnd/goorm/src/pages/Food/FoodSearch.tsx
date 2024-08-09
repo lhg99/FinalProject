@@ -3,14 +3,14 @@ import { FoodData, FoodCategory } from './FoodTypes';
 import styled from 'styled-components';
 import { SearchIcon } from '../../image/SearchIcon';
 import { useFood } from '../../contexts/foodContext';
-import CustomFoodModal from './components/Modal/CustomFoodModal';
+import CustomFoodModal from '../../components/Modal/Food/CustomFoodModal';
 import { getFoodByName, getFoodData } from '../../api/Food/foodApi';
 import { ModalStore } from '../../store/store';
-import { MEAL_TYPES } from '../../constants/Food/MealType';
+import { MEAL_TIMES } from '../../constants/Food/MealTime';
 
 interface FoodSearchProps {
     onAddFood: (food: FoodData) => void;
-    onAddCustomFood: (food: FoodData, mealType: string) => void;
+    onAddCustomFood: (food: FoodData, MealTime: string) => void;
 }
 
 const FoodSearch = ({ onAddFood, onAddCustomFood } : FoodSearchProps) => {
@@ -19,7 +19,7 @@ const FoodSearch = ({ onAddFood, onAddCustomFood } : FoodSearchProps) => {
     const [filteredData, setFilteredData] = useState<FoodData[]>([]);
     const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
 
-    const { state: { food, selectedFood, foodCategories, mealType }, setFoodCategories, setFood, setMealType, addSelectedFood } = useFood();
+    const { state: { food, selectedFood, foodCategories, mealTime }, setFoodCategories, setFood, setMealTime, addSelectedFood } = useFood();
     const { modals, openModal, closeModal } = ModalStore();
 
     const [nutritionDetails, setNutritionDetails] = useState<Omit<FoodData, 'foodId' | 'foodName'>>({
@@ -28,6 +28,11 @@ const FoodSearch = ({ onAddFood, onAddCustomFood } : FoodSearchProps) => {
         carbohydrate: 0,
         protein: 0,
         fat: 0,
+        cholesterol: 0,
+        sugar: 0,
+        salt: 0,
+        saturatedFat: 0,
+        transFat: 0,
     });
 
     useEffect(() => {
@@ -58,19 +63,19 @@ const FoodSearch = ({ onAddFood, onAddCustomFood } : FoodSearchProps) => {
             const lastCategory = selectedCategories[selectedCategories.length - 1];
             switch (lastCategory) {
                 case '아침':
-                    setMealType(MEAL_TYPES.BREAKFAST);
+                    setMealTime(MEAL_TIMES.BREAKFAST);
                     break;
                 case '점심':
-                    setMealType(MEAL_TYPES.LUNCH);
+                    setMealTime(MEAL_TIMES.LUNCH);
                     break;
                 case '저녁':
-                    setMealType(MEAL_TYPES.DINNER);
+                    setMealTime(MEAL_TIMES.DINNER);
                     break;
                 case '간식':
-                    setMealType(MEAL_TYPES.SNACK);
+                    setMealTime(MEAL_TIMES.SNACK);
                     break;
                 default:
-                    setMealType(MEAL_TYPES.OTHER);
+                    setMealTime(MEAL_TIMES.OTHER);
             }
         }
     }, [selectedCategories]);
@@ -123,7 +128,7 @@ const FoodSearch = ({ onAddFood, onAddCustomFood } : FoodSearchProps) => {
     
         const isFoodSelected = selectedFood.some(selected => selected.foodName.toLowerCase() === food.foodName.toLowerCase());
         if (!isFoodSelected) {
-            addSelectedFood(food, mealType);
+            addSelectedFood(food, mealTime);
         }
     };
 
@@ -152,7 +157,7 @@ const FoodSearch = ({ onAddFood, onAddCustomFood } : FoodSearchProps) => {
             ...nutritionDetails // 영양소 정보 추가
         };
 
-        onAddCustomFood(newCustomFood, mealType); // 선택된 mealType을 함께 전달
+        onAddCustomFood(newCustomFood, mealTime); // 선택된 MealTime을 함께 전달
         console.log("newCustomFood: ", newCustomFood);
     };
 
@@ -206,8 +211,8 @@ const FoodSearchContainer = styled.div`
     display: flex;
     flex-direction: column;
     padding: .625rem;
-    width: 22%;
-    max-height: 33.4375rem;
+    width: 26%;
+    max-height: 35rem;
     overflow-y: auto;
     border: 1px solid #AFAFAF;
     border-radius: 5px;
@@ -269,7 +274,7 @@ const FoodListContainer = styled.div`
 
 const FoodItemButton = styled.button`
     width: 100%;
-    height: 100%;
+    height: 2.1875rem;
     justify-content: center;
     align-items: center;
     border-radius: 0.9375rem;
