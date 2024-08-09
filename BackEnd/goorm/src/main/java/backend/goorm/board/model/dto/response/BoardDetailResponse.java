@@ -1,5 +1,6 @@
 package backend.goorm.board.model.dto.response;
 
+import backend.goorm.board.model.dto.BoardTrainingRecordItem;
 import backend.goorm.board.model.enums.BoardCategory;
 import backend.goorm.board.model.enums.BoardType;
 import lombok.*;
@@ -35,6 +36,8 @@ public class BoardDetailResponse {
 
     private BoardCategory boardCategory;
 
-    List<String> imageUrls;
+    List<BoardTrainingRecordItem> trainingRecordItems;
+
+    //List<String> imageUrls;
 
 }

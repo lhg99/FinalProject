@@ -1,6 +1,7 @@
 package backend.goorm.board.service;
 
 import backend.goorm.board.model.dto.BoardListItem;
+import backend.goorm.board.model.dto.BoardTrainingRecordItem;
 import backend.goorm.board.model.dto.request.BoardSaveRequest;
 import backend.goorm.board.model.dto.request.BoardUpdateRequest;
 import backend.goorm.board.model.dto.response.BoardDetailResponse;
@@ -8,6 +9,7 @@ import backend.goorm.board.model.dto.response.BoardListResponse;
 import backend.goorm.board.model.entity.Board;
 import backend.goorm.board.model.entity.BoardImages;
 import backend.goorm.board.model.entity.BoardLikes;
+import backend.goorm.board.model.entity.BoardTrainingRecord;
 import backend.goorm.board.model.enums.BoardCategory;
 import backend.goorm.board.model.enums.BoardSortType;
 import backend.goorm.board.model.enums.BoardType;
@@ -17,6 +19,9 @@ import backend.goorm.common.exception.CustomExceptionType;
 import backend.goorm.common.util.DateConvertUtil;
 import backend.goorm.member.model.entity.Member;
 import backend.goorm.member.repository.MemberRepository;
+import backend.goorm.record.entity.Record;
+import backend.goorm.record.entity.TrainingRecord;
+import backend.goorm.record.repository.RecordRepository;
 import backend.goorm.s3.service.S3ImageService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -45,6 +50,8 @@ public class BoardServiceImpl implements BoardService {
     private final DateConvertUtil dateConvertUtil;
     private final S3ImageService s3ImageService;
     private final MemberRepository memberRepository;
+    private final BoardTrainingRecordRepository boardTrainingRecordRepository;
+    private final RecordRepository recordRepository;
 
     @Value("${board.page.size}")
     private int pageSize;
@@ -76,6 +83,22 @@ public class BoardServiceImpl implements BoardService {
                 .build();
 
         Board saveBoard = boardRepository.save(board);
+
+        if(saveBoard.getBoardType() == BoardType.WORKOUT && saveRequest.getTrainingRecords() != null && !saveRequest.getTrainingRecords().isEmpty()){
+
+            for(Long id : saveRequest.getTrainingRecords()){
+
+                BoardTrainingRecord boardTrainingRecord = BoardTrainingRecord.builder()
+                        .boardId(saveBoard.getBoardId())
+                        .recordId(id)
+                        .build();
+
+
+                boardTrainingRecordRepository.save(boardTrainingRecord);
+            }
+
+        }
+
         //saveImage(saveRequest.getImageUrls(), saveBoard.getBoardId());
     }
 
@@ -125,7 +148,22 @@ public class BoardServiceImpl implements BoardService {
         Board board = findBoard.get();
         board.increaseViewCnt();  // 조회수 증
 
-        List<String> imageUrls = boardImageRepository.findImageUrlsByBoardId(board.getBoardId());
+        //List<String> imageUrls = boardImageRepository.findImageUrlsByBoardId(board.getBoardId());
+        List<BoardTrainingRecordItem> trainingRecordItems = null;
+
+        if(findBoard.get().getBoardType() == BoardType.WORKOUT){
+
+            List<Long> recordIds = boardTrainingRecordRepository.findRecordIdsByBoardId(findBoard.get().getBoardId());
+
+            if(recordIds != null && !recordIds.isEmpty()){
+
+                List<Record> findRecords = recordRepository.findRecordsWithTrainingAndCategoryByRecordIds(recordIds);
+                trainingRecordItems = findRecords.stream()
+                        .map(this::convertToBoardTrainingRecordItem)
+                        .collect(Collectors.toList());
+
+            }
+        }
 
         BoardDetailResponse detailResponse = BoardDetailResponse.builder()
                 .boardId(board.getBoardId())
@@ -139,7 +177,7 @@ public class BoardServiceImpl implements BoardService {
                 .isLikes(findLikes.isPresent())
                 .boardType(board.getBoardType())
                 .boardCategory(board.getBoardCategory())
-                .imageUrls(imageUrls)
+                .trainingRecordItems(trainingRecordItems)
                 .build();
 
 
@@ -242,6 +280,23 @@ public class BoardServiceImpl implements BoardService {
                 .boardType(board.getBoardType())
                 .viewCnt(board.getViewCnt())
                 .likeCnt(board.getLikesCnt())
+                .build();
+    }
+
+    private BoardTrainingRecordItem convertToBoardTrainingRecordItem(Record record) {
+
+        return BoardTrainingRecordItem.builder()
+                .recordId(record.getRecordId())
+                .exerciseDate(dateConvertUtil.convertDateToString(record.getExerciseDate()))
+                .categoryName(record.getTraining().getCategory().getCategoryName())
+                .trainingName(record.getTraining().getTrainingName())
+                .durationMinutes(record.getDurationMinutes())
+                .caloriesBurned(record.getCaloriesBurned())
+                .sets(record.getSets())
+                .reps(record.getReps())
+                .weight(record.getWeight())
+                .distance(record.getDistance())
+                .incline(record.getIncline())
                 .build();
     }
 
