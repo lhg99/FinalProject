@@ -1,5 +1,5 @@
 import React from 'react';
-import { BrowserRouter, Route, Routes, Outlet } from 'react-router-dom';
+import { BrowserRouter, Route, Routes, Outlet, Navigate } from 'react-router-dom';
 import Header from './components/Header/Header';
 import Chat from './pages/Chat/components/Chat';
 import FloatingButtonWithChat from './pages/Chat/components/FloatingButtonWithChat';
@@ -11,7 +11,7 @@ import Main from './pages/MyPage/Main/Main';
 import MyPage from './pages/MyPage/MyPage/MyPage';
 import MyPageEdit from './pages/MyPage/MyPage/MyPageEdit';
 import { AuthProvider } from './pages/Login/auth/AuthContext';
-import Landing from './pages/Login/Landing/Landig';
+import Landing from './pages/Login/Landing/Landing'; // 오타 수정: 'Landig' -> 'Landing'
 import ProtectedRoute from './pages/Login/auth/ProtectedRoute';
 import Food from './pages/Food/Food';
 import FreeBoardPage from './pages/Board/page/FreeBoard/FreeBoardPage';
@@ -48,6 +48,7 @@ const App: React.FC = () => {
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<SignUp />} />
           <Route path="/start" element={<Landing />} />
+          <Route path="/" element={<Navigate to="/start" />} />
           <Route element={<Layout />}>
             <Route path="/main" element={<Main />} />
             <Route path="/chat" element={<ProtectedRoute><Chat /></ProtectedRoute>} />
