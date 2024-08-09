@@ -57,9 +57,7 @@ public class FoodService {
     }
 
     public FoodResponseDto createFood(Long memberId, FoodUserDto dto) {
-        if (dto.getAmount() == null) {
-            throw new IllegalArgumentException("Amount cannot be null");
-        }
+
 
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new IllegalArgumentException("Member not found with id: " + memberId));
@@ -71,9 +69,6 @@ public class FoodService {
     }
 
     public FoodResponseDto updateFood(Long memberId, Long foodId, FoodUpdateRequestDto dto) {
-        if (dto.getAmount() == null) {
-            throw new IllegalArgumentException("Amount cannot be null");
-        }
 
         Food food = foodRepository.findById(foodId)
                 .orElseThrow(() -> new IllegalArgumentException("Food not found with id: " + foodId));

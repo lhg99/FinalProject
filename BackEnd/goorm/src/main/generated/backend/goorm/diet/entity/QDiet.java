@@ -28,15 +28,19 @@ public class QDiet extends EntityPathBase<Diet> {
 
     public final NumberPath<Long> dietId = createNumber("dietId", Long.class);
 
-    public final ListPath<DietImages, QDietImages> dietImages = this.<DietImages, QDietImages>createList("dietImages", DietImages.class, QDietImages.class, PathInits.DIRECT2);
+    public final QDietMemo dietMemo;
 
     public final QFood food;
+
+    public final NumberPath<Float> gram = createNumber("gram", Float.class);
 
     public final EnumPath<backend.goorm.diet.enums.MealTime> mealTime = createEnum("mealTime", backend.goorm.diet.enums.MealTime.class);
 
     public final backend.goorm.member.model.entity.QMember member;
 
     public final NumberPath<Float> quantity = createNumber("quantity", Float.class);
+
+    public final NumberPath<Float> totalCalories = createNumber("totalCalories", Float.class);
 
     public QDiet(String variable) {
         this(Diet.class, forVariable(variable), INITS);
@@ -56,6 +60,7 @@ public class QDiet extends EntityPathBase<Diet> {
 
     public QDiet(Class<? extends Diet> type, PathMetadata metadata, PathInits inits) {
         super(type, metadata, inits);
+        this.dietMemo = inits.isInitialized("dietMemo") ? new QDietMemo(forProperty("dietMemo"), inits.get("dietMemo")) : null;
         this.food = inits.isInitialized("food") ? new QFood(forProperty("food"), inits.get("food")) : null;
         this.member = inits.isInitialized("member") ? new backend.goorm.member.model.entity.QMember(forProperty("member")) : null;
     }

@@ -25,8 +25,6 @@ public class Food {
 
     private String foodType;
 
-    private Double amount;
-
     @ManyToOne(cascade = CascadeType.PERSIST, fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
     private Member member;
