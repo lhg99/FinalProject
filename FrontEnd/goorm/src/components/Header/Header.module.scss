@@ -31,9 +31,10 @@
   align-items: center;
 }
 
-.nav ul {
-  list-style: none;
+.navList {
   display: flex;
+  flex-grow: 1;
+  list-style: none;
   padding: 0;
   margin: 0;
 }
@@ -64,8 +65,11 @@
   align-items: center;
 }
 
-.authButton {
+.authItem {
   margin-left: auto;
+}
+
+.authButton {
   display: flex;
   align-items: center;
 }
