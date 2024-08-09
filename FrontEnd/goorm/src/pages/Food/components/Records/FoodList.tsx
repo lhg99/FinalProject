@@ -81,7 +81,7 @@ const FoodList = ({ food, dateInfo }: FoodListProps) => {
         return { ...record, id: 0, name: "Unknown Food", isNew: false };
       }
     });
-  }, [dateInfo, foodRecords, food, setSelectedFoodRecords]);
+  }, [dateInfo, foodRecords, food]);
 
   const combinedRecords = useMemo(() => {
     if (!Array.isArray(foodRecords)) {

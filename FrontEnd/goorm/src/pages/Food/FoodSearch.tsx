@@ -116,6 +116,11 @@ const FoodSearch = ({ onAddFood, onAddCustomFood } : FoodSearchProps) => {
     }
 
     const handleAddFoodClick = (food: FoodData) => {
+        if (selectedCategories.length === 0) {
+            alert("카테고리를 선택하세요");
+            return;
+        }
+    
         const isFoodSelected = selectedFood.some(selected => selected.foodName.toLowerCase() === food.foodName.toLowerCase());
         if (!isFoodSelected) {
             addSelectedFood(food, mealType);

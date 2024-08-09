@@ -1,4 +1,5 @@
 
+import { memo } from "react";
 import { FoodData, FoodRecord } from "../../pages/Food/FoodTypes";
 import { formatDate } from "../../utils/DateUtils";
 import axiosInstance from "../axiosInstance";
@@ -42,21 +43,34 @@ export const getFoodRecord = async (): Promise<FoodRecord[]> => {
 export const getFoodPercentage = async (startDate: Date, endDate: Date) => {
 }
 
-export const postFoodRecord = async () => {
-    try {
-        // const response = await axiosInstance.post();
-    } catch (error) {
-        
+export const postFoodRecord = async (foodId: string, record: FoodRecord) => {
+    const formData = new FormData();
+    const data = {
+        dietId: record.dietId,
+        mealType: record.mealType,
+        dietDate: record.dietDate,
+        foodQuantities: [
+            {
+                foodId: foodId,
+                quantity: record.quantity,
+                gram: record.gram
+            }
+        ],
+        totalCalories: record.totalCalories,
+        memo: record.memo
     }
-}
 
-export const postCardioRecord = async (trainingId: number, exerciseRecord: null, image: File | null): Promise<void> => {
-}
+    formData.append("diet", JSON.stringify(data));
+    try {
+        const response = await axiosInstance.post('/diets', formData, {
+            headers: {
+                'Content-Type':'multipart/form-data'
+            }
+        });
 
-export const postStrengthRecord = async (): Promise<void> => {
-    
-}
-
-export const deleteRecord = async(recordId: number) => {
-   
+        console.log("식단 기록 등록 성공", response.data);
+        return response.data;
+    } catch (error) {
+        console.error("식단 기록 등록 실패", error);
+    }
 }

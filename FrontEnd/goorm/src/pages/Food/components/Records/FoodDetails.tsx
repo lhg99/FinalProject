@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import styled from "styled-components";
 import { useFood } from "../../../../contexts/foodContext";
 import { ModalStore } from "../../../../store/store";
-import { deleteRecord } from "../../../../api/Food/foodApi";
+// import { deleteRecord } from "../../../../api/Food/foodApi";
 import { FoodRecord } from "../../FoodTypes";
 import { DeleteModal } from "../../../Board/components/Modal";
 
@@ -58,7 +58,7 @@ const FoodDetails: React.FC<FoodDetailProps> = ({ food }) => {
 
   const handleDeleteModalConfirm = async () => {
     try {
-      await deleteRecord(food.dietId);
+      // await deleteRecord(food.dietId);
       // removeFood(food.foodRes.foodName);
       closeModal("deleteModal");
     } catch (err) {

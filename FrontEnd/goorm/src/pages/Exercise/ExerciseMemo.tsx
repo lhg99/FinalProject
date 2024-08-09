@@ -59,11 +59,8 @@ const ExerciseMemo = ({dateInfo}:ExerciseMemoProps) => {
                 setMemo({
                   content: data,
                   date: formattedDate,
-                }); // Update memo
+                });
               }
-            }}
-            onBlur={(event, editor) => {
-              const data = editor.getData();
             }}
             config={{
               toolbar: [

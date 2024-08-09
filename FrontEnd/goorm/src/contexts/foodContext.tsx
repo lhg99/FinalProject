@@ -1,5 +1,4 @@
 import React, { createContext, useContext, useState, ReactNode } from 'react';
-import { Category, ExerciseData, ExerciseRecords } from '../pages/Exercise/ExerciseTypes';
 import { FoodData, FoodCategory, FoodRecord } from '../pages/Food/FoodTypes';
 
 interface FoodState {
@@ -8,7 +7,7 @@ interface FoodState {
     selectedFood: FoodData[]; // FoodSearch에서 클릭한 음식
     foodCategories: FoodCategory[]; // 아침, 점심, 저녁, 간식 카테고리
     foodRecords: FoodRecord[]; // 모든 식단 기록을 저장
-    foodDetails: FoodRecord[]; // 유저가 추가한 식단 기록
+    foodDetails: { [key: string]: FoodRecord };
     selectedFoodRecords: FoodRecord[]; // 식단 기록에서 수정할 부분이 있는 기록들
     mealType: string; // BREAKFAST, LUNCH, DINNER, SNACK
 }
@@ -19,7 +18,7 @@ const initialState: FoodState = {
     selectedFood: [],
     foodCategories: [],
     foodRecords: [],
-    foodDetails: [],
+    foodDetails: {},
     selectedFoodRecords: [],
     mealType: "",
 
@@ -32,11 +31,12 @@ interface FoodContextProps {
     setFoodRecord: (foodRecord: FoodRecord[]) => void;
     setSelectedFoodRecords: (foodRecord: FoodRecord[]) => void;
     setMealType: (mealType: string) => void;
-    addFood: (food: FoodData) => void; // 수정된 부분
+    addFood: (food: FoodData) => void;
     addCustomFood: (food: FoodData, mealType: string) => void;
-    addSelectedFood: (food: FoodData, mealType: string) => void; // 수정된 부분
+    addSelectedFood: (food: FoodData, mealType: string) => void;
+    addSelectedFoodRecords: (records: FoodRecord[]) => void;
     updateFoodDetails: (details: FoodRecord) => void;
-    updateFoodRecords: (recordId: number, updatedDetails: Partial<FoodRecord>) => void; // 추가
+    updateFoodRecords: (recordId: number, updatedDetails: Partial<FoodRecord>) => void;
 }
 
 const FoodContext = createContext<FoodContextProps | undefined>(undefined);
@@ -89,6 +89,13 @@ export const FoodProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         });
     }
 
+    const addSelectedFoodRecords = (records: FoodRecord[]) => {
+        setState(prevState => ({
+            ...prevState,
+            selectedFoodRecords: [...prevState.selectedFoodRecords, ...records],
+        }));
+    };
+
     const updateFoodDetails = (updatedRecord: FoodRecord) => {
         setState(prevState => ({
             ...prevState,
@@ -125,6 +132,7 @@ export const FoodProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
             addFood,
             addCustomFood,
             addSelectedFood,
+            addSelectedFoodRecords,
             updateFoodDetails,
             updateFoodRecords
         }}>
