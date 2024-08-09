@@ -31,6 +31,6 @@ public class BoardSaveRequest {
 
     private BoardCategory boardCategory;
 
-    //private List<String> imageUrls;
+    private List<Long> trainingRecords;
 
 }
