@@ -31,6 +31,7 @@ public class DietUpdateRequestDto {
     public static class FoodQuantity {
         private Long foodId;
         private Float quantity;
+        private Float gram;
     }
 
     public void updateEntity(Diet diet, FoodRepository foodRepository) {

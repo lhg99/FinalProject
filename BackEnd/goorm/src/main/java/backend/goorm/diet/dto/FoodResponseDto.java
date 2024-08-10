@@ -14,7 +14,6 @@ import java.util.stream.Collectors;
 public class FoodResponseDto {
     private Long foodId;
     private String userName;
-    private String foodType;
     private String foodName;
     private Float gram;
     private Float calories;
@@ -33,7 +32,6 @@ public class FoodResponseDto {
         return FoodResponseDto.builder()
                 .foodId(food.getFoodId())
                 .userName(food.getMember() != null ? food.getMember().getMemberNickname() : "admin")
-                .foodType(food.getFoodType())
                 .foodName(food.getFoodName())
                 .gram(food.getGram())
                 .calories(food.getCalories())

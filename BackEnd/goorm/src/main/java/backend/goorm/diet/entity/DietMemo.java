@@ -37,7 +37,4 @@ public class DietMemo {
     private String content;
 
 
-    @CreatedDate
-    @Column(name = "created_at", updatable = false)
-    private LocalDate createdAt;
 }

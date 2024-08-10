@@ -36,8 +36,6 @@ public class QFood extends EntityPathBase<Food> {
 
     public final StringPath foodName = createString("foodName");
 
-    public final StringPath foodType = createString("foodType");
-
     public final NumberPath<Float> gram = createNumber("gram", Float.class);
 
     public final backend.goorm.member.model.entity.QMember member;

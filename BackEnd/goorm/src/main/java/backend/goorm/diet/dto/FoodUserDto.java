@@ -28,7 +28,6 @@ public class FoodUserDto {
     public Food toEntity() {
 
         return Food.builder()
-                .foodType(this.foodType)
                 .foodName(this.foodName)
                 .gram(this.gram)
                 .calories(this.calories)
@@ -47,7 +46,6 @@ public class FoodUserDto {
 
     public void updateEntity(Food food) {
 
-        food.setFoodType(this.foodType);
         food.setFoodName(this.foodName);
         food.setGram(this.gram);
         food.setCalories(this.calories);
