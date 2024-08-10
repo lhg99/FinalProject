@@ -7,14 +7,7 @@ import CommentSection from '../Comment/CommentSection';
 import Tabs from '../../../components/Taps/BoardTap/BoardTabs';
 import { ReportModal, DeleteModal, DeleteCommentModal } from '../components/Modal';
 import LikeButton from '../components/LikeButton';
-
-const formatDate = (dateString: string): string => {
-  const date = new Date(dateString);
-  const year = date.getFullYear();
-  const month = String(date.getMonth() + 1).padStart(2, '0');
-  const day = String(date.getDate()).padStart(2, '0');
-  return `${year}/${month}/${day}`;
-};
+import ChatBox from '../Chat/ChatBox';
 
 const DetailPost: React.FC = () => {
   const { id, tab } = useParams<{ id?: string, tab?: string }>();
@@ -29,6 +22,9 @@ const DetailPost: React.FC = () => {
   const [showDeleteCommentModal, setShowDeleteCommentModal] = useState(false);
   const [modalMessage, setModalMessage] = useState<string>('');
   const [modalAction, setModalAction] = useState<() => void>(() => { });
+  const [showChatBox, setShowChatBox] = useState(false);
+  const [chatBoxPosition, setChatBoxPosition] = useState<{ x: number, y: number } | null>(null);
+  const [chatAuthor, setChatAuthor] = useState<string | null>(null);
 
   useEffect(() => {
     if (!id) {
@@ -121,6 +117,20 @@ const DetailPost: React.FC = () => {
     setShowDeleteCommentModal(false);
   };
 
+  const handleAuthorClick = (event: React.MouseEvent, author: string) => {
+    const rect = event.currentTarget.getBoundingClientRect();
+    const scrollY = window.scrollY || window.pageYOffset;
+    const gap = 0; 
+    setChatBoxPosition({ x: rect.left, y: rect.bottom + scrollY + gap });
+    setChatAuthor(author);
+    setShowChatBox(prevShowChatBox => !prevShowChatBox); 
+  };
+  
+  const handleCloseChatBox = () => {
+    setShowChatBox(false);
+    setChatAuthor(null);
+  };
+
   if (!post) {
     return <div>Loading...</div>;
   }
@@ -132,8 +142,13 @@ const DetailPost: React.FC = () => {
         <div className={styles.PostHeader}>
           <h1 className={styles.PostTitle}>{post.boardTitle}</h1>
           <div className={styles.PostMeta}>
-            <span>작성자 : {post.writer}</span>
-            <span>작성일 : {formatDate(post.boardRegDate)}</span>
+          <span
+              className={styles.Author}
+              onClick={(e) => handleAuthorClick(e, post.writer)} // 닉네임 클릭 시 ChatBox 열기
+            >
+              {post.writer}
+            </span>
+            <span>작성일 : {post.boardRegDate}</span>
             <span>
               <LikeButton 
                 boardId={post.boardId} 
@@ -147,13 +162,6 @@ const DetailPost: React.FC = () => {
         </div>
         <div className={styles.PostContent}>
           <div dangerouslySetInnerHTML={{ __html: post.boardContent }} />
-          {/* {post.imageUrls && post.imageUrls.length > 0 && (
-            <div className={styles.ImageContainer}>
-              {post.imageUrls.map((url, index) => (
-                <img key={index} src={url} alt={`post_image_${index}`} className={styles.PostImage} /> */}
-              {/* ))} */}
-            {/* </div> */}
-          {/* )} */}
         </div>
         <CommentSection postId={post.boardId} setShowDeleteCommentModal={setShowDeleteCommentModal} setModalMessage={setModalMessage} setModalAction={setModalAction} />
         <div className={styles.ButtonContainer}>
@@ -166,6 +174,14 @@ const DetailPost: React.FC = () => {
       {showReportModal && <ReportModal confirmReport={confirmReport} closeReportModal={closeReportModal} />}
       {showDeleteModal && <DeleteModal modalMessage={modalMessage} modalAction={modalAction} closeDeleteModal={closeDeleteModal} />}
       {showDeleteCommentModal && <DeleteCommentModal modalMessage={modalMessage} modalAction={modalAction} closeDeleteCommentModal={closeDeleteCommentModal} />}
+      {showChatBox && chatBoxPosition && chatAuthor && (
+        <ChatBox
+          x={chatBoxPosition.x}
+          y={chatBoxPosition.y}
+          author={chatAuthor}
+          onClose={handleCloseChatBox}
+        />
+      )}
     </>
   );
 };

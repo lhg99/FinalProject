@@ -1,9 +1,9 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import styled from 'styled-components';
-import { SearchIcon } from '../../image/SearchIcon';
+import { SearchIcon } from '../../image/Icon/SearchIcon';
 import { useExercise } from '../../contexts/exerciseContext';
 import { Category, ExerciseData } from './ExerciseTypes';
-import CustomExerciseModal from './components/Modal/CusomExerciseModal';
+import CustomExerciseModal from '../../components/Modal/Exercise/CusomExerciseModal';
 import { ModalStore } from '../../store/store';
 import { getExerciseData } from '../../api/Exercise/exerciseApi';
 
@@ -83,6 +83,12 @@ const ExerciseSearch = ({ onAddExercise, onAddCustomExercise }: ExerciseSearchPr
             const newSelectedCategories = selectedCategories.includes(categoryName)
                 ? selectedCategories.filter(name => name !== categoryName) 
                 : [...selectedCategories, categoryName];
+
+            if (newSelectedCategories.length > 1) {
+                alert("카테고리는 하나만 선택하세요");
+                return;
+            }
+
             setSelectedCategories(newSelectedCategories);
         }
     };
@@ -177,7 +183,7 @@ const ExerciseSearchContainer = styled.div`
     display: flex;
     flex-direction: column;
     padding: .625rem;
-    width: 22%;
+    width: 20%;
     max-height: 35rem;
     overflow-y: auto;
     border: 1px solid #AFAFAF;

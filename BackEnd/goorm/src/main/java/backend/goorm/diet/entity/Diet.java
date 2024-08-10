@@ -46,6 +46,9 @@ public class Diet {
     @Column(name = "total_calories")
     private Float totalCalories;
 
+    @Column(name = "total_gram")
+    private Float totalGram;
+
     @Enumerated(EnumType.STRING)
     @Column(name = "meal_time", nullable = false)
     private MealTime mealTime;
@@ -58,13 +61,16 @@ public class Diet {
     private LocalDateTime createdAt;
 
     // 총 칼로리를 계산하고 설정하는 메서드
-    public void calculateTotalCalories() {
+    public void calculateTotalCaloriesAndGram() {
         if (gram != null && gram > 0) {
             this.totalCalories = food.getCalories() / food.getGram() * gram;
+            this.totalGram = gram;  // 사용자가 gram을 직접 입력한 경우
         } else if (quantity != null && quantity > 0) {
             this.totalCalories = food.getCalories() * quantity;
+            this.totalGram = quantity * food.getGram();  // 사용자가 quantity를 입력한 경우
         } else {
             this.totalCalories = 0.0f;
+            this.totalGram = 0.0f;
         }
     }
 }

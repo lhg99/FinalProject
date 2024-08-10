@@ -67,7 +67,12 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     }
   };
 
-  const logout = () => {
+  const logout = async() => {
+    if(user) {
+      const response = await axiosInstance.post("/auth/logout");
+      console.log(" ", response.data);
+      return response.data;
+    }
     sessionStorage.removeItem("user");
     setUser(initialUser);  // 초기값으로 설정
   };
@@ -77,6 +82,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       setTimeout(() => {
         const result = user.message.includes("로그인이 정상적으로 완료되었습니다");
         resolve(result);
+        return result;
       }, 2000); // 2초 시간
     });
   };

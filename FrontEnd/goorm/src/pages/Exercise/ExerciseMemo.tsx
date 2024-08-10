@@ -5,7 +5,7 @@ import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
 import { useExercise } from "../../contexts/exerciseContext";
 import { ModalStore } from "../../store/store";
 import axiosInstance from "../../api/axiosInstance";
-import { formatDateData, formatDateInfo } from "../../utils/DateUtils";
+import { formatDateInfo } from "../../utils/DateUtils";
 
 interface ExerciseMemoProps {
   dateInfo: {
@@ -59,11 +59,8 @@ const ExerciseMemo = ({dateInfo}:ExerciseMemoProps) => {
                 setMemo({
                   content: data,
                   date: formattedDate,
-                }); // Update memo
+                });
               }
-            }}
-            onBlur={(event, editor) => {
-              const data = editor.getData();
             }}
             config={{
               toolbar: [
@@ -125,5 +122,4 @@ const DetailsText = styled.p`
   margin-right: 1.25rem;
   flex-direction: row;
   font-size: 0.875rem;
-  font-weight: bold;
 `;

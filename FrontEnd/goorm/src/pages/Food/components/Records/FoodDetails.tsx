@@ -1,291 +1,214 @@
 import React, { useEffect, useRef, useState } from "react";
 import styled from "styled-components";
-// import { FoodRecords } from "../../FoodTypes";
-// import DeleteModal from "../Modal/DeleteModal";
-// import { deleteRecord } from "../../api/FoodApi";
 import { useFood } from "../../../../contexts/foodContext";
+import { ModalStore } from "../../../../store/store";
+// import { deleteRecord } from "../../../../api/Food/foodApi";
+import { FoodRecord } from "../../FoodTypes";
+import { DeleteModal } from "../../../Board/components/Modal";
+import DeleteFoodModal from "../../../../components/Modal/Food/DeleteFoodModal";
+import { deleteFoodRecord } from "../../../../api/Food/foodApi";
+import { mealTimeLabels } from "../../../../constants/Food/MealTime";
 
 interface FoodDetailProps {
-    // Food: FoodRecords;
-    isAddingFood: boolean; // 새로운 운동 여부
-    // details: FoodRecords;
-    onFoodNameChange: (name: string) => void;
+  food: FoodRecord;
 }
 
-// 운동 세부정보 입력하는 컴포넌트
-const FoodDetails: React.FC<FoodDetailProps> = ({ isAddingFood, onFoodNameChange }) => {
-    // const [FoodName, setFoodName] = useState<string>(Food.trainingName || "");
-    // const [distance, setDistance] = useState<string>(details.distance?.toString() || "");
-    // const [duration, setDuration] = useState<string>(details.durationMinutes?.toString() || "0");
-    // const [slope, setSlope] = useState<string>(details.incline?.toString() || "0");
-    // const [calorie, setCalorie] = useState<string>(details.caloriesBurned?.toString() || "0");
-    // const [sets, setSets] = useState<string>(details.sets?.toString() || "0");
-    // const [weight, setWeight] = useState<string>(details.weight?.toString() || "0");
-    // const [count, setCount] = useState<string>(details.reps?.toString() || "0");
-    // const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
-    // const prevDetailsRef = useRef(details);
+const FoodDetails: React.FC<FoodDetailProps> = ({ food }) => {
+  const [quantity, setQuantity] = useState<string>(food.quantity?.toString() || "");
+  const [gram, setGram] = useState<string>(food.gram?.toString() || "");
+  const prevDetailsRef = useRef(food);
 
-    // const { updateFoodDetails, removeFood } = useFood();
+  const { state: { foodRecords }, updateFoodDetails, removeFood, updateFoodRecords } = useFood();
 
-    // useEffect(() => {
-    //     const updatedDetails = {
-    //         ...details,
-    //         trainingName: FoodName,
-    //         distance: distance ? parseFloat(distance) : 0,
-    //         durationMinutes: duration ? parseInt(duration) : 0,
-    //         incline: slope ? parseFloat(slope) : 0,
-    //         caloriesBurned: calorie ? parseInt(calorie) : 0,
-    //         sets: sets ? parseInt(sets) : 0,
-    //         weight: weight ? parseFloat(weight) : 0,
-    //         reps: count ? parseInt(count) : 0,
-    //     };
-    
-    //     const prevDetails = prevDetailsRef.current;
-    //     // Check if updatedDetails differ from previous details
-    //     if (JSON.stringify(updatedDetails) !== JSON.stringify(prevDetails)) {
-    //         updateFoodDetails(updatedDetails);
-    //         console.log('Details Updated:', updatedDetails);
-    //     }
-    //     prevDetailsRef.current = updatedDetails;
-    // }, [FoodName, distance, duration, slope, calorie, sets, weight, count, details, updateFoodDetails]);
+  const { modals, openModal, closeModal } = ModalStore();
 
-    // const handleDeleteClick = () => {
-    //     setIsModalOpen(true);
-    // };
+  useEffect(() => {
+    const updatedDetails = {
+      ...food,
+      quantity: quantity ? parseInt(quantity) : 0,
+      gram: gram ? parseInt(gram) : 0
+    };
 
-    // const handleModalClose = () => {
-    //     setIsModalOpen(false);
-    // };
+    const prevDetails = prevDetailsRef.current;
 
-    // const handleModalConfirm = async () => {
-    //     try {
-    //         await deleteRecord(details.recordId);
-    //         removeFood(details.trainingName); // 상태에서 운동 삭제
-    //         setIsModalOpen(false); // 모달 닫기
-    //     } catch (err) {
-    //         throw err;
-    //     }
-    // };
-
-    return (
-        <FoodDetailsContainer>
-            {/* <FoodInfo>
-                <CategoryBadge>{Food.categoryName}</CategoryBadge>
-                <FoodTitle>{Food.trainingName}</FoodTitle>
-            </FoodInfo>
-            <InputContainer>
-                {details.categoryName === "유산소" ? (
-                    <>
-                        <FoodLabel>
-                            <FoodInput
-                                type='text'
-                                placeholder="거리"
-                                value={distance}
-                                onChange={(e) => {
-                                    setDistance(e.target.value);
-                                    updateFoodDetails({...details, distance: parseFloat(e.target.value)});
-                                }}
-                            />
-                        </FoodLabel>
-                        <FoodText>km</FoodText>
-                        <FoodLabel>
-                            <FoodInput
-                                type='text'
-                                placeholder=" 시간"
-                                value={duration}
-                                onChange={(e) => {
-                                    setDuration(e.target.value);
-                                    updateFoodDetails({ ...details, durationMinutes: parseInt(e.target.value) });
-                                }}
-                            />
-                        </FoodLabel>
-                        <FoodText>분</FoodText>
-                        <FoodLabel>
-                            <FoodInput
-                                type='text'
-                                placeholder="경사"
-                                value={slope}
-                                onChange={(e) => {
-                                    setSlope(e.target.value);
-                                    updateFoodDetails({ ...details, incline: parseFloat(e.target.value) });
-                                }}
-                            />
-                        </FoodLabel>
-                        <FoodText>도</FoodText>
-                        <FoodLabel>
-                            <FoodInput
-                                type='text'
-                                placeholder="칼로리"
-                                value={calorie}
-                                onChange={(e) => {
-                                    setCalorie(e.target.value);
-                                    updateFoodDetails({ ...details, caloriesBurned: parseInt(e.target.value) });
-                                }}
-                            />
-                        </FoodLabel>
-                        <FoodText>kcal</FoodText>
-                    </>
-                ) : (
-                    <>
-                        <SetContainer>
-                            <FoodLabel>
-                                <FoodInput
-                                    type='text'
-                                    placeholder=" 시간"
-                                    value={duration}
-                                    onChange={(e) => {
-                                        setDuration(e.target.value);
-                                        updateFoodDetails({ ...details, durationMinutes: parseInt(e.target.value) });
-                                    }}
-                                />
-                            </FoodLabel>
-                            <FoodText>분</FoodText>
-                            <FoodLabel>
-                                <FoodInput
-                                    type="number"
-                                    placeholder='세트'
-                                    value={sets}
-                                    onChange={(e) => {
-                                        setSets(e.target.value);
-                                        updateFoodDetails({...details, sets: parseInt(e.target.value)});
-                                    }}
-                                />
-                            </FoodLabel>
-                            <FoodText>세트</FoodText>
-                            <FoodLabel>
-                                <FoodInput
-                                    type="number"
-                                    placeholder='중량(kg)'
-                                    value={weight}
-                                    step="5"
-                                    onChange={(e) => {
-                                        setWeight(e.target.value);
-                                        updateFoodDetails({...details, weight: parseFloat(e.target.value)});
-                                    }}
-                                />
-                            </FoodLabel>
-                            <FoodText>kg</FoodText>
-                            <FoodLabel>
-                                <FoodInput
-                                    type="number"
-                                    placeholder='횟수'
-                                    value={count}
-                                    onChange={(e) => {
-                                        setCount(e.target.value);
-                                        updateFoodDetails({...details, reps: parseInt(e.target.value)});
-                                    }}
-                                />
-                            </FoodLabel>
-                            <FoodText>회</FoodText>
-                        </SetContainer>
-                    </>
-                )}
-                <DeleteButton onClick={handleDeleteClick}>삭제</DeleteButton>
-            </InputContainer>
-            <DeleteModal
-                isOpen={isModalOpen}
-                onClose={handleModalClose}
-                onConfirm={handleModalConfirm}
-            /> */}
-        </FoodDetailsContainer>
+    const existingRecord = foodRecords.find(
+      (record) => record.dietId === food.dietId
     );
-}
+
+    if (JSON.stringify(updatedDetails) !== JSON.stringify(prevDetails)) {
+      if (existingRecord) {
+        updateFoodRecords(food.dietId, updatedDetails);
+        console.log("Food Records Updated:", updatedDetails);
+      } else {
+        updateFoodDetails(updatedDetails);
+        console.log("Food Details Updated:", updatedDetails);
+      }
+    }
+    prevDetailsRef.current = updatedDetails;
+  }, [gram, quantity]);
+
+  const handleModalClick = () => {
+    openModal("deleteModal");
+  };
+
+  const handleModalClose = () => {
+    closeModal("deleteModal");
+  };
+
+  const handleDeleteModalConfirm = async () => {
+    try {
+      await deleteFoodRecord(food.dietId);
+      removeFood(food.foodRes.foodName);
+      closeModal("deleteModal");
+    } catch (err) {
+      throw err;
+    }
+  };
+
+  return (
+    <FoodDetailsContainer>
+      <FoodInfo>
+        <CategoryBadge>{mealTimeLabels[food.mealTime as keyof typeof mealTimeLabels] || "기타"}</CategoryBadge>
+        <FoodTitle>{food.foodRes.foodName}</FoodTitle>
+      </FoodInfo>
+      <InputContainer>
+        <FoodLabel>
+          <FoodInput
+            type="number"
+            placeholder="총량"
+            value={quantity}
+            onChange={(e) => {
+              setQuantity(e.target.value);
+              setGram(""); // quantity 입력 시 gram을 비웁니다.
+              const newQuantity = parseInt(e.target.value, 10);
+              if (!isNaN(newQuantity)) {
+                const updatedDetails = { ...food, quantity: newQuantity };
+                updateFoodRecords(food.dietId, updatedDetails);
+              }
+            }}
+            disabled={parseInt(gram) > 0} // gram이 0이 아닌 경우 비활성화
+          />
+          <FoodText> 개</FoodText>
+        </FoodLabel>
+        <FoodLabel>
+          <FoodInput
+            type="number"
+            placeholder="섭취량"
+            value={gram}
+            step="10"
+            onChange={(e) => {
+              setGram(e.target.value);
+              setQuantity("");
+              const newGram = parseInt(e.target.value, 10);
+              if (!isNaN(newGram)) {
+                const updatedDetails = { ...food, gram: newGram };
+                updateFoodRecords(food.dietId, updatedDetails);
+              }
+            }}
+            disabled={parseInt(quantity) > 0} // quantity가 0이 아닌 경우 비활성화
+          />
+          <FoodText> g</FoodText>
+        </FoodLabel>
+        <DeleteButton onClick={handleModalClick}>삭제</DeleteButton>
+      </InputContainer>
+      <DeleteFoodModal
+        isOpen={modals.deleteModal?.isOpen}
+        onClose={handleModalClose}
+        onConfirm={handleDeleteModalConfirm}
+      />
+    </FoodDetailsContainer>
+  );
+};
 
 export default FoodDetails;
 
 const FoodDetailsContainer = styled.div`
-    margin-top: .625rem;
-    margin-left: 0.9375rem;
-    display: flex;
-    width: 100%;
-    border: 1px solid #AFAFAF;
-    border-radius: 0.9375rem;
-    justify-content: space-between;
-    align-items: center;
-    text-align: center;
-    font-size: 0.875rem;
+  margin-left: 0.9375rem;
+  display: flex;
+  width: 100%;
+  border: 1px solid #afafaf;
+  border-radius: 0.9375rem;
+  justify-content: space-between;
+  align-items: center;
+  text-align: center;
+  font-size: 0.875rem;
+  margin-bottom: 0.9375rem;
 `;
 
 const FoodInfo = styled.div`
-    display: flex;
-    align-items: center;
+  display: flex;
+  align-items: center;
 `;
 
 const CategoryBadge = styled.span`
-    background-color: #007bff;
-    color: white;
-    border-radius: 0.3125rem;
-    margin-left: 0.625rem;
-    padding: 0.25rem;
-    font-size: 0.875rem;
+  background-color: #007bff;
+  color: white;
+  border-radius: 0.3125rem;
+  margin-left: 0.625rem;
+  padding: 0.25rem;
+  font-size: 0.875rem;
+  pointer-events: none;  /* Hover 효과가 적용되지 않도록 설정 */
 `;
 
 const FoodTitle = styled.h3`
-    font-size: 1.125rem;
-    font-weight: bold;
-    margin-left: 0.625rem;
-`;
-
-const FoodLabel = styled.label`
-    margin-left: 0.625rem;
-    display: block;
-    flex-direction: row;
-    margin-bottom: 1rem;
-    width: 5.625rem;
-    gap: 0;
+  font-size: 1.125rem;
+  margin-left: 0.625rem;
 `;
 
 const InputContainer = styled.div`
-    display: flex;
-    align-items: center;
+  display: flex;
+  align-items: center;
+  flex-direction: row;
+  gap: 0.625rem;
+`;
+
+const FoodLabel = styled.label`
+  display: flex;
+  align-items: center;
+  margin-left: 1.25rem;
+  margin-bottom: 1rem;
+  gap: 0.5rem;  /* Input과 Text 사이의 간격을 조정 */
 `;
 
 const FoodInput = styled.input`
-    display: flex;
-    width: 100%;
-    padding: 0.3125rem;
-    margin-top: 1.25rem;
-    border: 1px solid #AFAFAF;
-    border-radius: 0.625rem;
-    font-size: 0.875rem;
-    margin-left: 0.3125rem;
-    gap: 0.0625rem;
+  width: 6.25rem;  /* 입력 필드의 너비를 줄임 */
+  padding: 0.3125rem;
+  border: 1px solid #afafaf;
+  border-radius: 0.625rem;
+  font-size: 0.875rem;
+  margin-left: 0.3125rem;
+  margin-top: 20px;
 
-    // 스핀버튼 항상 보이게 설정하는 CSS
-    -webkit-appearance: none;
-    -moz-appearance: textfield;
+  // 스핀버튼 항상 보이게 설정하는 CSS
+  -webkit-appearance: none;
+  -moz-appearance: textfield;
 
-    &::-webkit-inner-spin-button, 
-    &::-webkit-outer-spin-button { 
+  &::-webkit-inner-spin-button,
+  &::-webkit-outer-spin-button {
     -webkit-appearance: inner-spin-button;
     opacity: 1;
-    }
+  }
 `;
 
 const FoodText = styled.span`
-    margin-left: 1.3125rem;
-`;
-
-const SetContainer = styled.div`
-    display: flex;
-    flex-direction: row;
-    align-items: center;
+  font-size: 0.875rem;
+  margin-top: 1.25rem;
 `;
 
 const DeleteButton = styled.button`
-    margin-right: .625rem;
-    margin-left: 0.625rem;
-    height: 20%;
-    background-color: #ff4d4d;
-    color: white;
-    padding: 0.5rem 1rem;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    transition: background-color 0.3s;
-    font-size: 0.875rem;
+  margin-right: 0.625rem;
+  margin-left: 1.25rem;
+  height: 20%;
+  background-color: #ff4d4d;
+  color: white;
+  padding: 0.5rem 1rem;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  font-size: 0.875rem;
 
-    &:hover {
-        background-color: #ff1a1a;
-    }
+  &:hover {
+    background-color: #ff1a1a;
+  }
 `;
