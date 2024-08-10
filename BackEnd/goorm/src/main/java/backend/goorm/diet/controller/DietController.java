@@ -90,7 +90,7 @@ public class DietController {
     }
 
     // Controller Method
-    @GetMapping("/nutrient/today")
+    @GetMapping("/nutrient")
     public ResponseEntity<Map<String, NutrientPercentage>> getNutrientPercentageForDate(
             @AuthenticationPrincipal PrincipalDetails principalDetails,
             @RequestParam("date") LocalDate date) {

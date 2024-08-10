@@ -228,8 +228,4 @@ public class DietService {
 
         return macroPercentages;
     }
-
-
-
-
 }
