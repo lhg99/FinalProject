@@ -1,19 +1,20 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import styles from './BoardTabs.module.scss';
+import { BoardType } from '../../../pages/Board/types';
 
 interface TabsWithButtonProps {
-  selectedTab: string;
-  setSelectedTab: (tab: string) => void;
+  selectedTab: BoardType;
+  setSelectedTab: (tab: BoardType) => void;
 }
 
 const Boardtabs = [
-  { key: 'FREE', label: '자유게시판', writePath: '/Board/free/createpost' },
-  { key: 'EXERCISE', label: '운동 공유', writePath: '/Board/exercise/record' },
-  { key: 'DIET', label: '식단 공유', writePath: '/Board/diet/createpost' },
+  { key: BoardType.FREE, label: '자유게시판', path: '/Board/free', writePath: '/Board/free/createpost' },
+  { key: BoardType.WORKOUT, label: '운동 공유', path: '/Board/exercise', writePath: '/Board/exercise/record' },
+  { key: BoardType.DIET, label: '식단 공유', path: '/Board/diet', writePath: '/Board/diet/record' },
 ];
 
-const getBoardTitle = (boardType: string): string => {
+const getBoardTitle = (boardType: BoardType): string => {
   const tab = Boardtabs.find(t => t.key === boardType);
   return tab ? tab.label : '자유게시판';
 };
@@ -21,19 +22,26 @@ const getBoardTitle = (boardType: string): string => {
 const BoardTabs: React.FC<TabsWithButtonProps> = ({ selectedTab, setSelectedTab }) => {
   const navigate = useNavigate();
 
-  const handleTabClick = (tab: string) => {
+  const handleTabClick = (tab: BoardType) => {
     setSelectedTab(tab);
-    const path = `/Board/${tab.toLowerCase()}`;
-    navigate(path);
+    const currentTab = Boardtabs.find(t => t.key === tab);
+    if (currentTab) {
+      navigate(currentTab.path);
+    }
   };
 
-  const renderWriteButton = () => {
-    const currentTab = Boardtabs.find(Boardtabs => Boardtabs.key === selectedTab);
-    return currentTab ? (
-      <button className={styles.writeButton} onClick={() => navigate(currentTab.writePath)}>
-        게시글 작성
+  const renderButton = () => {
+    const currentTab = Boardtabs.find(tab => tab.key === selectedTab);
+    if (!currentTab) return null;
+
+    return (
+      <button
+        className={styles.recordButton}
+        onClick={() => navigate(currentTab.writePath)}
+      >
+        {selectedTab === BoardType.FREE ? '게시글 작성' : '기록 공유'}
       </button>
-    ) : null;
+    );
   };
 
   return (
@@ -51,7 +59,7 @@ const BoardTabs: React.FC<TabsWithButtonProps> = ({ selectedTab, setSelectedTab 
       </div>
       <h1 className={styles.pageTitle}>{getBoardTitle(selectedTab)}</h1>
       <div className={styles.buttonContainer}>
-        {renderWriteButton()}
+        {renderButton()}
       </div>
     </div>
   );

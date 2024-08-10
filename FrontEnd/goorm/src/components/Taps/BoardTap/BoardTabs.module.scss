@@ -1,63 +1,81 @@
 .parentContainer {
-    position: relative;
-    width: 100%;
-    max-width: 1100px;
-    margin: 20px auto;
-  }
-  
-  .tabsContainer {
-    display: flex;
-    justify-content: center;
-    margin-top: 20px;
-  }
-  
-  .tab {
-    padding: 10px 20px;
-    margin: 0 10px;
-    cursor: pointer;
-    text-decoration: none;
-    color: #000;
-    border-bottom: none;
-    transition: color 0.3s, border-bottom 0.3s;
-  }
-  
-  .tab:hover {
+  position: relative;
+  width: 100%;
+  max-width: 1100px;
+  margin: 20px auto;
+}
+
+.tabsContainer {
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
+}
+
+.tab {
+  padding: 10px 20px;
+  margin: 0 10px;
+  cursor: pointer;
+  text-decoration: none;
+  color: #000;
+  border-bottom: none;
+  transition: color 0.3s, border-bottom 0.3s;
+
+  &:hover {
     color: #0056b3;
   }
-  
-  .tab.active {
+
+  &.active {
     color: #007bff;
     border-bottom: 2px solid #007bff;
   }
-  
-  .pageTitle {
-    width: 100%;
-    max-width: 1100px;
-    margin: 20px auto;
-    font-family: 'Arial', sans-serif;
-    font-weight: 400;
-    color: #000;
+}
+
+.pageTitle {
+  width: 100%;
+  max-width: 1100px;
+  margin: 20px auto;
+  font-family: 'Arial', sans-serif;
+  font-weight: 400;
+  color: #000;
+}
+
+.buttonContainer {
+  position: absolute;
+  right: 10px; /* 좀 더 안쪽으로 여유를 줌 */
+  top: 55px;
+  margin: 10px;
+}
+
+.buttonStyle {
+  padding: 10px 15px;
+  font-size: 16px;
+  font-family: 'Arial', sans-serif;
+  color: #444; /* 더 밝은 색으로 변경 */
+  background-color: white;
+  border: 1px solid #666;
+  border-radius: 1px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+
+  &:hover {
+    background-color: #e0e0e0;
   }
-  
+}
+
+.writeButton, .recordButton {
+  composes: buttonStyle; /* 공통 스타일을 사용 */
+}
+
+/* 반응형 디자인 */
+@media (max-width: 768px) {
+  .tabsContainer {
+    flex-direction: column;
+    align-items: center;
+  }
+
   .buttonContainer {
-    position: absolute;
-    right: 0px;
-    top: 55px;
-    margin: 10px;
+    position: static;
+    margin-top: 20px;
+    text-align: center;
   }
-  
-  .writeButton {
-    padding: 10px 15px;
-    font-size: 16px;
-    font-family: 'Arial', sans-serif;
-    color: #666;
-    background-color: white;
-    border: 1px solid #666;
-    border-radius: 1px;
-    cursor: pointer;
-  
-    &:hover {
-      background-color: #e0e0e0;
-    }
-  }
-  
+}

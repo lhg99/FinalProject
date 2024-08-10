@@ -24,6 +24,8 @@ import CareVideo from './pages/HealthVideo/CareVideo/CareVideo';
 import Landing from './pages/Login/Landing/Landing';
 import MyPage from './pages/MyPage/MyPage/MyPage';
 import DietChartPage from './pages/Chart/DietChart/DietChartPage';
+import RecordSharePost from './pages/Board/page/ExerciseBoard/SharePost/RecordSharePost';
+import ExerciseBoardPage from './pages/Board/page/ExerciseBoard/ExerciseBoardPage/ExerciseBoardPage';
 
 
 const Layout: React.FC = () => (
@@ -66,7 +68,10 @@ const App: React.FC = () => {
 
             <Route path="/Board" element={<Outlet />}>
               <Route path="free" element={<FreeBoardPage />} />
+              <Route path="exercise" element={<ExerciseBoardPage />} />
+              <Route path="exercise/record" element={<RecordSharePost />} />
               <Route path="free/post/:id" element={<ProtectedRoute><DetailPost /></ProtectedRoute>} />
+              <Route path="exercise/post/:id" element={<ProtectedRoute><DetailPost /></ProtectedRoute>} />
               <Route path="free/post/edit/:id" element={<ProtectedRoute><UpdatePost /></ProtectedRoute>} />
               <Route path="free/createpost" element={<ProtectedRoute><CreatePost /></ProtectedRoute>} />
             </Route>
