@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate, useLocation } from 'react-router-dom';
-import { BoardDetails } from '../types';
+import { BoardDetails, BoardType } from '../types';
 import { fetchPostDetail, deletePost, toggleLike as apiToggleLike } from '../api/boardAPI';
 import styles from './DetailPost.module.scss';
 import CommentSection from '../Comment/CommentSection';
@@ -8,15 +8,16 @@ import Tabs from '../../../components/Taps/BoardTap/BoardTabs';
 import { ReportModal, DeleteModal, DeleteCommentModal } from '../components/Modal';
 import LikeButton from '../components/LikeButton';
 import ChatBox from '../Chat/ChatBox';
+import ExerciseRecordList from '../page/ExerciseBoard/DetailList/ExerciseRecordList';
 
 const DetailPost: React.FC = () => {
-  const { id, tab } = useParams<{ id?: string, tab?: string }>();
+  const { id, tab } = useParams<{ id?: string, tab?: BoardType }>();
   const navigate = useNavigate();
   const location = useLocation();
   const [post, setPost] = useState<BoardDetails | null>(null);
   const [isLiked, setIsLiked] = useState(false);
   const [likesCnt, setLikesCnt] = useState<number>(0);
-  const [selectedTab, setSelectedTab] = useState<string>(tab || 'free');
+  const [selectedTab, setSelectedTab] = useState<BoardType>(tab || BoardType.FREE);
   const [showReportModal, setShowReportModal] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [showDeleteCommentModal, setShowDeleteCommentModal] = useState(false);
@@ -39,7 +40,7 @@ const DetailPost: React.FC = () => {
           setPost(data);
           setIsLiked(data.likes);
           setLikesCnt(data.likesCnt);
-          setSelectedTab(data.boardType.toLowerCase());
+          setSelectedTab(data.boardType as BoardType);
         } else {
           console.error('게시글을 불러오는 중 오류가 발생했습니다');
           navigate('/');
@@ -53,9 +54,9 @@ const DetailPost: React.FC = () => {
     fetchPost();
   }, [id, navigate]);
 
-  const handleTabChange = (newTab: string) => {
+  const handleTabChange = (newTab: BoardType) => {
     setSelectedTab(newTab);
-    navigate(`/Board/free/post/${id}/${newTab}`);
+    navigate(`/Board/${newTab.toLowerCase()}/post/${id}`);
   };
 
   const handleLikeToggle = async (boardId: number) => {
@@ -77,7 +78,7 @@ const DetailPost: React.FC = () => {
         try {
           await deletePost(id);
           setModalMessage('게시글이 성공적으로 삭제되었습니다.');
-          setModalAction(() => () => navigate('/Board/free'));
+          setModalAction(() => () => navigate(`/Board/${selectedTab.toLowerCase()}`));
           setShowDeleteModal(true);
         } catch (error) {
           console.error('게시글 삭제 중 오류가 발생했습니다', error);
@@ -91,7 +92,7 @@ const DetailPost: React.FC = () => {
 
   const handleEdit = () => {
     if (id) {
-      navigate(`/Board/free/post/edit/${id}`);
+      navigate(`/Board/${selectedTab.toLowerCase()}/post/edit/${id}`);
     }
   };
 
@@ -163,6 +164,7 @@ const DetailPost: React.FC = () => {
         <div className={styles.PostContent}>
           <div dangerouslySetInnerHTML={{ __html: post.boardContent }} />
         </div>
+        <ExerciseRecordList records={post.trainingRecordItems} /> {/* 운동 기록 리스트 추가 */}
         <CommentSection postId={post.boardId} setShowDeleteCommentModal={setShowDeleteCommentModal} setModalMessage={setModalMessage} setModalAction={setModalAction} />
         <div className={styles.ButtonContainer}>
           <button className={styles.EditButton} onClick={handleEdit}>수정</button>
