@@ -14,4 +14,3 @@ export default axiosInstance;
 
 // http://final-project-app-env.eba-xdjqmujd.ap-northeast-2.elasticbeanstalk.com/api
 // http://localhost:8080/api
-
