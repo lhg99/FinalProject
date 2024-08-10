@@ -8,7 +8,7 @@ export const CommentEditorWrapper = styled.div`
   .ck.ck-editor__editable_inline {
     border-left: 1;
     border-right: 1;
-    height: 50px; // 댓글 에디터 높이를 더 작게 설정
+    height: 90px; // 댓글 에디터 높이를 더 작게 설정
     border-bottom: 1;
     overflow-y: auto; 
   }

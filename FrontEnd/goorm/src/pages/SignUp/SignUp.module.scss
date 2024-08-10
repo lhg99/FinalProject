@@ -4,6 +4,17 @@ body {
     margin: 0;
 }
 
+.pageBackground {
+    background: url('../../../public/landing2.png');
+    background-size: cover;
+    background-position: center;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+}
+
 .form-container {
     display: flex;
     flex-direction: column;
@@ -43,7 +54,6 @@ body {
     label {
         display: block;
         margin-bottom: 5px;
-        font-weight: bold;
     }
 
     input {
@@ -57,7 +67,7 @@ body {
     button {
         width: 100%;
         padding: 10px;
-        background-color: #007bff;
+        background-color: #699732;
         border: none;
         border-radius: 5px;
         color: white;
@@ -66,7 +76,16 @@ body {
         transition: background-color 0.3s ease;
 
         &:hover {
-            background-color: #0056b3;
+            background-color: #387F39;
         }
+    }
+
+    .link {
+        text-decoration: none;
+        color: #387F39;
+    
+        // &:hover {
+        //     color: #0056b3;
+        // }
     }
 }

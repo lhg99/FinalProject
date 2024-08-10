@@ -2,13 +2,10 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import classNames from 'classnames';
 import styles from './ExerciseRecordPage.module.scss';
-import { ExerciseRecords } from '../../ExerciseTypes';
-import { RecordResponse } from '../../../../api/Exercise/dto/RecordResponse';
-import { getExerciseRecords } from '../../../../api/Exercise/exerciseApi';
-import { useExercise } from '../../../../contexts/exerciseContext';
-import RecodsTabs from '../../../../components/Taps/ExerciseListTab/ExerciseRecordsTabs';
-import Pagination from '../../../Board/components/Pagination';
-import Searchbar from '../../../Board/components/SearchBar';
+import { ExerciseRecords } from '../ExerciseTypes';
+import { useExercise } from '../../../contexts/exerciseContext';
+import { getExerciseRecords } from '../../../api/Exercise/exerciseApi';
+import RecodsTabs from '../../../components/Taps/ExerciseListTab/ExerciseRecordsTabs';
 
 const ExerciseRecordPage: React.FC = () => {
   const { month } = useParams<{ month: string }>();
@@ -29,12 +26,11 @@ const ExerciseRecordPage: React.FC = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const data: RecordResponse = await getExerciseRecords();
-        const records: ExerciseRecords[] = data.content; // 'content' 배열을 사용
-        console.log('Fetched data:', records); // 데이터 확인을 위한 로그 추가
+        const data = await getExerciseRecords();
+        console.log('Fetched data:', data); // 데이터 확인을 위한 로그 추가
         setExerciseRecords(data); // 전체 데이터 설정
-        setAllRecords(records); // records 배열 설정
-        filterRecords(records, selectedTab);
+        setAllRecords(data); // records 배열 설정
+        filterRecords(data, selectedTab);
       } catch (error) {
         console.error('Error fetching records:', error); // 에러 로그
       }
@@ -78,7 +74,7 @@ const ExerciseRecordPage: React.FC = () => {
   return (
     <div className={styles.container}>
       <h2>2024</h2>
-      <RecodsTabs selectedTab={selectedTab} setSelectedTab={setSelectedTab} />
+      <RecodsTabs selectedTab={selectedTab} setSelectedTab={setSelectedTab} basePath="/exercise/records" />
       <div className={styles.tableContainer}>
         <table className={styles.table}>
           <thead>
@@ -116,12 +112,11 @@ const ExerciseRecordPage: React.FC = () => {
           </tbody>
         </table>
       </div>
-      <Pagination
+      {/* <Pagination
         totalPages={totalPages}
         currentPage={currentPage}
         paginate={paginate}
-      />
-      <Searchbar searchQuery={searchQuery} setSearchQuery={setSearchQuery} handleSearch={handleSearch} />
+      /> */}
     </div>
   );
 };

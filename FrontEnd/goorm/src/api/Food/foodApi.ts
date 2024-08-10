@@ -1,5 +1,9 @@
-import { FoodData, FoodRecord } from "../../pages/Food/FoodTypes";
+
+import { memo } from "react";
+import { DietMemo, FoodData, FoodRecord } from "../../pages/Food/FoodTypes";
+import { formatDate } from "../../utils/DateUtils";
 import axiosInstance from "../axiosInstance";
+import { NULL } from "sass";
 
 
 export const getFoodData = async (): Promise<FoodData[]> => {
@@ -13,6 +17,19 @@ export const getFoodData = async (): Promise<FoodData[]> => {
     }
 };
 
+export const getFoodByName = async (foodName: string) => {
+    const params = {
+        name: foodName
+    };
+    try {
+        const response = await axiosInstance.get("/food", {params});
+        console.log("음식 이름으로 검색 성공", response.data);
+        return response.data;
+    } catch (error) {
+        console.error("음식 이름 검색 실패", error);
+    }
+}
+
 export const getFoodRecord = async (): Promise<FoodRecord[]> => {
     try {
         const response = await axiosInstance.get<FoodRecord[]>('/diet/all');
@@ -24,107 +41,107 @@ export const getFoodRecord = async (): Promise<FoodRecord[]> => {
     }
 }
 
-export const postSearhFood = async (searchQuery: string) => {
+export const getFoodPercentage = async(dateInfo: Date) => {
+    const params = {
+        date: formatDate(dateInfo)
+    }
     try {
-        const response = await axiosInstance.post("/saveApi", searchQuery);
-        console.log("음식 검색 요청 성공", response.data);
+        const response = await axiosInstance.get("/diet/nutrient", { params });
+        console.log("음식 퍼센트 가져오기 성공", response.data);
+        return response.data;
     } catch (error) {
-        console.error("음식 검색 요청 실패", error);        
+        console.error("음식 퍼센트 가져오기 실패", error);
     }
 }
 
-// const formatDate = (date: Date) => {
-//     // 'yyyy-MM-dd' 형식으로 날짜를 포맷
-//     return date.toISOString().split('T')[0];
-// }
+export const postCustomFoodData = async (): Promise<number> => {
+    try {
+        const response = await axiosInstance.post<{id: number}>(`/food`);
+        console.log("유저 입력 음식 등록 성공: ", response.data);
+        return response.data.id;
+    } catch(err) {
+        console.error("유저 입력 음식 등록 실패: ", err);
+        throw err;
+    }
+}
 
-// export const getExercisePercentage = async (startDate: Date, endDate: Date) => {
-//     const params = {
-//         startDate: formatDate(startDate),
-//         endDate: formatDate(endDate)
-//     };
-//     try {
-//         const response = await axiosInstance.get('/bodyPartCount/range', { params });
-//         console.log("운동 퍼센트 가져오기 성공", response.data);
-//         return response.data;
-//     } catch (err) {
-//         console.error("운동 퍼센트 가져오기 실패", err);
-//         throw err;
-//     }
-// }
+export const postFoodRecord = async (foodId: number, record: FoodRecord) => {
+    const formData = new FormData();
+    let foodQuantity = {};
 
-// export const postCustomExerciseData = async (exercise: { name: string; category: {categoryId: number; categoryName: string} }): Promise<number> => {
-//     try {
-//         // console.log("trainingName: ", exercise.trainingName);
-//         const response = await axiosInstance.post<{id: number}>(`/user/custom-trainings`, exercise);
-//         console.log("post custom exercise success", response.data);
-//         return response.data.id;
-//     } catch(err) {
-//         console.error("failed to post custom exercise ", err);
-//         throw err;
-//     }
-// }
+    if(record.quantity === 0) {
+        foodQuantity = {
+            foodId: foodId,
+            gram: record.gram
+        }
+    } else if (record.gram === 0) {
+        foodQuantity = {
+            foodId: foodId,
+            quantity: record.quantity
+        }
+    }
+    
+    const data = {
+        mealTime: record.mealTime,
+        dietDate: record.dietDate,
+        foodQuantities: [foodQuantity],
+        totalCalories: record.totalCalories,
+        memo: record.memo
+    }
 
-// export const postCardioRecord = async (trainingId: number, exerciseRecord: null, image: File | null): Promise<void> => {
-//     const formData = new FormData();
-//     formData.append('caloriesBurned', exerciseRecord.caloriesBurned?.toString() || '');
-//     formData.append('durationMinutes', exerciseRecord.durationMinutes.toString());
-//     formData.append('intensity', exerciseRecord.intensity);
-//     formData.append('distance', exerciseRecord.distance?.toString() || '');
-//     formData.append('incline', exerciseRecord.incline?.toString() || '');
-//     formData.append('memo', exerciseRecord.memo || '');
-//     formData.append('satisfaction', exerciseRecord.satisfaction.toString());
-//     // formData.append('exerciseDate', exerciseRecord.exerciseDate);
+    formData.append("diet", JSON.stringify(data));
+    try {
+        const response = await axiosInstance.post('/diet', formData, {
+            headers: {
+                'Content-Type':'multipart/form-data'
+            }
+        });
 
-//     if (image) {
-//         formData.append('image', image);
-//     }
-//     try {
-//         const response = await axiosInstance.post(`/record/training/${trainingId}/add/cardio`, formData, {
-//             headers: {
-//                 'Content-Type': 'multipart/form-data'
-//             }
-//         });
-//         console.log("유산소 운동 기록 post 성공", response.data);
-//     } catch(err) {
-//         console.error("유산소 운동 기록 post 실패", err);
-//         throw err;
-//     }
-// }
+        console.log("식단 기록 등록 성공", response.data);
+        return response.data;
+    } catch (error) {
+        console.error("식단 기록 등록 실패", error);
+    }
+}
 
-// export const postStrengthRecord = async (trainingId: number, exerciseRecord: , image: File | null): Promise<void> => {
-//     const formData = new FormData();
-//     // formData.append('caloriesBurned', exerciseRecord.caloriesBurned?.toString() || '');
-//     formData.append('durationMinutes', exerciseRecord.durationMinutes?.toString());
-//     formData.append('sets', exerciseRecord.sets?.toString() || '');
-//     formData.append('weight', exerciseRecord.weight?.toString() || '');
-//     formData.append('reps', exerciseRecord.reps?.toString() || '');
-//     formData.append('intensity', exerciseRecord.intensity);
-//     formData.append('memo', exerciseRecord.memo || '');
-//     formData.append('satisfaction', exerciseRecord.satisfaction.toString());
-//     // formData.append('exerciseDate', exerciseRecord.exerciseDate);
+export const postFoodMemo = async(memo: string, dateInfo: Date) => {
+    const request = {
+        "content" : memo,
+        "date": formatDate(dateInfo)
+    }
+    try {
+        const response = await axiosInstance.post(`/diet/dietMemo`, request);
+        console.log("식단 메모 post 성공!!", response.data);
+    } catch (error) {
+        console.error("식단 메모 post 실패", error);
+    }
+}
 
-//     if (image) {
-//         formData.append('image', image);
-//     }
-//     try {
-//         const response = await axiosInstance.post(`record/training/${trainingId}/add/strength`, formData, {
-//             headers: {
-//                 'Content-Type': 'multipart/form-data'
-//             }
-//         });
-//         console.log("근력운동 기록 post 성공", response.data);
-//     } catch(err) {
-//         console.error("근력운동 기록 post 실패", err);
-//         throw err;
-//     }
-// }
+export const EditFoodRecord = async (foodRecords: FoodRecord[], memos: DietMemo): Promise<void> => {
+    const requestData = foodRecords.map(foodRecord => ({
+      dietId: foodRecord.dietId,
+      dietDate: foodRecord.dietDate,
+      mealTime: foodRecord.mealTime,
+      foodQuantities: [{
+        foodId: foodRecord.foodRes.foodId,
+        quantity: foodRecord.quantity,
+        gram: foodRecord.gram
+      }],
+      memo: memos.content
+    }));
+    try {
+      const response = await axiosInstance.put(`diet/edit-multiple`, requestData);
+      console.log("식단 기록 수정 성공", response.data);
+    } catch (err) {
+      console.error("식단 기록 수정 오류", err);
+    }
+  };
 
-// export const deleteRecord = async(recordId: number) => {
-//     try {
-//         const response = await axiosInstance.delete(`/record/training/${recordId}/delete`);
-//         console.log("운동 기록 삭제 성공", response.data);
-//     } catch(err) {
-//         console.error("운동 기록 삭제 실패: ", err);
-//     }
-// }
+export const deleteFoodRecord = async(dietId: number) => {
+    try {
+        const response = await axiosInstance.delete(`/diet/${dietId}`);
+        console.log("식단 기록 삭제 성공", response.data);
+    } catch(err) {
+        console.error("식단 기록 삭제 실패: ", err);
+    }
+}
