@@ -23,6 +23,7 @@ import DietRecordList from './pages/Food/DietRecordList/DietRecordList';
 import CareVideo from './pages/HealthVideo/CareVideo/CareVideo';
 import Landing from './pages/Login/Landing/Landing';
 import MyPage from './pages/MyPage/MyPage/MyPage';
+import DietChartPage from './pages/Chart/DietChart/DietChartPage';
 
 
 const Layout: React.FC = () => (
@@ -59,6 +60,8 @@ const App: React.FC = () => {
             <Route path="/exercise/chart/:month" element={<ProtectedRoute><ExerciseChartPage /></ProtectedRoute>} />
             <Route path="/food" element={<Food />} />
             <Route path="/food/records/:month" element={<ProtectedRoute><DietRecordList /></ProtectedRoute>} />
+            <Route path="/food/chart/:month" element={<ProtectedRoute><DietChartPage /></ProtectedRoute>} />
+
 
 
             <Route path="/Board" element={<Outlet />}>

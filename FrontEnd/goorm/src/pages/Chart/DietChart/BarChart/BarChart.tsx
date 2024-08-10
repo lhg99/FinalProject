@@ -22,7 +22,7 @@ const BarChart: React.FC<BarChartProps> = ({ data }) => {
     scales: {
       y: {
         ticks: {
-          stepSize: 1,
+          stepSize: 1,  // 값 간격을 1로 설정하여 정수만 표시되도록 함
           callback: function (tickValue: string | number) {
             if (typeof tickValue === 'number' && Number.isInteger(tickValue)) {
               return tickValue;

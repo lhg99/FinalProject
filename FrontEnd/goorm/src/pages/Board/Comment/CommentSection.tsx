@@ -181,17 +181,13 @@ const CommentSection: React.FC<CommentSectionProps> = ({ postId, setShowDeleteCo
                   <div className={styles.rightAligned}>
                     <span className={styles.commentDate}>{comment.commentRegDate}</span>
                     <div className={styles.buttonGroup}>
-                      <button
-                        className={`${styles.editButton} ${styles.button}`}
+                      <button className={`${styles.editButton} ${styles.button}`}
                         onClick={() => startEditingComment(comment.commentId, comment.commentContent)}
-                      >
-                        수정
+                      > 수정
                       </button>
-                      <button
-                        className={`${styles.deleteButton} ${styles.button}`}
+                      <button className={`${styles.deleteButton} ${styles.button}`}
                         onClick={() => openModal(comment.commentId)}
-                      >
-                        삭제
+                      > 삭제
                       </button>
                     </div>
                   </div>
