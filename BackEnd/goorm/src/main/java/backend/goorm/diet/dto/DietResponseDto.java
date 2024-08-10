@@ -30,8 +30,8 @@ public class DietResponseDto {
                 .quantity(diet.getQuantity())
                 .gram(diet.getGram())
                 .foodRes(FoodResponseDto.fromEntity(diet.getFood()))
-                .totalCalories(diet.getTotalCalories())
-                .totalGram(calculateTotalGram(diet))
+                .totalCalories(diet.getTotalCalories())  // 저장된 칼로리 사용
+                .totalGram(diet.getTotalGram())  // 저장된 총 그램 사용
                 .memo(memoContent)
                 .build();
     }
@@ -47,23 +47,12 @@ public class DietResponseDto {
                 .dietDate(diet.getDietDate())
                 .quantity(diet.getQuantity())
                 .gram(diet.getGram())
-                .foodRes(FoodResponseDto.fromEntity(diet.getFood()))
-                .totalCalories(diet.getTotalCalories())
-                .totalGram(calculateTotalGram(diet))
+                .foodRes(FoodResponseDto.fromEntity(diet.getFood()))  // 음식 정보 추가
+                .totalCalories(diet.getTotalCalories())  // 저장된 총 칼로리 정보 추가
+                .totalGram(diet.getTotalGram())  // 저장된 총 그램 정보 추가
                 .memo(memoContent != null ? memoContent : (diet.getDietMemo() != null ? diet.getDietMemo().getContent() : null))
                 .build();
     }
-
-    private static Float calculateTotalGram(Diet diet) {
-        if (diet.getGram() != null) {
-            return diet.getGram();  // 사용자가 gram을 입력한 경우
-        } else if (diet.getQuantity() != null && diet.getFood() != null) {
-            return diet.getQuantity() * diet.getFood().getGram();  // 사용자가 quantity를 입력한 경우
-        } else {
-            return 0f;  // default
-        }
-    }
-
 
     // 메모가 없는 경우의 리스트 변환 메서드
     public static List<DietResponseDto> fromEntityList(List<Diet> diets) {
