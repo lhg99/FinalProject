@@ -23,8 +23,6 @@ public class Food {
     @Column(name = "food_name", nullable = false)
     private String foodName;
 
-    private String foodType;
-
     @ManyToOne(cascade = CascadeType.PERSIST, fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
     private Member member;

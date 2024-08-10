@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Map;
 
 @Slf4j
 @RestController
@@ -51,20 +52,6 @@ public class DietController {
         }
     }
 
-    @PutMapping("{dietId}")
-    public ResponseEntity<DietResponseDto> updateDiet(
-            @PathVariable("dietId") Long dietId,
-            @RequestPart("diet") String dietJson,
-            @AuthenticationPrincipal PrincipalDetails principalDetails) {
-        try {
-            DietUpdateRequestDto dto = objectMapper.readValue(dietJson, DietUpdateRequestDto.class);
-            DietResponseDto response = dietService.updateDiet(dietId, dto, principalDetails.member());
-            return ResponseEntity.status(HttpStatus.OK).body(response);
-        } catch (Exception e) {
-            log.error("Error parsing diet JSON", e);
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
-        }
-    }
 
     @DeleteMapping("{dietId}")
     public ResponseEntity<Boolean> deleteDiet(@PathVariable("dietId") Long dietId,
@@ -100,5 +87,14 @@ public class DietController {
 
         List<DietResponseDto> response = dietService.editDietsAndMemos(requests, principalDetails.member());
         return ResponseEntity.ok(response);
+    }
+
+    // Controller Method
+    @GetMapping("/nutrient")
+    public ResponseEntity<Map<String, NutrientPercentage>> getNutrientPercentageForDate(
+            @AuthenticationPrincipal PrincipalDetails principalDetails,
+            @RequestParam("date") LocalDate date) {
+        Map<String, NutrientPercentage> macroPercentages = dietService.getNutrientPercentageForDate(principalDetails.member(),date);
+        return ResponseEntity.ok(macroPercentages);
     }
 }

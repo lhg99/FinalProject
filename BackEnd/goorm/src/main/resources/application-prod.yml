@@ -49,8 +49,8 @@ logging:
         security: DEBUG
 
 login:
-  register-url: http://127.0.0.1:5500/register.html
-  loginSuccess-url : http://127.0.0.1:5500/main.html
+  register-url: http://final-project-app-env.eba-xdjqmujd.ap-northeast-2.elasticbeanstalk.com/signup
+  loginSuccess-url : http://final-project-app-env.eba-xdjqmujd.ap-northeast-2.elasticbeanstalk.com/mypage
 
 board:
   page:

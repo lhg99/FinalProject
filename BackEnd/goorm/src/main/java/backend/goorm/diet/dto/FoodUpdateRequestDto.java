@@ -8,7 +8,6 @@ import lombok.Setter;
 @Setter
 public class FoodUpdateRequestDto {
 
-        private String foodType;
         private String foodName;
         private Float calories;
         private Float carbohydrate;
@@ -22,7 +21,6 @@ public class FoodUpdateRequestDto {
 
         public void updateEntity(Food food) {
 
-                food.setFoodType(this.foodType);
                 food.setFoodName(this.foodName);
                 food.setCalories(this.calories);
                 food.setCarbohydrate(this.carbohydrate);
