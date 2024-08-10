@@ -2,7 +2,7 @@ import React, { forwardRef } from 'react';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import styled from 'styled-components';
-import { CalendarIcon } from '../../../../image/CalendarIcon';
+import { CalendarIcon } from '../../../../image/Icon/CalendarIcon';
 import { ko } from 'date-fns/locale';
 
 interface DateSelectorProps {

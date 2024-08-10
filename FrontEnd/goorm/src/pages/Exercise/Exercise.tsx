@@ -165,47 +165,49 @@ const Exercise: React.FC = () => {
   };
 
   return (
-    <div className={styles.exercise}>
-      <div className={styles.exerciseContainer}>
-        <div className={styles.leftColumn}>
-          <div className="calendar">
-            <MyCalendar onDateChange={handleDateChange} />
-            <DateSelector
-              startDate={startDate}
-              endDate={endDate}
-              onHandleStartDate={handleStartDate}
-              onHandleEndDate={handleEndDate}
-            ></DateSelector>
-            <ExerciseCategoryTable />
-          </div>
-        </div>
-        <div className={styles.rightColumn}>
-          {dateInfo && (
-            <div className={styles.dateInfo}>
-              <p
-                className={styles.dateText}
-              >{`${dateInfo.year}년 ${dateInfo.month}월 ${dateInfo.day}일 ${dateInfo.weekday}`}</p>
-            </div>
-          )}
-          <div className={styles.searchListContainer}>
-            <div className={styles.searchColumn}>
-              <ExerciseSearch
-                onAddExercise={handleAddExercise}
-                onAddCustomExercise={handleAddCustomExercise}
-              />
-              <ExerciseList
-                dateInfo={dateInfo}
-                exercises={selectedExercises}
-                onExerciseNameChange={handleExerciseNameChange}
-              />
+    <div className={styles.pageBackground}>
+      <div className={styles.exercise}>
+        <div className={styles.exerciseContainer}>
+          <div className={styles.leftColumn}>
+            <div className="calendar">
+              <MyCalendar onDateChange={handleDateChange} />
+              <DateSelector
+                startDate={startDate}
+                endDate={endDate}
+                onHandleStartDate={handleStartDate}
+                onHandleEndDate={handleEndDate}
+              ></DateSelector>
+              <ExerciseCategoryTable />
             </div>
           </div>
+          <div className={styles.rightColumn}>
+            {dateInfo && (
+              <div className={styles.dateInfo}>
+                <p
+                  className={styles.dateText}
+                >{`${dateInfo.year}년 ${dateInfo.month}월 ${dateInfo.day}일 ${dateInfo.weekday}`}</p>
+              </div>
+            )}
+            <div className={styles.searchListContainer}>
+              <div className={styles.searchColumn}>
+                <ExerciseSearch
+                  onAddExercise={handleAddExercise}
+                  onAddCustomExercise={handleAddCustomExercise}
+                />
+                <ExerciseList
+                  dateInfo={dateInfo}
+                  exercises={selectedExercises}
+                  onExerciseNameChange={handleExerciseNameChange}
+                />
+              </div>
+            </div>
+          </div>
         </div>
-      </div>
-      <ExerciseMemo dateInfo={dateInfo} />
-      <div className={styles.buttonContainer}>
-        <button className={styles.saveButton} onClick={handleEdit}>수정하기</button>
-        <button className={styles.saveButton} onClick={handleSave}>저장하기</button>
+        <ExerciseMemo dateInfo={dateInfo} />
+        <div className={styles.buttonContainer}>
+          <button className={styles.saveButton} onClick={handleEdit}>수정하기</button>
+          <button className={styles.saveButton} onClick={handleSave}>저장하기</button>
+        </div>
       </div>
     </div>
   );

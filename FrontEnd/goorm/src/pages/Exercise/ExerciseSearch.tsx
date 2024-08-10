@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import styled from 'styled-components';
-import { SearchIcon } from '../../image/SearchIcon';
+import { SearchIcon } from '../../image/Icon/SearchIcon';
 import { useExercise } from '../../contexts/exerciseContext';
 import { Category, ExerciseData } from './ExerciseTypes';
 import CustomExerciseModal from '../../components/Modal/Exercise/CusomExerciseModal';
@@ -83,6 +83,12 @@ const ExerciseSearch = ({ onAddExercise, onAddCustomExercise }: ExerciseSearchPr
             const newSelectedCategories = selectedCategories.includes(categoryName)
                 ? selectedCategories.filter(name => name !== categoryName) 
                 : [...selectedCategories, categoryName];
+
+            if (newSelectedCategories.length > 1) {
+                alert("카테고리는 하나만 선택하세요");
+                return;
+            }
+
             setSelectedCategories(newSelectedCategories);
         }
     };

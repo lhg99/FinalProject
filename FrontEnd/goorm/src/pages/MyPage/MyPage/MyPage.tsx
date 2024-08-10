@@ -12,6 +12,20 @@ const MyPage: React.FC = () => {
   const location = useLocation();
 
   useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const memberId = params.get('memberId');
+    const info = params.get('info');
+
+    if (memberId && info) {
+      console.log('회원 ID:', memberId);
+      console.log('회원 정보가 존재:', info === 'true');
+    } else {
+      alert('잘못된 접근입니다.');
+      navigate('/login');
+    }
+  }, [navigate]);
+
+  useEffect(() => {
     const fetchUserData = async () => {
       try {
         const data = await getusereData();

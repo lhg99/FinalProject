@@ -41,6 +41,19 @@ export const getFoodRecord = async (): Promise<FoodRecord[]> => {
     }
 }
 
+export const getFoodPercentage = async(dateInfo: Date) => {
+    const params = {
+        date: formatDate(dateInfo)
+    }
+    try {
+        const response = await axiosInstance.get("/diet/nutrient", { params });
+        console.log("음식 퍼센트 가져오기 성공", response.data);
+        return response.data;
+    } catch (error) {
+        console.error("음식 퍼센트 가져오기 실패", error);
+    }
+}
+
 export const postCustomFoodData = async (): Promise<number> => {
     try {
         const response = await axiosInstance.post<{id: number}>(`/food`);
@@ -75,8 +88,6 @@ export const postFoodRecord = async (foodId: number, record: FoodRecord) => {
         totalCalories: record.totalCalories,
         memo: record.memo
     }
-
-    console.log("data: ", data);
 
     formData.append("diet", JSON.stringify(data));
     try {

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { FoodData, FoodCategory } from './FoodTypes';
 import styled from 'styled-components';
-import { SearchIcon } from '../../image/SearchIcon';
+import { SearchIcon } from '../../image/Icon/SearchIcon';
 import { useFood } from '../../contexts/foodContext';
 import CustomFoodModal from '../../components/Modal/Food/CustomFoodModal';
 import { getFoodByName, getFoodData } from '../../api/Food/foodApi';
@@ -92,6 +92,12 @@ const FoodSearch = ({ onAddFood, onAddCustomFood } : FoodSearchProps) => {
             const newSelectedCategories = selectedCategories.includes(categoryName)
                 ? selectedCategories.filter(name => name !== categoryName)
                 : [...selectedCategories, categoryName];
+
+            if (newSelectedCategories.length > 1) {
+                alert("카테고리는 하나만 선택하세요");
+                return;
+            }
+
             setSelectedCategories(newSelectedCategories);
         }
     };
@@ -211,7 +217,7 @@ const FoodSearchContainer = styled.div`
     display: flex;
     flex-direction: column;
     padding: .625rem;
-    width: 26%;
+    width: 28%;
     max-height: 35rem;
     overflow-y: auto;
     border: 1px solid #AFAFAF;
