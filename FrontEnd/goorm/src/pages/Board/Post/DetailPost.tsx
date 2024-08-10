@@ -138,28 +138,30 @@ const DetailPost: React.FC = () => {
 
   return (
     <>
+    <div className={styles.Container}>
       <div className={styles.DetailContainer}>
         <Tabs selectedTab={selectedTab} setSelectedTab={handleTabChange} />
+        <div className={styles.Header}>
         <div className={styles.PostHeader}>
-          <h1 className={styles.PostTitle}>{post.boardTitle}</h1>
-          <div className={styles.PostMeta}>
-          <span
-              className={styles.Author}
-              onClick={(e) => handleAuthorClick(e, post.writer)} // 닉네임 클릭 시 ChatBox 열기
-            >
-              {post.writer}
-            </span>
-            <span>작성일 : {post.boardRegDate}</span>
-            <span>
-              <LikeButton 
-                boardId={post.boardId} 
-                isLiked={isLiked} 
-                likesCnt={likesCnt} 
-                toggleLike={handleLikeToggle} 
-                reportsCnt={post.viewCnt}
-              />
-            </span>
-          </div>
+            <h1 className={styles.PostTitle}>{post.boardTitle}</h1>
+            <div className={styles.PostMeta}>
+            <span
+                className={styles.Author}
+                onClick={(e) => handleAuthorClick(e, post.writer)} // 닉네임 클릭 시 ChatBox 열기
+              >
+                {post.writer}
+              </span>
+              <span>작성일 : {post.boardRegDate}</span>
+              <span>
+                <LikeButton 
+                  boardId={post.boardId} 
+                  isLiked={isLiked} 
+                  likesCnt={likesCnt} 
+                  toggleLike={handleLikeToggle} 
+                  reportsCnt={post.viewCnt}
+                />
+              </span>
+            </div>
         </div>
         <div className={styles.PostContent}>
           <div dangerouslySetInnerHTML={{ __html: post.boardContent }} />
@@ -170,8 +172,8 @@ const DetailPost: React.FC = () => {
           <button className={styles.EditButton} onClick={handleEdit}>수정</button>
           <button className={styles.DeleteButton} onClick={handleDelete}>삭제</button>
           <button className={styles.ReportButton} onClick={handleReport}>신고</button>
-        </div>
-      </div>
+          </div></div>
+      </div></div>
 
       {showReportModal && <ReportModal confirmReport={confirmReport} closeReportModal={closeReportModal} />}
       {showDeleteModal && <DeleteModal modalMessage={modalMessage} modalAction={modalAction} closeDeleteModal={closeDeleteModal} />}
