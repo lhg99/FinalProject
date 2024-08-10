@@ -52,8 +52,8 @@ const Header: React.FC = () => {
             {activeDropdown === 'exercise' && (
               <ul className={styles.dropdownMenu}>
                 <li onClick={() => { navigate('/exercise'); closeDropdown(); }}>운동 기록 작성</li>
-                <li onClick={() => { navigate('/exercise/records/AUG'); closeDropdown(); }}>운동 기록 목록</li>
-                <li onClick={() => { navigate('/exercise/chart/AUG'); closeDropdown(); }}>운동 기록 차트</li>
+                <li onClick={() => { navigate('/exercise/records/AUG'); closeDropdown(); }}>나의 기록</li>
+                <li onClick={() => { navigate('/exercise/chart/AUG'); closeDropdown(); }}>나의 통계</li>
                 <li onClick={() => { navigate('/exvideo'); closeDropdown(); }}>운동 영상</li>
                 <li onClick={() => { navigate('/carevideo'); closeDropdown(); }}>재활</li>
               </ul>
@@ -66,8 +66,9 @@ const Header: React.FC = () => {
             {activeDropdown === 'diet' && (
               <ul className={styles.dropdownMenu}>
                 <li onClick={() => { navigate('/food'); closeDropdown(); }}>식단 기록 작성</li>
-                <li onClick={() => { navigate('/'); closeDropdown(); }}>식단 기록 목록</li>
-                <li onClick={() => { navigate('/'); closeDropdown(); }}>식단 정보</li>
+                <li onClick={() => { navigate('/food/records/AUG'); closeDropdown(); }}>나의 기록</li>
+                <li onClick={() => { navigate('/food/chart/AUG'); closeDropdown(); }}>나의 통계</li>
+                <li onClick={() => { navigate('/main'); closeDropdown(); }}>식단 정보</li>
               </ul>
             )}
           </li>

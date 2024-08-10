@@ -1,31 +1,31 @@
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
-import { ExerciseRecords } from './../../../pages/Exercise/ExerciseTypes';
-import BarChart from './BarChart/BarChart';
-import DoughnutChart from './DoughnutChart/DoughnutChart';
-import ScatterChart from './ScatterChart/ScatterChart';
-import styles from './ExerciseChartPage.module.scss';
-import { getExerciseRecords } from '../../../api/Exercise/exerciseApi';
-import { useExercise } from '../../../contexts/exerciseContext';
+import { FoodRecord } from '../../../pages/Food/FoodTypes';
+import styles from './DietChartPage.module.scss';
+import { getFoodRecord } from '../../../api/Food/foodApi';
+import { useFood } from '../../../contexts/foodContext';
 import ChartTabs from '../../../components/Taps/ChartTap/ChartTabs';
+import ScatterChart from '../DietChart/ScatterChart/ScatterChart';
+import DoughnutChart from '../DietChart/DoughnutChart/DoughnutChart';
+import BarChart from '../DietChart/BarChart/BarChart';
 
-const ExerciseChartPage: React.FC = () => {
+const DietChartPage: React.FC = () => {
   const { month } = useParams<{ month: string }>();
   const [selectedTab, setSelectedTab] = useState<string>(month || 'AUG');
-  const { state: {exerciseRecords,}, setExerciseRecords } = useExercise();
+  const { state: { foodRecords }, setFoodRecord } = useFood();
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const fetchedData = await getExerciseRecords();
-        setExerciseRecords(fetchedData);
+        const fetchedData = await getFoodRecord();
+        setFoodRecord(fetchedData);
       } catch (error) {
-        console.error('Error fetching records:', error);
+        console.error('Error fetching food records:', error);
       }
     };
 
     fetchData();
-  }, []);
+  }, [setFoodRecord]);
 
   useEffect(() => {
     if (month) {
@@ -33,39 +33,33 @@ const ExerciseChartPage: React.FC = () => {
     }
   }, [month]);
 
-  const filterRecordsByMonth = (records: ExerciseRecords[], month: string) => {
-    const monthIndex = getMonthNumber(month);
-    return records.filter(record => new Date(record.exerciseDate).getMonth() === monthIndex);
-  };
-
   const getMonthNumber = (month: string): number => {
     const months = ['JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC'];
     return months.indexOf(month);
   };
 
-  const filteredRecords = filterRecordsByMonth(exerciseRecords, selectedTab);
-
-  const groupByExerciseName = (records: ExerciseRecords[]) => {
-    const grouped = records.reduce((acc, record) => {
-      const name = record.trainingName || 'Unknown';
-      acc[name] = (acc[name] || 0) + 1;
-      return acc;
-    }, {} as { [key: string]: number });
-
-    return {
-      labels: Object.keys(grouped),
-      data: Object.values(grouped),
-    };
+  const filterRecordsByMonth = (records: FoodRecord[], month: string) => {
+    const monthIndex = getMonthNumber(month);
+    return records.filter(record => new Date(record.dietDate).getMonth() === monthIndex);
   };
 
-  const exerciseData = groupByExerciseName(filteredRecords);
+  const groupByFoodName = (records: FoodRecord[]) => {
+    return records.reduce((acc, record) => {
+      const foodName = record.foodRes.foodName || 'Unknown';
+      acc[foodName] = (acc[foodName] || 0) + 1;
+      return acc;
+    }, {} as { [key: string]: number });
+  };
+
+  const filteredRecords = filterRecordsByMonth(foodRecords, selectedTab);
+  const foodData = groupByFoodName(filteredRecords);
 
   const barChartData = {
-    labels: exerciseData.labels,
+    labels: Object.keys(foodData),
     datasets: [
       {
         label: '횟수',
-        data: exerciseData.data,
+        data: Object.values(foodData),
         backgroundColor: 'rgba(75, 192, 192, 0.6)',
         borderColor: 'rgba(75, 192, 192, 1)',
         borderWidth: 1,
@@ -74,10 +68,10 @@ const ExerciseChartPage: React.FC = () => {
   };
 
   const doughnutChartData = {
-    labels: exerciseData.labels,
+    labels: Object.keys(foodData),
     datasets: [
       {
-        data: exerciseData.data,
+        data: Object.values(foodData),
         backgroundColor: [
           '#FF6384',
           '#36A2EB',
@@ -101,14 +95,14 @@ const ExerciseChartPage: React.FC = () => {
   };
 
   const scatterChartData = filteredRecords.map(record => ({
-    x: new Date(record.exerciseDate),
-    y: 1, // y축 값은 임의로 1로 설정
+    x: new Date(record.dietDate),
+    y: record.foodRes.calories, // y축 값은 해당 날짜의 칼로리로 설정
   }));
 
   return (
     <div className={styles.container}>
-      <h2>2024</h2>
-      <ChartTabs selectedTab={selectedTab} setSelectedTab={setSelectedTab} basePath="/exercise/chart" />
+      <h2>2024 식단 기록 차트</h2>
+      <ChartTabs selectedTab={selectedTab} setSelectedTab={setSelectedTab} basePath="/food/chart" /> 
       <div className={styles.chartWrapper}>
         <div className={styles.chartContainer}>
           <BarChart data={barChartData} />
@@ -124,4 +118,4 @@ const ExerciseChartPage: React.FC = () => {
   );
 };
 
-export default ExerciseChartPage;
+export default DietChartPage;

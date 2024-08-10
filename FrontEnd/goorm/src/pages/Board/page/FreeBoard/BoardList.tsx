@@ -42,13 +42,13 @@ const TitleCell = styled(TableCell)`
   color: #000;
 `;
 
-const formatDate = (dateString: string): string => {
-  const date = new Date(dateString);
-  const year = date.getFullYear();
-  const month = String(date.getMonth() + 1).padStart(2, '0');
-  const day = String(date.getDate()).padStart(2, '0');
-  return `${year}/${month}/${day}`;
-};
+// const formatDate = (dateString: string): string => {
+//   const date = new Date(dateString);
+//   const year = date.getFullYear();
+//   const month = String(date.getMonth() + 1).padStart(2, '0');
+//   const day = String(date.getDate()).padStart(2, '0');
+//   return `${year}/${month}/${day}`;
+// };
 
 const categoryMap: { [key: string]: string } = {
   WORKOUT: '운동',
@@ -83,7 +83,7 @@ const BoardList: React.FC<BoardProps> = ({ posts, setPosts }) => {
               <TableCell>{categoryMap[post.boardCategory] || post.boardCategory}</TableCell>
               <TitleCell onClick={() => navigate(`/Board/free/post/${post.boardId}`)}>{post.boardTitle}</TitleCell>
               <TableCell>{post.writer}</TableCell>
-              <TableCell>{formatDate(post.boardRegDate)}</TableCell>
+              <TableCell>{post.boardRegDate}</TableCell>
             </TableRow>
           ))}
         </tbody>

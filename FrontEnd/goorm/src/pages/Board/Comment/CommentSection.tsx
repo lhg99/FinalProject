@@ -6,6 +6,7 @@ import { fetchComments, addComment, deleteComment, updateComment } from '../api/
 import { Comment } from '../types';
 import CommentTextEditor from './CommentTextEditor';
 import { DeleteCommentModal } from '../components/Modal';
+import ChatBox from '../Chat/ChatBox';
 
 interface CommentSectionProps {
   postId: number;
@@ -20,7 +21,12 @@ const CommentSection: React.FC<CommentSectionProps> = ({ postId, setShowDeleteCo
   const [commentToDelete, setCommentToDelete] = useState<number | null>(null);
   const [editCommentId, setEditCommentId] = useState<number | null>(null);
   const [editCommentContent, setEditCommentContent] = useState<string>('');
-  const [showDeleteCommentModal, setShowDeleteCommentModalState] = useState(false); // 새로운 상태 추가
+  const [showDeleteCommentModal, setShowDeleteCommentModalState] = useState(false);
+
+  // 추가된 상태
+  const [showChatBox, setShowChatBox] = useState(false);
+  const [chatBoxPosition, setChatBoxPosition] = useState({ x: 0, y: 0 });
+  const [chatAuthor, setChatAuthor] = useState('');
 
   const loadComments = async () => {
     try {
@@ -82,11 +88,11 @@ const CommentSection: React.FC<CommentSectionProps> = ({ postId, setShowDeleteCo
   const confirmDeleteComment = async () => {
     if (commentToDelete !== null) {
       try {
-        console.log('Deleting comment with ID:', commentToDelete); // 디버깅 로그 추가
+        console.log('Deleting comment with ID:', commentToDelete);
         await deleteComment(commentToDelete.toString());
         setComments(comments.filter(comment => comment.commentId !== commentToDelete));
         setCommentToDelete(null);
-        setShowDeleteCommentModalState(false); // 모달 닫기
+        setShowDeleteCommentModalState(false);
       } catch (error) {
         console.error('댓글 삭제 중 오류가 발생했습니다.', error);
       }
@@ -97,12 +103,12 @@ const CommentSection: React.FC<CommentSectionProps> = ({ postId, setShowDeleteCo
     setCommentToDelete(commentId);
     setModalMessage('댓글을 삭제하시겠습니까?');
     setModalAction(() => confirmDeleteComment);
-    setShowDeleteCommentModalState(true); // 모달 열기
+    setShowDeleteCommentModalState(true);
   };
 
   const closeModal = () => {
     setCommentToDelete(null);
-    setShowDeleteCommentModalState(false); // 모달 닫기
+    setShowDeleteCommentModalState(false);
   };
 
   const startEditingComment = (commentId: number, commentContent: string) => {
@@ -114,6 +120,17 @@ const CommentSection: React.FC<CommentSectionProps> = ({ postId, setShowDeleteCo
     setEditCommentId(null);
     setEditCommentContent('');
   };
+
+  // 닉네임 클릭 시 ChatBox를 여는 함수
+  const handleAuthorClick = (event: React.MouseEvent, author: string) => {
+    const rect = event.currentTarget.getBoundingClientRect();
+    const scrollY = window.scrollY || window.pageYOffset;
+    const gap = 7; 
+    setChatBoxPosition({ x: rect.left, y: rect.bottom + scrollY + gap }); 
+    setChatAuthor(author);
+    setShowChatBox((prev) => !prev); // Toggle the ChatBox visibility
+  };
+  
 
   return (
     <div className={styles.commentSection}>
@@ -131,13 +148,18 @@ const CommentSection: React.FC<CommentSectionProps> = ({ postId, setShowDeleteCo
         </div>
       </form>
       <ul className={styles.commentList}>
-        {comments.map(comment => (
+      {[...comments].reverse().map(comment => (
           <li key={comment.commentId} className={styles.commentItem}>
             <div className={styles.commentHeader}>
               <div className={styles.userIcon}>
                 <FontAwesomeIcon icon={faUser} />
               </div>
-              <span className={styles.commentAuthor}>{comment.writer}</span>
+              <span
+                className={styles.commentAuthor}
+                onClick={(e) => handleAuthorClick(e, comment.writer)} // 닉네임 클릭 시 ChatBox 열기
+              >
+                {comment.writer}
+              </span>
               {editCommentId === comment.commentId ? (
                 <form onSubmit={handleCommentUpdateSubmit} className={styles.editForm}>
                   <div className={styles.commentInputWrapper}>
@@ -159,17 +181,13 @@ const CommentSection: React.FC<CommentSectionProps> = ({ postId, setShowDeleteCo
                   <div className={styles.rightAligned}>
                     <span className={styles.commentDate}>{comment.commentRegDate}</span>
                     <div className={styles.buttonGroup}>
-                      <button
-                        className={`${styles.editButton} ${styles.button}`}
+                      <button className={`${styles.editButton} ${styles.button}`}
                         onClick={() => startEditingComment(comment.commentId, comment.commentContent)}
-                      >
-                        수정
+                      > 수정
                       </button>
-                      <button
-                        className={`${styles.deleteButton} ${styles.button}`}
+                      <button className={`${styles.deleteButton} ${styles.button}`}
                         onClick={() => openModal(comment.commentId)}
-                      >
-                        삭제
+                      > 삭제
                       </button>
                     </div>
                   </div>
@@ -184,6 +202,14 @@ const CommentSection: React.FC<CommentSectionProps> = ({ postId, setShowDeleteCo
           modalMessage='댓글을 삭제하시겠습니까?'
           modalAction={confirmDeleteComment}
           closeDeleteCommentModal={closeModal}
+        />
+      )}
+      {showChatBox && (
+        <ChatBox
+          x={chatBoxPosition.x}
+          y={chatBoxPosition.y}
+          author={chatAuthor}
+          onClose={() => setShowChatBox(false)}
         />
       )}
     </div>

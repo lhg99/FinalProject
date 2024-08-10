@@ -12,7 +12,7 @@
  * ExerciseMemo: CKEditor를 이용한 텍스트, 사진 넣을 수 있는 컴포넌트
  */
 
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useState } from "react";
 import MyCalendar from "./components/Date/Calendar";
 import ExerciseMemo from "./ExerciseMemo";
 import ExerciseSearch from "./ExerciseSearch";
@@ -52,18 +52,6 @@ const Exercise: React.FC = () => {
     setStartDate,
     setEndDate,
   } = useExercise();
-
-  useEffect(() => {
-    // body 배경 제거
-    document.body.style.background = 'none';
-
-    return () => {
-      // 페이지를 떠날 때 body 배경 복원
-      document.body.style.background = "url('./pages/Login/Landing/landing2.png')";
-      document.body.style.backgroundSize = 'cover';
-      document.body.style.backgroundPosition = 'center';
-    };
-  }, []);
 
   const handleAddExercise = useCallback(
     (exercise: ExerciseData) => {
