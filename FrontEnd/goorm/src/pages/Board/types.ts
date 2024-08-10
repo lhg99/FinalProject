@@ -35,7 +35,6 @@ export interface PaginationProps {
     paginate: (pageNumber: number) => any;
 }
 
-
 export interface PostItemProps {
     post: BoardDetails;
 }

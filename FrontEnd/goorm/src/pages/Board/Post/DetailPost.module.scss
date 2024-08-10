@@ -147,3 +147,17 @@
   border-radius: 5px;
   object-fit: contain;  // 이미지 크기를 일정하게 조정
 }
+
+.Author {
+  font-weight: 400;
+  color: #333;
+  margin-right: 0px;
+  margin-left: 0px;
+  width: flex;
+  cursor: pointer; /* 마우스 커서를 포인터로 변경 */
+  transition: color 0.3s; /* 색상 변경 시 부드럽게 전환되도록 */
+}
+
+.Author:hover {
+  color: rgb(53, 84, 137); /* 마우스 호버 시 텍스트 색상을 파란색으로 변경 */
+}

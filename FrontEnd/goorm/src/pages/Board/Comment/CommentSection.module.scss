@@ -3,7 +3,7 @@
   width: 95%;
   padding: 0px;
   font-family: 'Arial', sans-serif;
-  font-size: 13px;
+  font-size: 14px;
 }
 
 .commentList {
@@ -31,7 +31,13 @@
   color: #333;
   margin-right: 10px;
   margin-left: 10px;
-  width: 100px;
+  width: flex;
+  cursor: pointer; 
+  transition: color 0.3s;
+}
+
+.commentAuthor:hover {
+  color: #226ab6; /* 호버 시 색상 변경 */
 }
 
 .commentContentWrapper {
