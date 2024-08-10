@@ -7,6 +7,7 @@ import { FoodRecord } from "../../FoodTypes";
 import { DeleteModal } from "../../../Board/components/Modal";
 import DeleteFoodModal from "../../../../components/Modal/Food/DeleteFoodModal";
 import { deleteFoodRecord } from "../../../../api/Food/foodApi";
+import { mealTimeLabels } from "../../../../constants/Food/MealTime";
 
 interface FoodDetailProps {
   food: FoodRecord;
@@ -17,20 +18,9 @@ const FoodDetails: React.FC<FoodDetailProps> = ({ food }) => {
   const [gram, setGram] = useState<string>(food.gram?.toString() || "");
   const prevDetailsRef = useRef(food);
 
-  const {
-    state: { foodRecords },
-    updateFoodDetails,
-    removeFood,
-    // setSelectedRecord,
-    updateFoodRecords
-  } = useFood();
+  const { state: { foodRecords }, updateFoodDetails, removeFood, updateFoodRecords } = useFood();
 
   const { modals, openModal, closeModal } = ModalStore();
-
-  useEffect(() => {
-    console.log("Updated quantity:", quantity);
-    console.log("Updated gram:", gram);
-  }, [quantity, gram]);
 
   useEffect(() => {
     const updatedDetails = {
@@ -78,7 +68,7 @@ const FoodDetails: React.FC<FoodDetailProps> = ({ food }) => {
   return (
     <FoodDetailsContainer>
       <FoodInfo>
-        <CategoryBadge>{food.mealTime}</CategoryBadge>
+        <CategoryBadge>{mealTimeLabels[food.mealTime as keyof typeof mealTimeLabels] || "기타"}</CategoryBadge>
         <FoodTitle>{food.foodRes.foodName}</FoodTitle>
       </FoodInfo>
       <InputContainer>
@@ -89,29 +79,33 @@ const FoodDetails: React.FC<FoodDetailProps> = ({ food }) => {
             value={quantity}
             onChange={(e) => {
               setQuantity(e.target.value);
+              setGram(""); // quantity 입력 시 gram을 비웁니다.
               const newQuantity = parseInt(e.target.value, 10);
               if (!isNaN(newQuantity)) {
                 const updatedDetails = { ...food, quantity: newQuantity };
                 updateFoodRecords(food.dietId, updatedDetails);
               }
             }}
+            disabled={parseInt(gram) > 0} // gram이 0이 아닌 경우 비활성화
           />
           <FoodText> 개</FoodText>
         </FoodLabel>
         <FoodLabel>
           <FoodInput
             type="number"
-            placeholder="gram"
+            placeholder="섭취량"
             value={gram}
             step="10"
             onChange={(e) => {
               setGram(e.target.value);
+              setQuantity("");
               const newGram = parseInt(e.target.value, 10);
               if (!isNaN(newGram)) {
                 const updatedDetails = { ...food, gram: newGram };
                 updateFoodRecords(food.dietId, updatedDetails);
               }
             }}
+            disabled={parseInt(quantity) > 0} // quantity가 0이 아닌 경우 비활성화
           />
           <FoodText> g</FoodText>
         </FoodLabel>
@@ -129,7 +123,6 @@ const FoodDetails: React.FC<FoodDetailProps> = ({ food }) => {
 export default FoodDetails;
 
 const FoodDetailsContainer = styled.div`
-  margin-top: 0.625rem;
   margin-left: 0.9375rem;
   display: flex;
   width: 100%;
@@ -139,6 +132,7 @@ const FoodDetailsContainer = styled.div`
   align-items: center;
   text-align: center;
   font-size: 0.875rem;
+  margin-bottom: 0.9375rem;
 `;
 
 const FoodInfo = styled.div`

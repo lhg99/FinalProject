@@ -47,3 +47,12 @@ export interface FoodRecord {
     totalGram?: number;
     memo?: string;
 }
+
+export interface FoodCount {
+    [mealTime: string]: {
+        carbsPercentage: number;
+        fatPercentage: number;
+        proteinPercentage: number;
+        totalCalories: number;
+    };
+}

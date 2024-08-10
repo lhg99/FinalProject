@@ -6,6 +6,7 @@ import { useFood } from "../../../../contexts/foodContext";
 import { getFoodRecord } from "../../../../api/Food/foodApi";
 import FoodInfoModal from "../../../../components/Modal/Food/FoodInfoModal";
 import { ModalStore } from "../../../../store/store";
+import { MEAL_TIMES, mealTimeLabels } from './../../../../constants/Food/MealTime';
 
 interface FoodListProps {
   food: FoodData[];
@@ -123,6 +124,26 @@ const FoodList = ({ food, dateInfo }: FoodListProps) => {
     return [...filteredRecords, ...selectedFoodRecords];
   }, [filteredRecords, foodRecords, selectedFood, dateInfo]);
 
+  // mealTime별로 묶은 record
+  const groupedRecords = useMemo(() => {
+    const groups: { [key in keyof typeof MEAL_TIMES]: FoodRecord[] } = {
+      BREAKFAST: [],
+      LUNCH: [],
+      DINNER: [],
+      SNACK: [],
+      OTHER: []
+    };
+
+    combinedRecords.forEach((record) => {
+      const mealTimeKey = record.mealTime as keyof typeof groups;
+      if (mealTimeKey in groups) {
+        groups[mealTimeKey].push(record);
+      }
+    });
+
+    return groups;
+  }, [combinedRecords]);
+
   const handleModalOpen = () => {
     openModal("foodInfo");
   }
@@ -134,18 +155,18 @@ const FoodList = ({ food, dateInfo }: FoodListProps) => {
         <DetailButton onClick={handleModalOpen}>상세 정보</DetailButton>
       </FoodTextContainer>
       <FoodListContainer>
-        {combinedRecords.length > 0 ? (
-          combinedRecords.map((record) => (
-            <FoodDetails
-              key={record.dietId}
-              food={record}
-            />
-          ))
-        ) : (
-          <FoodTextContainer>
-            <FoodText>음식 기록 없음</FoodText>
-          </FoodTextContainer>
-        )}
+        {Object.entries(groupedRecords).map(([mealTime, records]) => (
+            <React.Fragment key={mealTime}>
+              {records.length > 0 && (
+                <>
+                  <MealTimeHeading>{mealTimeLabels[mealTime as keyof typeof mealTimeLabels]}</MealTimeHeading>
+                  {records.map((record) => (
+                    <FoodDetails key={record.dietId} food={record} />
+                  ))}
+                </>
+              )}
+            </React.Fragment>
+          ))}
       </FoodListContainer>
       <FoodInfoModal isOpen={modals.foodInfo?.isOpen} onClose={() => closeModal("foodInfo")} />
     </FoodListWrapper>
@@ -171,7 +192,6 @@ const FoodTextContainer = styled.div`
 `;
 
 const FoodText = styled.span`
-  font-weight: bold;
   font-size: 1.25rem;
   margin-left: 0.9375rem;
 `;
@@ -198,5 +218,10 @@ const FoodListContainer = styled.div`
   display: flex;
   flex-direction: column;
   width: 97%;
-  margin-top: 0.625rem;
+  margin-top: 0.3125rem;
+`;
+
+const MealTimeHeading = styled.h3`
+  font-size: 1.25rem;
+  margin-left: 0.9375rem;
 `;
