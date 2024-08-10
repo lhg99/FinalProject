@@ -1,5 +1,5 @@
 import React from 'react';
-import { BrowserRouter, Route, Routes, Outlet } from 'react-router-dom';
+import { BrowserRouter, Route, Routes, Outlet, Navigate } from 'react-router-dom';
 import Header from './components/Header/Header';
 import Chat from './pages/Chat/components/Chat';
 import FloatingButtonWithChat from './pages/Chat/components/FloatingButtonWithChat';
@@ -20,6 +20,10 @@ import ExerciseRecordPage from './pages/Exercise/ExerciseRecordList/ExerciseReco
 import ExerciseVideo from './pages/HealthVideo/ExerciseVideo/ExerciseVideo';
 import MyPageEdit from './pages/MyPage/MyPage/MyPageEdit';
 import DietRecordList from './pages/Food/DietRecordList/DietRecordList';
+import CareVideo from './pages/HealthVideo/CareVideo/CareVideo';
+import Landing from './pages/Login/Landing/Landing';
+import MyPage from './pages/MyPage/MyPage/MyPage';
+
 
 const Layout: React.FC = () => (
   <>
@@ -41,9 +45,11 @@ const App: React.FC = () => {
   return (
     <AuthProvider>
       <BrowserRouter>
-      <Routes>
+        <Routes>
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<SignUp />} />
+          <Route path="/start" element={<Landing />} />
+          <Route path="/" element={<Navigate to="/start" />} />
           <Route element={<Layout />}>
             <Route path="/main" element={<Main />} />
             <Route path="/chat" element={<ProtectedRoute><Chat /></ProtectedRoute>} />
@@ -51,7 +57,6 @@ const App: React.FC = () => {
             <Route path="/exercise" element={<ProtectedRoute><Exercise /></ProtectedRoute>} />
             <Route path="/exercise/records/:month" element={<ProtectedRoute><ExerciseRecordPage /></ProtectedRoute>} />
             <Route path="/exercise/chart/:month" element={<ProtectedRoute><ExerciseChartPage /></ProtectedRoute>} />
-            
             <Route path="/food" element={<Food />} />
             <Route path="/food/records/:month" element={<ProtectedRoute><DietRecordList /></ProtectedRoute>} />
 
@@ -62,17 +67,15 @@ const App: React.FC = () => {
               <Route path="free/post/edit/:id" element={<ProtectedRoute><UpdatePost /></ProtectedRoute>} />
               <Route path="free/createpost" element={<ProtectedRoute><CreatePost /></ProtectedRoute>} />
             </Route>
-
-            <Route path="/exvideo" element={<ProtectedRoute><ExerciseVideo /></ProtectedRoute> } />
+            <Route path="/exvideo" element={<ProtectedRoute><ExerciseVideo /></ProtectedRoute>} />
             <Route path="/edit" element={<ProtectedRoute><MyPageEdit
-                    initialUsername={initialUsername}
-                    initialComment={initialComment}
-                    onUpdate={handleUpdate}
-                  />
-                </ProtectedRoute>
-              } 
-            />
-            </Route>
+              initialUsername={initialUsername}
+              initialComment={initialComment}
+              onUpdate={handleUpdate}
+            /></ProtectedRoute>} />
+            <Route path="/carevideo" element={<ProtectedRoute><CareVideo /></ProtectedRoute>} />
+            <Route path="/mypage" element={<ProtectedRoute><MyPage /></ProtectedRoute>} />
+          </Route>
         </Routes>
       </BrowserRouter>
     </AuthProvider>

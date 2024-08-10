@@ -46,7 +46,8 @@ const SignUp: React.FC = () => {
   };
 
   return (
-    <div className={styles['form-container']}>
+    <div className={styles.pageBackground}>
+      <div className={styles['form-container']}>
       <h2>회원가입</h2>
 
       <form onSubmit={handleSubmit}>
@@ -119,8 +120,10 @@ const SignUp: React.FC = () => {
         <button className={styles.button} type="submit">회원가입</button>
       </form>
       <p>
-        <Link to="/Login">계정이 이미 있으신가요?</Link>
-      </p>
+          <Link to="/Login" className={styles.link}>계정이 이미 있으신가요?</Link>
+        </p>
+    </div>
+
     </div>
   );
 };
