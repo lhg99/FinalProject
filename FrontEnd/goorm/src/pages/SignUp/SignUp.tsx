@@ -1,18 +1,35 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import styles from './SignUp.module.scss';
-import { SignUpData, postSignUpData } from '../../api/signupApi';
+import { KakaoSignupData, SignUpData, postKakaoSignup, postSignUpData } from '../../api/signupApi';
 
-const SignUp: React.FC = () => {
+const SignUp = () => {
   const [name, setName] = useState<string>('');
   const [username, setUsername] = useState<string>('');
   const [email, setEmail] = useState<string>('');
   const [loginPw, setPassword] = useState<string>('');
   const [confirmPassword, setConfirmPassword] = useState<string>('');
   const [loginId, setId] = useState<string>('');
+  const [isKakaoSignup, setIsKakaoSignup] = useState<boolean>(false);
+  const [memberId, setMemberId] = useState<number>(0);
   const navigate = useNavigate();
 
   const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[$@$!%*#?&])[A-Za-z\d$@$!%*#?&]{8,16}$/;
+
+   // 쿼리 파라미터에서 데이터를 가져오는 부분
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const memberId = params.get('memberId');
+    const email = params.get('email');
+    const nickname = params.get('nickname');
+
+    if (memberId) {
+      setIsKakaoSignup(true); // 카카오 회원가입으로 설정
+    }
+    if(memberId) setMemberId(parseInt(memberId));
+    if (email) setEmail(email);
+    if (nickname) setName(decodeURIComponent(nickname)); // URL 인코딩된 닉네임을 디코딩하여 설정
+  }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -35,10 +52,23 @@ const SignUp: React.FC = () => {
       username,
     };
 
+    const kakaoSignupData: KakaoSignupData = {
+      loginId,
+      loginPw,
+      name
+    }
+
     try {
-      await postSignUpData(signupData);
+      if (isKakaoSignup) {
+        // 카카오 회원가입 처리
+        await postKakaoSignup(kakaoSignupData);
+      } else {
+        // 일반 회원가입 처리
+        await postSignUpData(signupData); // 일반 회원가입 API가 별도로 있다면 사용
+      }
+
       alert('회원가입이 완료되었습니다.');
-      navigate('/Login');
+      navigate('/login');
     } catch (err) {
       alert('회원가입에 실패하였습니다.');
       console.error(err);
