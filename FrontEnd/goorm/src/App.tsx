@@ -11,7 +11,7 @@ import Main from './pages/MyPage/Main/Main';
 import MyPage from './pages/MyPage/MyPage/MyPage';
 import MyPageEdit from './pages/MyPage/MyPage/MyPageEdit';
 import { AuthProvider } from './pages/Login/auth/AuthContext';
-import Landing from './pages/Login/Landing/Landing'; // 오타 수정: 'Landig' -> 'Landing'
+import Landing from './pages/Login/Landing/Landing';
 import ProtectedRoute from './pages/Login/auth/ProtectedRoute';
 import Food from './pages/Food/Food';
 import FreeBoardPage from './pages/Board/page/FreeBoard/FreeBoardPage';

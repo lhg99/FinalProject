@@ -1,11 +1,11 @@
 import React, { useCallback, useState } from 'react';
-import { useNavigate } from 'react-router-dom'; // useNavigate 훅을 임포트합니다.
+import { useNavigate } from 'react-router-dom';
 import styles from './Main.module.scss';
 import MyCalendar from '../../Exercise/components/Date/Calendar';
 
 const MainPage: React.FC = () => {
   const [dateInfo, setDateInfo] = useState<{ year: number, month: number, day: number, weekday: string } | null>(null);
-  const navigate = useNavigate(); // useNavigate 훅을 사용하여 navigate 함수를 가져옵니다.
+  const navigate = useNavigate();
 
   const handleDateChange = useCallback((info: { year: number, month: number, day: number, weekday: string }) => {
     setDateInfo(info);
@@ -23,7 +23,7 @@ const MainPage: React.FC = () => {
     <div className={styles.pageBackground}>
       <div className={styles.container}>
         <div className={styles.leftPane}>
-          <h1>캐릭터</h1>
+          <img src="/main.png" alt="캐릭터" className={styles.characterImage} />
         </div>
         <div className={styles.rightPane}>
           <div className={styles.buttons}>

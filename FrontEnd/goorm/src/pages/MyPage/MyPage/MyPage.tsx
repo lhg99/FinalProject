@@ -45,7 +45,8 @@ const MyPage: React.FC = () => {
   }
 
   return (
-    <div className={styles.container}>
+    <div className={styles.pageBackground}>
+      <div className={styles.container}>
       <h1 className={styles.title}>마이페이지</h1>
       {user ? (
         <div>
@@ -70,6 +71,7 @@ const MyPage: React.FC = () => {
       ) : (
         <div>사용자 정보를 찾을 수 없습니다.</div>
       )}
+    </div>
     </div>
   );
 };
