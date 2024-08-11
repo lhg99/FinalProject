@@ -30,11 +30,11 @@ const SearchBarContainer = styled.form`
   }
 
   & input:hover {
-    border-color: #1A6D89;
+    border-color: #699732;
   }
 
   & ::placeholder {
-    color: lightgray;
+    color: #699732;
 
     @media (max-width: 480px) {
       font-size: 12px;
@@ -44,7 +44,8 @@ const SearchBarContainer = styled.form`
   & button {
     height: 45px;
     font-size: 25px;
-    background-color: #DEECF0;
+    color: #699732;
+    background-color: white;
     border: 1px solid lightgray;
     border-left: none;
     border-radius: 0 5px 5px 0;
@@ -66,7 +67,7 @@ const SearchBarContainer = styled.form`
   }
 
   & button:hover {
-    background-color: #1A6D89;
+    background-color: #699732;
     color: white;
   }
 `;

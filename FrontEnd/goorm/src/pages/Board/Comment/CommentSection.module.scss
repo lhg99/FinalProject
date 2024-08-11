@@ -1,9 +1,11 @@
 .commentSection {
   margin-top: 0px;
+  margin-left: 10px;
   width: 100%;
   padding: 0px;
   font-family: 'Arial', sans-serif;
   font-size: 14px;
+
 }
 
 .commentList {
@@ -13,9 +15,9 @@
 }
 
 .commentItem {
-  padding-left: 30px;
-  padding-right: 5px;
-  border-bottom: 1px solid #7f7f7f;
+  margin-left: 40px;
+  margin-right: 40px;
+  border-bottom: 1px solid #c8c8c8;
   display: flex;
   flex-direction: column;
   position: relative;
@@ -63,7 +65,7 @@
   display: flex;
   gap: 10px;
   align-items: center;
-  margin-right: 20px;
+  margin-right: 0px;
 }
 
 .button {
@@ -113,6 +115,8 @@
     display: flex;
     align-items: center;
     width: 100%;
+    // margin-top: 20px;
+    // padding-top: 20px;
 
     .userIcon {
       margin-right: 20px;
@@ -125,23 +129,25 @@
     }
 
     .submitButton {
-      padding: 36px 30px;
-      // margin-left: 0px;
+      padding: 36px 45px;
+      margin-left: 0px;
       background-color: #ffffff;
       border: 1px solid #333333;
       border-radius: 2px;
-      color: #333333;
+      color: #699732;
       cursor: pointer;
       font-size: 16px;
       transition: background-color 0.3s ease;
-      margin-right: 30px;
+      margin-right: 40px;
+      margin-bottom: 20px;
+
       // display: flex;
       // justify-content: center;
       // align-items: center;
 
       &:hover {
-        color: #000000;
-        background-color: #e0e0e0;
+        color: #ffffff;
+        background-color: #699732;
         transition: background-color 0.3s ease;
       }
     }

@@ -33,6 +33,7 @@ const RecodsTabs: React.FC<TabsWithButtonProps> = ({ selectedTab, setSelectedTab
 
   return (
     <div className={styles.parentContainer}>
+      <h1 className={styles.year}>2024</h1>
       <div className={styles.tabsContainer}>
         {monthTabs.map((tab) => (
           <div

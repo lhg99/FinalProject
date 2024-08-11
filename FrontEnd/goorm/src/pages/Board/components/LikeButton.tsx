@@ -18,7 +18,7 @@ const LikeButton: React.FC<LikeButtonProps> = ({ boardId, isLiked, likesCnt, tog
     <ButtonContainer>
       <ReportCount>조회수: {reportsCnt}</ReportCount>
       <Button onClick={handleLikeToggle}>
-        {isLiked ? '좋아요 취소' : '좋아요'} &nbsp;: {likesCnt}
+        {isLiked ? '좋아요' : '좋아요'} &nbsp;: {likesCnt}
       </Button>
     </ButtonContainer>
   );
@@ -32,9 +32,9 @@ const ButtonContainer = styled.div`
 const Button = styled.button`
   padding: 6px 10px;
   font-size: 14px;
-  color: #666;
-  background: #DEECF0;
-  border: 1px solid #666;
+  color: #699732;
+  background: #FFBDBD;
+  border: 1px solid #FFBDBD;
   border-radius: 2px;
   cursor: pointer;
   display: flex;
@@ -42,7 +42,7 @@ const Button = styled.button`
   justify-content: center;
 
   &:hover {
-    background-color: #1A6D89;
+    background-color: #699732;
     color: white;
 
   }

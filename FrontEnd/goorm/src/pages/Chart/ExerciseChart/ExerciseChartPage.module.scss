@@ -7,6 +7,7 @@
   align-items: center;
   overflow: hidden;
 }
+
 .chartWrapper {
   display: flex;
   justify-content: center;
@@ -14,6 +15,24 @@
   gap: 100px; /* 두 차트 사이의 간격 설정 */
 }
 
-.chartContainer {
+.BarChartContainer{
   width: 45%; /* 각 차트의 너비 설정 */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.DoughnutChartContainer {
+  width: 45%; /* 각 차트의 너비 설정 */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.ScatterchartContainer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  // width: 45%; /* 각 차트의 너비 설정 */
+
 }

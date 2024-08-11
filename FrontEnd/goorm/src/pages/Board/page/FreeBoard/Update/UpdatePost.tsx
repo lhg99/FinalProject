@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { fetchPostDetail, updatePost } from '../api/boardAPI';
-import { BoardDetails } from '../types';
-import Category from '../components/Category';
-import TextEditor from '../../../components/TextEditor/TextEditor';
 import styles from './UpdatePost.module.scss';
+import { BoardDetails } from '../../../types';
+import { fetchPostDetail, updatePost } from '../../../api/boardAPI';
+import TextEditor from '../../../../../components/TextEditor/TextEditor';
+import Category from '../../../components/Category';
 
 const UpdatePost: React.FC = () => {
   const { id } = useParams<{ id?: string }>();

@@ -5,6 +5,7 @@ import { getExerciseRecords } from '../../../../../api/Exercise/exerciseApi';
 import { addPost } from '../../../api/boardAPI';
 import TextEditor from '../../../../../components/TextEditor/TextEditor';
 import { ExerciseRecords } from '../../../../Exercise/ExerciseTypes'; // ExerciseRecords 타입 임포트
+import Exercise from '../../../../Exercise/Exercise';
 
 const RecordSharePost: React.FC = () => {
   const navigate = useNavigate();
@@ -72,7 +73,7 @@ const RecordSharePost: React.FC = () => {
 
       await addPost(postData);
       alert('게시글이 성공적으로 작성되었습니다.');
-      navigate(`/Board/${boardType.toLowerCase()}`);
+      navigate(`/Board/exercise`);
     } catch (error) {
       alert('게시글 작성 중 오류가 발생했습니다.');
       console.error('게시글 작성 중 오류가 발생했습니다:', error);

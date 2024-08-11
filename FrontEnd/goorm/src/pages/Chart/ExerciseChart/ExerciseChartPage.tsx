@@ -107,16 +107,15 @@ const ExerciseChartPage: React.FC = () => {
 
   return (
     <div className={styles.container}>
-      <h2>2024</h2>
       <ChartTabs selectedTab={selectedTab} setSelectedTab={setSelectedTab} basePath="/exercise/chart" />
       <div className={styles.chartWrapper}>
-        <div className={styles.chartContainer}>
+        <div className={styles.BarChartContainer}>
           <BarChart data={barChartData} />
         </div>
-        <div className={styles.chartContainer}>
+        <div className={styles.DoughnutChartContainer}>
           <DoughnutChart data={doughnutChartData} />
         </div>
-        <div className={styles.chartContainer}>
+        <div className={styles.ScatterchartContainer}>
           <ScatterChart data={scatterChartData} month={selectedTab} />
         </div>
       </div>

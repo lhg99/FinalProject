@@ -4,6 +4,14 @@
     max-width: 1100px;
     margin: 20px auto;
   }
+
+  .year {
+    margin-top: 50px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: #699732;
+  }
   
   .tabsContainer {
     display: flex;
@@ -13,7 +21,7 @@
   }
   
   .tab {
-    padding: 70px 10px 0px 10px;
+    padding: 10px 10px 0px 10px;
     margin: 0 13px;
     cursor: pointer;
     text-decoration: none;
@@ -22,12 +30,12 @@
     transition: color 0.3s, border-bottom 0.3s;
   
     &.active {
-      color: #007bff;
-      border-bottom: 2px solid #007bff;
+      color: #699732;
+      border-bottom: 2px solid #699732;
     }
   
     &:hover {
-      color: #0056b3;
+      color: #699732;
     }
   }
   

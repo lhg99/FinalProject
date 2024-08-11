@@ -2,7 +2,7 @@
   background-color: #FFDE95;
   // background-size: cover;
   // background-position: center;
-  // height: 100vh;
+  height: 100vh;
   // justify-content: center;
   align-items: center;
   overflow: hidden;
@@ -86,13 +86,16 @@
         }
   
         .backButton {
-          background-color: gray;
-          color: #ffffff;
+          background-color: #ffffff;
+          color: #699732;
+          border-color: #699732;
         }
   
         .submitButton {
-          background-color: #003369;
+          background-color: #699732;
+          border-color: #ffffff;
           color: #ffffff;
+          margin-bottom: 100px;
         }
       }
     }

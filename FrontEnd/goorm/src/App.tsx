@@ -12,9 +12,8 @@ import { AuthProvider } from './pages/Login/auth/AuthContext';
 import ProtectedRoute from './pages/Login/auth/ProtectedRoute';
 import Food from './pages/Food/Food';
 import FreeBoardPage from './pages/Board/page/FreeBoard/FreeBoardPage';
-import DetailPost from './pages/Board/Post/DetailPost';
-import UpdatePost from './pages/Board/Post/UpdatePost';
-import CreatePost from './pages/Board/Post/CreatePost';
+import UpdatePost from './pages/Board/page/FreeBoard/Update/UpdatePost';
+import CreatePost from './pages/Board/page/FreeBoard/Create/CreatePost';
 import ExerciseChartPage from './pages/Chart/ExerciseChart/ExerciseChartPage';
 import ExerciseRecordPage from './pages/Exercise/ExerciseRecordList/ExerciseRecordPage';
 import ExerciseVideo from './pages/HealthVideo/ExerciseVideo/ExerciseVideo';
@@ -26,6 +25,7 @@ import MyPage from './pages/MyPage/MyPage/MyPage';
 import DietChartPage from './pages/Chart/DietChart/DietChartPage';
 import RecordSharePost from './pages/Board/page/ExerciseBoard/SharePost/RecordSharePost';
 import ExerciseBoardPage from './pages/Board/page/ExerciseBoard/ExerciseBoardPage/ExerciseBoardPage';
+import DetailPost from './pages/Board/page/FreeBoard/Detail/DetailPost';
 
 
 const Layout: React.FC = () => (
@@ -70,10 +70,10 @@ const App: React.FC = () => {
               <Route path="free" element={<FreeBoardPage />} />
               <Route path="exercise" element={<ExerciseBoardPage />} />
               <Route path="exercise/record" element={<RecordSharePost />} />
-              <Route path="free/post/:id" element={<ProtectedRoute><DetailPost /></ProtectedRoute>} />
-              <Route path="exercise/post/:id" element={<ProtectedRoute><DetailPost /></ProtectedRoute>} />
-              <Route path="free/post/edit/:id" element={<ProtectedRoute><UpdatePost /></ProtectedRoute>} />
-              <Route path="free/createpost" element={<ProtectedRoute><CreatePost /></ProtectedRoute>} />
+              <Route path="free/post/:id" element={<DetailPost />} />
+              <Route path="exercise/post/:id" element={<DetailPost />} />
+              <Route path="free/post/edit/:id" element={<UpdatePost />} />
+              <Route path="free/createpost" element={<CreatePost />} />
             </Route>
             <Route path="/exvideo" element={<ProtectedRoute><ExerciseVideo /></ProtectedRoute>} />
             <Route path="/edit" element={<ProtectedRoute><MyPageEdit
