@@ -1,4 +1,5 @@
 import axios, { AxiosResponse } from 'axios';
+import axiosInstance from './axiosInstance';
 
 export interface LoginData {
     loginId: string;
@@ -17,7 +18,7 @@ export const postLoginData = async (login: LoginData): Promise<LoginRequest> => 
     formData.append('loginPw', login.loginPw);
 
     try {
-        const response: AxiosResponse<LoginRequest> = await axios.post("http://final-project-app-env.eba-xdjqmujd.ap-northeast-2.elasticbeanstalk.com/api/auth/login", formData, {
+        const response: AxiosResponse<LoginRequest> = await axiosInstance.post("/auth/login", formData, {
             headers: {
                 "Content-Type": "multipart/form-data",
             }

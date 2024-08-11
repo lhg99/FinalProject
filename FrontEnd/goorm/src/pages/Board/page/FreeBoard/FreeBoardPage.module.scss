@@ -1,7 +1,16 @@
 .container {
-    padding: 0 20px;
-    max-width: 1200px;
-    margin: 0 auto;
+    // padding: 0 20px;
+    // max-width: 1200px;
+    // margin: 0 auto;
+    // background-color: #FFDE95;
+    background-color: #FFDE95;
+    background-size: cover;
+    background-position: center;
+    height: 100vh;
+    // display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
   }
   
   .table {
@@ -16,11 +25,11 @@
   .tableHeader {
     border-top: 1px solid #000;
     padding: 18px;
-    background-color: #DEECF0;
+    background-color: #FFBDBD;
     color: #000;
   }
   
-  .tableRow:nth-child {
+  .tableRow {
     background-color: #f9f9f9;
   }
   

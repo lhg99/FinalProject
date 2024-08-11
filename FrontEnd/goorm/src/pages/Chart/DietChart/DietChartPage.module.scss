@@ -1,9 +1,12 @@
 .container {
-    padding: 0 20px; /* 좌우 여백 설정 */
-    max-width: 1200px;
-    margin: 0 auto;
-    text-align: center;
-  }
+  background-color: #FFDE95;
+  background-size: cover;
+  background-position: center;
+  height: 100vh;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+}
   
   .chartWrapper {
     display: flex;

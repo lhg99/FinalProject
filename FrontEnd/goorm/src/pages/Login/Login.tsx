@@ -16,7 +16,7 @@ const Login: React.FC = () => {
   const navigate = useNavigate();
   const { login } = useAuth();
 
-  const kakaoURL = `http://localhost:8080/oauth2/authorization/kakao`
+  const kakaoURL = `http://final-project-app-env.eba-xdjqmujd.ap-northeast-2.elasticbeanstalk.com/oauth2/authorization/kakao`
 
   const submitForm = async (data: LoginFormInputs) => {
     const { loginId, loginPw } = data;

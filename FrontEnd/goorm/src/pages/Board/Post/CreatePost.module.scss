@@ -1,9 +1,19 @@
 .postContainer {
+  background-color: #FFDE95;
+  // background-size: cover;
+  // background-position: center;
+  // height: 100vh;
+  // justify-content: center;
+  align-items: center;
+  overflow: hidden;
+
+
+
     display: flex;
     flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    margin-top: 70px;
+    // justify-content: center;
+    // align-items: center;
+    // margin-top: 70px;
   
     @media (max-width: 768px) {
       margin-top: 50px;
