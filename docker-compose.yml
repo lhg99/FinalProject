@@ -1,17 +1,17 @@
 version: "3"
 services:
-    frontend:
-        image: changkiyun/final-project-frontend
-        volumes:
-            - /app/node_modules
-            - ./frontend:/app
-        stdin_open: true
-        mem_limit: 128m
-        environment:
-            REACT_APP_API_REQUEST_URL: $REACT_APP_API_REQUEST_URL
-            REACT_APP_WEBSOCKET_SUB_URL: $REACT_APP_WEBSOCKET_SUB_URL
-            REACT_APP_WEBSOCKET_PUB_URL: $REACT_APP_WEBSOCKET_PUB_URL
-            REACT_APP_KAKAO_MAP_KEY: $REACT_APP_KAKAO_MAP_KEY
+  frontend:
+    image: changkiyun/final-project-frontend
+    volumes:
+      - /app/node_modules
+      - ./frontend:/app
+    stdin_open: true
+    mem_limit: 128m
+    environment:
+      REACT_APP_API_REQUEST_URL: $REACT_APP_API_REQUEST_URL
+      REACT_APP_WEBSOCKET_SUB_URL: $REACT_APP_WEBSOCKET_SUB_URL
+      REACT_APP_WEBSOCKET_PUB_URL: $REACT_APP_WEBSOCKET_PUB_URL
+      REACT_APP_KAKAO_MAP_KEY: $REACT_APP_KAKAO_MAP_KEY
 
     nginx:
         restart: always

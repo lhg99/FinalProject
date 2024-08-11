@@ -142,9 +142,9 @@ const CommentSection: React.FC<CommentSectionProps> = ({ postId, setShowDeleteCo
               onChange={setNewComment}
             />
           </div>
-          <button type="submit" className={styles.submitButton}>
+            <button type="submit" className={styles.submitButton}>
             작성하기
-          </button>
+            </button>
         </div>
       </form>
       <ul className={styles.commentList}>

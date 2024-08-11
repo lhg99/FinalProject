@@ -1,4 +1,3 @@
-import axios from 'axios';
 import axiosInstance from './axiosInstance';
 
 export interface SignUpData {
@@ -15,7 +14,6 @@ export interface KakaoSignupData {
     name: string;
 }
 
-
 export const postSignUpData = async (signup: SignUpData): Promise<void> => {
     try {
         const response = await axiosInstance.post<SignUpData[]>(`/member/signup`, signup);
@@ -26,14 +24,9 @@ export const postSignUpData = async (signup: SignUpData): Promise<void> => {
     }
 }
 
-export const postKakaoSignup = async (data: KakaoSignupData) => {
-    const params = {
-        loginId: data.loginId,
-        loginPw: data.loginPw,
-        name: data.name
-    }
+export const postKakaoSignup = async (memberId: string, name: string) => {
     try {
-        const response = await axiosInstance.post("/member/oauth/signup", { params });
+        const response = await axiosInstance.post("/member/oauth/signup", { memberId: memberId, memberName: name });
         console.log("카카오 회원가입 성공", response.data);
         return response.data;
     } catch (error) {

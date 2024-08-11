@@ -1,6 +1,6 @@
 .commentSection {
   margin-top: 0px;
-  width: 95%;
+  width: 100%;
   padding: 0px;
   font-family: 'Arial', sans-serif;
   font-size: 14px;
@@ -13,8 +13,9 @@
 }
 
 .commentItem {
-  padding: 5px;
-  border-bottom: 1px solid #e0e0e0;
+  padding-left: 30px;
+  padding-right: 5px;
+  border-bottom: 1px solid #7f7f7f;
   display: flex;
   flex-direction: column;
   position: relative;
@@ -23,13 +24,13 @@
 .commentHeader {
   display: flex;
   align-items: center;
-  margin: 5px;
+  // margin: 5px;
 }
 
 .commentAuthor {
   font-weight: 400;
   color: #333;
-  margin-right: 10px;
+  margin-right: 20px;
   margin-left: 10px;
   width: flex;
   cursor: pointer; 
@@ -37,7 +38,7 @@
 }
 
 .commentAuthor:hover {
-  color: #226ab6; /* 호버 시 색상 변경 */
+  color: #699732; /* 호버 시 색상 변경 */
 }
 
 .commentContentWrapper {
@@ -62,6 +63,7 @@
   display: flex;
   gap: 10px;
   align-items: center;
+  margin-right: 20px;
 }
 
 .button {
@@ -74,7 +76,6 @@
   display: flex;
   justify-content: center;
   align-items: center;
-
   &:hover {
     background-color: #d3d3d3;
   }
@@ -87,7 +88,7 @@
   padding: 6px 10px;
   margin-top: 10px;
   margin-bottom: 10px;
-  width: 55px;
+  width: 60px;
   height: 30px;
   font-size: 13px;
   text-align: center;
@@ -120,11 +121,12 @@
 
     .commentInputWrapper {
       flex: 1;
+      justify-content: space-between;
     }
 
     .submitButton {
-      padding: 36px 23px;
-      margin-left: 10px;
+      padding: 36px 30px;
+      // margin-left: 0px;
       background-color: #ffffff;
       border: 1px solid #333333;
       border-radius: 2px;
@@ -132,9 +134,10 @@
       cursor: pointer;
       font-size: 16px;
       transition: background-color 0.3s ease;
-      display: flex;
-      justify-content: center;
-      align-items: center;
+      margin-right: 30px;
+      // display: flex;
+      // justify-content: center;
+      // align-items: center;
 
       &:hover {
         color: #000000;

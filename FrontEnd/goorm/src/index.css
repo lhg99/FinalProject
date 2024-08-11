@@ -8,3 +8,14 @@
   font-family: 'goorm-sans-bold', sans-serif;
   font-weight: 400;
 }
+
+
+.container {
+  background-color: #FFDE95;
+  background-size: cover;
+  background-position: center;
+  height: 100vh;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+}

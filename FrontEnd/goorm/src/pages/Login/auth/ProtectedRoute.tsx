@@ -1,4 +1,4 @@
-import React, { ReactNode } from 'react';
+import React, { ReactNode, useEffect, useState } from 'react';
 import { Navigate, useLocation } from 'react-router-dom';
 import { useAuth } from './AuthContext';
 
@@ -7,15 +7,29 @@ interface ProtectedRouteProps {
 }
 
 const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children }) => {
-  const { user, isLoggedIn } = useAuth();
+  const { isLoggedIn } = useAuth();
   const location = useLocation();
+  const [loading, setLoading] = useState(true);
+  const [loggedIn, setLoggedIn] = useState(false);
 
-  if (!isLoggedIn()) {
-    console.log("유저", user);
+  useEffect(() => {
+    const checkLogin = async () => {
+      const result = await isLoggedIn();
+      setLoggedIn(result !== undefined ? result : false);
+      setLoading(false);
+    };
+    checkLogin();
+  }, [isLoggedIn]);
+
+  if (loading) {
+    return <div>Loading...</div>;
+  }
+
+  if (!loggedIn) {
     return <Navigate to="/login" state={{ from: location }} replace />;
   }
 
   return <>{children}</>;
-}
+};
 
 export default ProtectedRoute;
