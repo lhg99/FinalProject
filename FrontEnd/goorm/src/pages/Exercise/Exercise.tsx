@@ -22,7 +22,6 @@ import ExerciseCategoryTable from "./ExerciseCategoryTable";
 import { useExercise } from "../../contexts/exerciseContext";
 import { ExerciseData, ExerciseRecords } from "./ExerciseTypes";
 import DateSelector from "./components/Date/DateSelector";
-import { useAuth } from "../Login/auth/AuthContext";
 import {
   EditExerciseRecord,
   postCardioRecord,
@@ -35,7 +34,6 @@ import { formatDateInfo } from "../../utils/DateUtils";
 const Exercise: React.FC = () => {
   const [dateInfo, setDateInfo] = useState<{ year: number; month: number; day: number; weekday: string; formattedDate: string } | null>(null);
   const [customExerciseName, setCustomExerciseName] = useState<string>("");
-  const { user } = useAuth();
 
   const {
     state: {
