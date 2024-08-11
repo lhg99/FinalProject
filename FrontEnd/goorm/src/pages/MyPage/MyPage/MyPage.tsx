@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import styles from "./MyPage.module.scss";
 import { userData, getusereData } from '../../../api/mypageApi';
 import { useNavigate, useLocation } from 'react-router-dom';
+import { useAuth } from "../../Login/auth/AuthContext";
 
 const MyPage: React.FC = () => {
   const [user, setUser] = useState<userData | null>(null);
@@ -10,6 +11,30 @@ const MyPage: React.FC = () => {
 
   const navigate = useNavigate();
   const location = useLocation();
+  const { logout } = useAuth();
+
+  useEffect(() => {
+    const kakaoCheck = async () => {
+      const params = new URLSearchParams(window.location.search);
+      const memberId = params.get('memberId');
+      const info = params.get('info');
+
+      if (!memberId || !info) {
+        return;
+      }
+
+      if (memberId && info) {
+        console.log('회원 ID:', memberId);
+        console.log('회원 정보가 존재:', info === 'true');
+      } else {
+        alert('잘못된 접근입니다.');
+        await logout();
+        navigate('/login');
+      }
+    }
+    kakaoCheck();
+  }, [navigate, logout]);
+    
 
   useEffect(() => {
     const fetchUserData = async () => {

@@ -9,6 +9,7 @@ import FoodMemo from './FoodMemo'
 import { formatDateInfo } from '../../utils/DateUtils';
 import { EditFoodRecord, postFoodMemo, postFoodRecord } from '../../api/Food/foodApi';
 import { formatDate } from 'react-datepicker/dist/date_utils';
+import FoodCategoryTable from './FoodCategoryTable';
 
 const Food: React.FC = () => {
 
@@ -39,8 +40,6 @@ const Food: React.FC = () => {
             alert("날짜를 선택해주세요.");
             return;
         }
-
-        const date = new Date(dateInfo.formattedDate);
     
         for (const food of selectedFood) {
             const details = foodDetails[food.foodName] || {};
@@ -52,8 +51,8 @@ const Food: React.FC = () => {
                 dietId: existingRecord ? existingRecord.dietId : new Date().getTime(), // 새로운 기록일 경우 고유한 dietId 생성
                 mealTime: existingRecord ? existingRecord.mealTime : food.mealTime || "",
                 dietDate: dateInfo.formattedDate,
-                quantity: details.quantity,
-                gram: details.gram * details.quantity,
+                quantity: details.quantity || 0,
+                gram: details.gram || 0,  // 기존 gram 대신 foodDetails에서 가져온 값
                 totalCalories: food.calories * (details.quantity || 1), // 총 칼로리 계산
                 memo: details.memo || "",
                 foodRes: {
@@ -72,7 +71,7 @@ const Food: React.FC = () => {
             };
             try {
                 await postFoodRecord(record.foodRes.foodId, record);
-                await postFoodMemo(memo.content, date);
+                await postFoodMemo(memo.content, new Date(dateInfo.formattedDate)); // date 객체로 전달
                 alert("식단 기록이 저장되었습니다.");
             } catch (error) {
                 console.error("식단 기록 저장 실패:", error);
@@ -93,38 +92,38 @@ const Food: React.FC = () => {
       };
 
     return (
-        <div className={styles.food}>
-            <div className={styles.foodContainer}>
-                <div className={styles.leftColumn}>
-                    <div className='calendar'>
-                        <MyCalendar onDateChange={handleDateChange} />
+        <div className={styles.pageBackground}>
+            <div className={styles.food}>
+                <div className={styles.foodContainer}>
+                    <div className={styles.leftColumn}>
+                        <div className='calendar'>
+                            <MyCalendar onDateChange={handleDateChange} />
+                            <FoodCategoryTable dateInfo={dateInfo}/>
+                        </div>
+                    </div>
+                    <div className={styles.rightColumn}>
                         {dateInfo && (
-                            <p>{`${dateInfo.month}월 식단`}</p>
+                            <div className={styles.dateInfo}>
+                                <p className={styles.dateText}>{`${dateInfo.year}년 ${dateInfo.month}월 ${dateInfo.day}일 ${dateInfo.weekday}`}</p>
+                            </div>
                         )}
-                    </div>
-                </div>
-                <div className={styles.rightColumn}>
-                    {dateInfo && (
-                        <div className={styles.dateInfo}>
-                            <p className={styles.dateText}>{`${dateInfo.year}년 ${dateInfo.month}월 ${dateInfo.day}일 ${dateInfo.weekday}`}</p>
-                        </div>
-                    )}
-                    <div className={styles.searchListContainer}>
-                        <div className={styles.searchColumn}>
-                            <FoodSearch onAddFood={handleAddFood} onAddCustomFood={handleAddCustomFood}/>
-                            <FoodList food={selectedFood} dateInfo={dateInfo} />
+                        <div className={styles.searchListContainer}>
+                            <div className={styles.searchColumn}>
+                                <FoodSearch onAddFood={handleAddFood} onAddCustomFood={handleAddCustomFood}/>
+                                <FoodList food={selectedFood} dateInfo={dateInfo} />
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
-            <FoodMemo dateInfo={dateInfo}/>
-            <div className={styles.buttonContainer}>
-                <button className={styles.saveButton} onClick={handleEdit}>
-                수정하기
-                </button>
-                <button className={styles.saveButton} onClick={handleSave}>
-                저장하기
-                </button>
+                <FoodMemo dateInfo={dateInfo}/>
+                <div className={styles.buttonContainer}>
+                    <button className={styles.saveButton} onClick={handleEdit}>
+                    수정하기
+                    </button>
+                    <button className={styles.saveButton} onClick={handleSave}>
+                    저장하기
+                    </button>
+                </div>
             </div>
         </div>
     );

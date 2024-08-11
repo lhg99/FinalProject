@@ -21,8 +21,8 @@ const PaginationContainer = styled.div`
 `;
 
 const PageButton = styled.button<{ isActive: boolean }>`
-    background-color: ${({ isActive }) => (isActive ? '#1A6D89' : '#fff')};
-    color: ${({ isActive }) => (isActive ? 'white' : '#000000')};
+    background-color: ${({ isActive }) => (isActive ? '#699732' : '#699732')};
+    color: ${({ isActive }) => (isActive ? '000000' : '#000000')};
     border: 1px solid #000000;
     border-radius: 20px;
     margin: 0 5px;
@@ -30,7 +30,7 @@ const PageButton = styled.button<{ isActive: boolean }>`
     cursor: pointer;
 
     &:hover {
-        background-color: ${({ isActive }) => (isActive ? '#1A6D89' : '#1A6D89')};
+        background-color: ${({ isActive }) => (isActive ? '#699732' : '#699732')};
         color: white;
 
     } 
@@ -47,7 +47,7 @@ const PageButton = styled.button<{ isActive: boolean }>`
 `;
 
 const ArrowButton = styled.button`
-    background-color: #fff;
+    background-color: white;
     color: #000000;
     border: 1px solid #000000;
     border-radius: 30px;
@@ -56,7 +56,7 @@ const ArrowButton = styled.button`
     cursor: pointer;
 
     &:hover {
-        background-color: #1A6D89;
+        background-color: #699732;
         color: white;
 
     }

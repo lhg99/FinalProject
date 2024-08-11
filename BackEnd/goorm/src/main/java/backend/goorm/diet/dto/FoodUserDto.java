@@ -11,7 +11,7 @@ import lombok.*;
 public class FoodUserDto {
     private String foodType;
     private String foodName;
-    private Double amount;
+    private Float gram;
     private Float calories;
     private Float carbohydrate;
     private Float protein;
@@ -26,10 +26,10 @@ public class FoodUserDto {
     private Boolean userRegister = true;
 
     public Food toEntity() {
+
         return Food.builder()
-                .foodType(this.foodType)
                 .foodName(this.foodName)
-                .amount(this.amount)
+                .gram(this.gram)
                 .calories(this.calories)
                 .carbohydrate(this.carbohydrate)
                 .protein(this.protein)
@@ -39,16 +39,15 @@ public class FoodUserDto {
                 .cholesterol(this.cholesterol)
                 .saturatedFat(this.saturatedFat)
                 .transFat(this.transFat)
-                .imageUrl(this.imageUrl) // 이미지 URL 설정
                 .useCount(this.useCount) // 기본값 설정
                 .userRegister(this.userRegister) // 유저가 등록한 음식인지 여부 설정
                 .build();
     }
 
     public void updateEntity(Food food) {
-        food.setFoodType(this.foodType);
+
         food.setFoodName(this.foodName);
-        food.setAmount(this.amount);
+        food.setGram(this.gram);
         food.setCalories(this.calories);
         food.setCarbohydrate(this.carbohydrate);
         food.setProtein(this.protein);
@@ -58,7 +57,6 @@ public class FoodUserDto {
         food.setCholesterol(this.cholesterol);
         food.setSaturatedFat(this.saturatedFat);
         food.setTransFat(this.transFat);
-        food.setImageUrl(this.imageUrl); // 이미지 URL 설정
         food.setUseCount(this.useCount); // 기본값 설정
         food.setUserRegister(this.userRegister);
     }

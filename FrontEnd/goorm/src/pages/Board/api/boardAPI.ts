@@ -1,10 +1,9 @@
 import axiosInstance from '../../../api/axiosInstance';
-import { Comment } from '../types';
-import axios from 'axios';
+import { Comment , BoardType} from '../types';
 
 // 게시글 목록 조회
 export const fetchPosts = async (
-  boardType: string,
+  boardType: BoardType,
   page: number,
   searchQuery: string = '',
   categories?: string[]
@@ -32,28 +31,8 @@ export const fetchPosts = async (
   }
 };
 
-// 이미지 업로드
-export const uploadImages = async (formData: FormData): Promise<string[]> => {
-  try {
-    console.log('Uploading images with formData:', formData);
-    const response = await axiosInstance.post('/s3/ck/upload', formData, {
-      headers: {
-        'Content-Type': 'multipart/form-data',
-      },
-    });
-    console.log('Uploaded images:', response.data);
-    return response.data;
-  } catch (error) {
-    console.error('Error uploading images:', error);
-    if (axios.isAxiosError(error) && error.response) {
-      console.error('Response data:', error.response.data);
-    }
-    throw error;
-  }
-};
-
 // 게시글 추가 (이미지 없이)
-export const addPost = async (postData: { boardTitle: string; boardContent: string; boardType: string; boardCategory: string; imageUrls?: string[] }): Promise<any> => {
+export const addPost = async (postData: { boardTitle: string; boardContent: string; boardType: string; boardCategory: string; imageUrls?: string[]; trainingRecords?: (number | string)[] }): Promise<any> => {
   try {
     console.log('Adding post with data:', postData);
     const response = await axiosInstance.post('/board/save', postData);
@@ -61,9 +40,6 @@ export const addPost = async (postData: { boardTitle: string; boardContent: stri
     return response.data;
   } catch (error) {
     console.error('Error adding post:', error);
-    if (axios.isAxiosError(error) && error.response) {
-      console.error('Response data:', error.response.data);
-    }
     throw error;
   }
 };

@@ -1,6 +1,7 @@
 package backend.goorm.board.service;
 
 import backend.goorm.board.model.dto.BoardListItem;
+import backend.goorm.board.model.dto.BoardTrainingRecordItem;
 import backend.goorm.board.model.dto.request.BoardSaveRequest;
 import backend.goorm.board.model.dto.request.BoardUpdateRequest;
 import backend.goorm.board.model.dto.response.BoardDetailResponse;
@@ -8,6 +9,7 @@ import backend.goorm.board.model.dto.response.BoardListResponse;
 import backend.goorm.board.model.entity.Board;
 import backend.goorm.board.model.entity.BoardImages;
 import backend.goorm.board.model.entity.BoardLikes;
+import backend.goorm.board.model.entity.BoardTrainingRecord;
 import backend.goorm.board.model.enums.BoardCategory;
 import backend.goorm.board.model.enums.BoardSortType;
 import backend.goorm.board.model.enums.BoardType;
@@ -16,6 +18,11 @@ import backend.goorm.common.exception.CustomException;
 import backend.goorm.common.exception.CustomExceptionType;
 import backend.goorm.common.util.DateConvertUtil;
 import backend.goorm.member.model.entity.Member;
+import backend.goorm.member.repository.MemberRepository;
+import backend.goorm.record.entity.Record;
+import backend.goorm.record.entity.TrainingRecord;
+import backend.goorm.record.repository.RecordRepository;
+import backend.goorm.s3.service.S3ImageService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -26,7 +33,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -38,11 +44,14 @@ public class BoardServiceImpl implements BoardService {
 
     private final BoardRepository boardRepository;
     private final CustomBoardRepository customBoardRepository;
-    private final CommentRepository commentRepository;
     private final BoardLikesRepository boardLikesRepository;
     private final BoardImageRepository boardImageRepository;
 
     private final DateConvertUtil dateConvertUtil;
+    private final S3ImageService s3ImageService;
+    private final MemberRepository memberRepository;
+    private final BoardTrainingRecordRepository boardTrainingRecordRepository;
+    private final RecordRepository recordRepository;
 
     @Value("${board.page.size}")
     private int pageSize;
@@ -56,36 +65,49 @@ public class BoardServiceImpl implements BoardService {
     @Override
     public void saveBoard(BoardSaveRequest saveRequest, Member member) {
 
+        Optional<Member> findMember = memberRepository.findByMemberId(member.getMemberId());
+
+
         Board board = Board.builder()
-                .memberId(member)
+                .memberId(findMember.get())
+                .boardWriter(findMember.get().getMemberNickname())
                 .boardTitle(saveRequest.getBoardTitle())
                 .boardContent(saveRequest.getBoardContent())
                 .boardRegDate(LocalDateTime.now())
                 .boardDeleted(false)
                 .reportsCnt(0)
                 .viewCnt(0)
-                .likesCnt(9)
+                .likesCnt(0)
                 .boardType(saveRequest.getBoardType())
                 .boardCategory(saveRequest.getBoardCategory())
                 .build();
 
         Board saveBoard = boardRepository.save(board);
 
-        for(String url : saveRequest.getImageUrls()){
-            BoardImages boardImage = BoardImages.builder()
-                    .boardId(saveBoard.getBoardId())
-                    .imageUrl(url)
-                    .build();
-            boardImageRepository.save(boardImage);
+        if(saveBoard.getBoardType() == BoardType.WORKOUT && saveRequest.getTrainingRecords() != null && !saveRequest.getTrainingRecords().isEmpty()){
+
+            for(Long id : saveRequest.getTrainingRecords()){
+
+                BoardTrainingRecord boardTrainingRecord = BoardTrainingRecord.builder()
+                        .boardId(saveBoard.getBoardId())
+                        .recordId(id)
+                        .build();
+
+
+                boardTrainingRecordRepository.save(boardTrainingRecord);
+            }
+
         }
 
+        //saveImage(saveRequest.getImageUrls(), saveBoard.getBoardId());
     }
 
-    @Override
-    public BoardListResponse getBoardList(BoardType type, int page, BoardSortType sortType, List<BoardCategory> categories) {
 
-        Pageable pageable = PageRequest.of(page - 1, pageSize);
-        Page<Board> boards = customBoardRepository.getBoardList(type, categories, sortType, pageable);
+    @Override
+    public BoardListResponse getBoardList(BoardType type, int page, BoardSortType sortType, List<BoardCategory> categories, String keyword) {
+
+        Pageable pageable = PageRequest.of(page, pageSize);
+        Page<Board> boards = customBoardRepository.getBoardList(type, categories, sortType, keyword, pageable);
 
         List<BoardListItem> boardItems = boards.stream()
                 .map(this::convertToBoardListItem)
@@ -126,21 +148,36 @@ public class BoardServiceImpl implements BoardService {
         Board board = findBoard.get();
         board.increaseViewCnt();  // 조회수 증
 
-        List<String> imageUrls = boardImageRepository.findImageUrlsByBoardId(board.getBoardId());
+        //List<String> imageUrls = boardImageRepository.findImageUrlsByBoardId(board.getBoardId());
+        List<BoardTrainingRecordItem> trainingRecordItems = null;
+
+        if(findBoard.get().getBoardType() == BoardType.WORKOUT){
+
+            List<Long> recordIds = boardTrainingRecordRepository.findRecordIdsByBoardId(findBoard.get().getBoardId());
+
+            if(recordIds != null && !recordIds.isEmpty()){
+
+                List<Record> findRecords = recordRepository.findRecordsWithTrainingAndCategoryByRecordIds(recordIds);
+                trainingRecordItems = findRecords.stream()
+                        .map(this::convertToBoardTrainingRecordItem)
+                        .collect(Collectors.toList());
+
+            }
+        }
 
         BoardDetailResponse detailResponse = BoardDetailResponse.builder()
                 .boardId(board.getBoardId())
                 .writer(board.getMemberId().getMemberNickname())
                 .boardTitle(board.getBoardTitle())
                 .boardContent(board.getBoardContent())
-                .boardRegDate(dateConvertUtil.convertDateToString(board.getBoardRegDate()))
+                .boardRegDate(dateConvertUtil.convertDateToStringWithTime(board.getBoardRegDate()))
                 .viewCnt(board.getViewCnt())
                 .likesCnt(board.getLikesCnt())
                 .reportsCnt(board.getReportsCnt())
                 .isLikes(findLikes.isPresent())
                 .boardType(board.getBoardType())
                 .boardCategory(board.getBoardCategory())
-                .imageUrls(imageUrls)
+                .trainingRecordItems(trainingRecordItems)
                 .build();
 
 
@@ -173,6 +210,8 @@ public class BoardServiceImpl implements BoardService {
     public void updateBoard(BoardUpdateRequest updateRequest, Member member) {
 
         Optional<Board> findBoard = boardRepository.findBoardByIdAndNotDeleted(updateRequest.getBoardId());
+
+
         if(!findBoard.isPresent()) {
             throw new CustomException(CustomExceptionType.BOARD_NOT_FOUND);
         }
@@ -185,6 +224,17 @@ public class BoardServiceImpl implements BoardService {
             throw new CustomException(CustomExceptionType.NO_AUTHORITY_TO_UPDATE);
         }
 
+        //List<String> findImageUrls = boardImageRepository.findImageUrlsByBoardId(updateRequest.getBoardId());
+
+//        for(String addr : findImageUrls){
+//
+//            s3ImageService.deleteImageFromS3(addr);
+//        }
+
+        //boardImageRepository.deleteByBoardId(updateRequest.getBoardId());
+
+        //saveImage(updateRequest.getUpdateImageUrls(), updateRequest.getBoardId());
+
         findBoard.get().updateBoard(updateRequest);
     }
 
@@ -193,6 +243,7 @@ public class BoardServiceImpl implements BoardService {
     public String toggleLike(Long boardId, Member member) {
 
         Optional<BoardLikes> boardLike = boardLikesRepository.findByBoardIdAndMemberId(boardId, member.getMemberId());
+        Optional<Board> findBoard = boardRepository.findBoardByIdAndNotDeleted(boardId);
 
         String message = "";
         if(!boardLike.isPresent()) {
@@ -202,9 +253,11 @@ public class BoardServiceImpl implements BoardService {
                             .memberId(member.getMemberId())
                             .build());
             message = "좋아요 처리 되었습니다";
+            findBoard.get().increaseLikesCnt();
         }else{
             boardLikesRepository.delete(boardLike.get());
             message = "좋아요가 해제되었습니다";
+            findBoard.get().decreaseLikesCnt();
         }
 
         return message;
@@ -220,13 +273,44 @@ public class BoardServiceImpl implements BoardService {
 
         return BoardListItem.builder()
                 .boardId(board.getBoardId())
-                .writer(board.getMemberId().getMemberNickname())
+                .writer(board.getBoardWriter())
                 .boardTitle(board.getBoardTitle())
-                .boardRegDate(dateConvertUtil.convertDateToString(board.getBoardRegDate()))
+                .boardRegDate(dateConvertUtil.convertDateToStringWithTime(board.getBoardRegDate()))
                 .boardCategory(board.getBoardCategory())
                 .boardType(board.getBoardType())
                 .viewCnt(board.getViewCnt())
                 .likeCnt(board.getLikesCnt())
                 .build();
+    }
+
+    private BoardTrainingRecordItem convertToBoardTrainingRecordItem(Record record) {
+
+        return BoardTrainingRecordItem.builder()
+                .recordId(record.getRecordId())
+                .exerciseDate(dateConvertUtil.convertDateToString(record.getExerciseDate()))
+                .categoryName(record.getTraining().getCategory().getCategoryName())
+                .trainingName(record.getTraining().getTrainingName())
+                .durationMinutes(record.getDurationMinutes())
+                .caloriesBurned(record.getCaloriesBurned())
+                .sets(record.getSets())
+                .reps(record.getReps())
+                .weight(record.getWeight())
+                .distance(record.getDistance())
+                .incline(record.getIncline())
+                .build();
+    }
+
+    public void saveImage(List<String> imageUrls, Long boardId) {
+        if(imageUrls == null || imageUrls.isEmpty()) {
+            return;
+        }
+
+        for(String url : imageUrls){
+            BoardImages boardImage = BoardImages.builder()
+                    .boardId(boardId)
+                    .imageUrl(url)
+                    .build();
+            boardImageRepository.save(boardImage);
+        }
     }
 }

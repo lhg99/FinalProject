@@ -3,6 +3,7 @@ import { memo } from "react";
 import { DietMemo, FoodData, FoodRecord } from "../../pages/Food/FoodTypes";
 import { formatDate } from "../../utils/DateUtils";
 import axiosInstance from "../axiosInstance";
+import { NULL } from "sass";
 
 
 export const getFoodData = async (): Promise<FoodData[]> => {
@@ -40,6 +41,19 @@ export const getFoodRecord = async (): Promise<FoodRecord[]> => {
     }
 }
 
+export const getFoodPercentage = async(dateInfo: Date) => {
+    const params = {
+        date: formatDate(dateInfo)
+    }
+    try {
+        const response = await axiosInstance.get("/diet/nutrient", { params });
+        console.log("음식 퍼센트 가져오기 성공", response.data);
+        return response.data;
+    } catch (error) {
+        console.error("음식 퍼센트 가져오기 실패", error);
+    }
+}
+
 export const postCustomFoodData = async (): Promise<number> => {
     try {
         const response = await axiosInstance.post<{id: number}>(`/food`);
@@ -53,16 +67,24 @@ export const postCustomFoodData = async (): Promise<number> => {
 
 export const postFoodRecord = async (foodId: number, record: FoodRecord) => {
     const formData = new FormData();
+    let foodQuantity = {};
+
+    if(record.quantity === 0) {
+        foodQuantity = {
+            foodId: foodId,
+            gram: record.gram
+        }
+    } else if (record.gram === 0) {
+        foodQuantity = {
+            foodId: foodId,
+            quantity: record.quantity
+        }
+    }
+    
     const data = {
         mealTime: record.mealTime,
         dietDate: record.dietDate,
-        foodQuantities: [
-            {
-                foodId: foodId,
-                quantity: record.quantity ? record.quantity : null,
-                gram: record.gram ? record.gram : null 
-            }
-        ],
+        foodQuantities: [foodQuantity],
         totalCalories: record.totalCalories,
         memo: record.memo
     }
@@ -89,9 +111,9 @@ export const postFoodMemo = async(memo: string, dateInfo: Date) => {
     }
     try {
         const response = await axiosInstance.post(`/diet/dietMemo`, request);
-        console.log("운동 메모 post 성공!!", response.data);
+        console.log("식단 메모 post 성공!!", response.data);
     } catch (error) {
-        console.error("운동 메모 post 실패", error);
+        console.error("식단 메모 post 실패", error);
     }
 }
 

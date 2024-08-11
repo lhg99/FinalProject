@@ -1,0 +1,22 @@
+.container {
+  background-color: #FFDE95;
+  background-size: cover;
+  background-position: center;
+  height: 100vh;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+}
+  
+  .chartWrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 100px; /* 두 차트 사이의 간격 설정 */
+  }
+  
+  .chartContainer {
+    // width: 45%; /* 각 차트의 너비 설정 */
+  }
+  
+  

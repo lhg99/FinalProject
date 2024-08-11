@@ -21,7 +21,7 @@ public class AddCardioRecordRequest {
     private String intensity;
     private Float distance;
     private Float incline;
-    private String memo;
+//    private String memo;
     private Integer satisfaction;
     private LocalDate exerciseDate;
 
@@ -36,7 +36,7 @@ public class AddCardioRecordRequest {
                 .incline(request.getIncline())
                 .exerciseDate(request.getExerciseDate() != null ? request.getExerciseDate() : LocalDate.now())
                 .recordDate(LocalDateTime.now())
-                .memo(request.getMemo())
+//                .memo(request.getMemo())
                 .satisfaction(request.getSatisfaction())
                 .build();
     }

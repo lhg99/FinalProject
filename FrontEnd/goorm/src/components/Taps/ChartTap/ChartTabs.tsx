@@ -5,6 +5,7 @@ import styles from './ChartTabs.module.scss';
 interface TabsWithButtonProps {
   selectedTab: string;
   setSelectedTab: (tab: string) => void;
+  basePath: string;  // 추가된 prop
 }
 
 const monthTabs = [
@@ -22,16 +23,17 @@ const monthTabs = [
   { key: 'DEC', label: '12월' },
 ];
 
-const ChartTabs: React.FC<TabsWithButtonProps> = ({ selectedTab, setSelectedTab }) => {
+const ChartTabs: React.FC<TabsWithButtonProps> = ({ selectedTab, setSelectedTab, basePath }) => {
   const navigate = useNavigate();
 
   const handleTabClick = (tab: string) => {
     setSelectedTab(tab);
-    navigate(`/exercise/chart/${tab}`);
+    navigate(`${basePath}/${tab}`); 
   };
 
   return (
     <div className={styles.parentContainer}>
+      <h1 className={styles.year}>2024</h1>
       <div className={styles.tabsContainer}>
         {monthTabs.map((tab) => (
           <div

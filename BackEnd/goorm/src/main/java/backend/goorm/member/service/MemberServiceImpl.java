@@ -130,8 +130,10 @@ public class MemberServiceImpl implements  MemberService{
             throw new CustomException(CustomExceptionType.ALREADY_REG_INFO);
         }
 
+        Optional<Member> findMember = memberRepository.findByMemberId(member.getMemberId());
+
         MemberInfo memberInfo = MemberInfo.builder()
-                .memberId(member)
+                .memberId(findMember.get())
                 .memberHeight(regMemberInfoRequest.getMemberHeight())
                 .memberWeight(regMemberInfoRequest.getMemberWeight())
                 .comment(regMemberInfoRequest.getComment())
@@ -145,23 +147,33 @@ public class MemberServiceImpl implements  MemberService{
 
         Optional<MemberInfo> findInfo = memberInfoRepository.findByIdWithMember(member);
 
+        Optional<Member> findMember = memberRepository.findByMemberId(member.getMemberId());
+
+
         if(!findInfo.isPresent()){
-            throw new CustomException(CustomExceptionType.USER_NOT_FOUND);
+            return MemberInfoResponse.builder()
+                    .memberName(findMember.get().getMemberName())
+                    .memberEmail(findMember.get().getMemberEmail())
+                    .username(findMember.get().getMemberNickname())
+                    .memberRegDate(dateConvertUtil.convertDateToString(findMember.get().getMemberRegDate()))
+                    .memberHeight(null)
+                    .memberWeight(null)
+                    .comment(null)
+                    .memberType(member.getMemberType())
+                    .build();
+        }else{
+            return MemberInfoResponse.builder()
+                    .memberName(findMember.get().getMemberName())
+                    .memberEmail(findMember.get().getMemberEmail())
+                    .username(findMember.get().getMemberNickname())
+                    .memberRegDate(dateConvertUtil.convertDateToString(findMember.get().getMemberRegDate()))
+                    .memberHeight(findInfo.get().getMemberHeight())
+                    .memberWeight(findInfo.get().getMemberWeight())
+                    .comment(findInfo.get().getComment())
+                    .memberType(findMember.get().getMemberType())
+                    .build();
         }
 
-        Member findMember  = findInfo.get().getMemberId();
-
-
-        return MemberInfoResponse.builder()
-                .memberName(findMember.getMemberName())
-                .memberEmail(findMember.getMemberEmail())
-                .username(findMember.getMemberNickname())
-                .memberRegDate(dateConvertUtil.convertDateToString(findMember.getMemberRegDate()))
-                .memberHeight(findInfo.get().getMemberHeight())
-                .memberWeight(findInfo.get().getMemberWeight())
-                .comment(findInfo.get().getComment())
-                .memberType(findMember.getMemberType())
-                .build();
     }
 
     @Override
@@ -182,10 +194,12 @@ public class MemberServiceImpl implements  MemberService{
     public void changeInfo(Member member, ChangeInfoRequest changeInfoRequest) {
         Optional<MemberInfo> findInfo = memberInfoRepository.findByIdWithMember(member);
 
-        if(findInfo.get().getMemberId().getMemberType() == MemberType.SOCIAL){
+        if(member.getMemberType() == MemberType.SOCIAL){
             // 소셜 회원은 비밀번호 변경을 할 수 없음
             throw new CustomException(CustomExceptionType.RUNTIME_EXCEPTION);
         }
+
+        log.info("change nickname = {} , change comment = {}", changeInfoRequest.getUsername(), changeInfoRequest.getComment());
 
         Optional<Member> findByNickname = memberRepository.findByMemberNickname(changeInfoRequest.getUsername());
 
@@ -193,8 +207,27 @@ public class MemberServiceImpl implements  MemberService{
             throw new CustomException(CustomExceptionType.DUPLICATE_INFORMATION);
         }
 
-        findInfo.get().setComment(changeInfoRequest.getComment());
-        findInfo.get().getMemberId().setMemberNickname(changeInfoRequest.getUsername());
+        Optional<Member> changeMember = memberRepository.findByMemberId(member.getMemberId());
+
+        if(member.isMemberInactive()){
+            throw new CustomException(CustomExceptionType.USER_NOT_FOUND);
+        }
+
+        if(findInfo.isPresent()){
+            findInfo.get().setComment(changeInfoRequest.getComment());
+            changeMember.get().setMemberNickname(changeInfoRequest.getUsername());
+        }else{
+            MemberInfo memberInfo = MemberInfo.builder()
+                    .memberId(member)
+                    .memberHeight(null)
+                    .memberWeight(null)
+                    .comment(changeInfoRequest.getComment())
+                    .build();
+
+            memberInfoRepository.save(memberInfo);
+            changeMember.get().setMemberNickname(changeInfoRequest.getUsername());
+        }
+
 
     }
 

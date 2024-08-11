@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import './Map.scss';
-import { SearchIcon } from '../../../image/SearchIcon';
+import { SearchIcon } from '../../../image/Icon/SearchIcon';
 
 declare global {
     interface Window {

@@ -46,8 +46,8 @@ public class SecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity httpSecurity)throws Exception{
 
         httpSecurity
-                .csrf(AbstractHttpConfigurer::disable)
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
+                .csrf(AbstractHttpConfigurer::disable)
                 .httpBasic(AbstractHttpConfigurer::disable)
                 // request 인증 , 인가 설정
                 .authorizeHttpRequests(auth -> auth
@@ -94,7 +94,7 @@ public class SecurityConfig {
     @Bean
     CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOriginPatterns(Arrays.asList("http://localhost:3000/","*"));
+        configuration.setAllowedOriginPatterns(Arrays.asList("http://127.0.0.1:3000","http://127.0.0.1:5500", "http://final-project-app-env.eba-xdjqmujd.ap-northeast-2.elasticbeanstalk.com","*"));
         configuration.setAllowedMethods(Arrays.asList("GET","POST","PUT","DELETE"));
         configuration.setAllowedHeaders(Arrays.asList("*"));
         configuration.setAllowCredentials(true);

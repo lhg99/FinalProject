@@ -4,6 +4,9 @@ import FoodDetails from "./FoodDetails";
 import { FoodData, FoodRecord } from "../../FoodTypes";
 import { useFood } from "../../../../contexts/foodContext";
 import { getFoodRecord } from "../../../../api/Food/foodApi";
+import FoodInfoModal from "../../../../components/Modal/Food/FoodInfoModal";
+import { ModalStore } from "../../../../store/store";
+import { MEAL_TIMES, mealTimeLabels } from './../../../../constants/Food/MealTime';
 
 interface FoodListProps {
   food: FoodData[];
@@ -17,15 +20,9 @@ interface FoodListProps {
 }
 
 const FoodList = ({ food, dateInfo }: FoodListProps) => {
-  const {
-    state: {
-      selectedFood,
-      foodRecords,
-      selectedFoodRecords,
-    },
-    setFoodRecord,
-    setSelectedFoodRecords
-  } = useFood();
+  const { state: { selectedFood, foodRecords, selectedFoodRecords }, setFoodRecord, setSelectedFoodRecords} = useFood();
+
+  const {modals, openModal, closeModal } = ModalStore();
 
   useEffect(() => {
     const fetchRecords = async () => {
@@ -33,24 +30,26 @@ const FoodList = ({ food, dateInfo }: FoodListProps) => {
         const records = await getFoodRecord();
         setFoodRecord(records); // Set records as an array
       } catch (error) {
-        console.error('Failed to fetch exercise records', error);
+        console.error("fetchRecords 실패", error);
       }
     };
     fetchRecords();
   }, [dateInfo]);
 
-  const filteredRecords = useMemo(() => {
+  useEffect(() => {
     if (!dateInfo) {
-      console.log('No dateInfo provided');
-      return [];
+      console.log("No dateInfo provided");
+      setSelectedFoodRecords([]); // 상태 초기화
+      return;
     }
 
     const { year, month, day } = dateInfo;
     const selectedDate = new Date(year, month - 1, day);
 
     if (!Array.isArray(foodRecords)) {
-      console.log('No food records found');
-      return [];
+      console.log("No food records found");
+      setSelectedFoodRecords([]); // 상태 초기화
+      return;
     }
 
     const records = foodRecords.filter((record) => {
@@ -63,8 +62,10 @@ const FoodList = ({ food, dateInfo }: FoodListProps) => {
     });
 
     setSelectedFoodRecords(records);
+  }, [dateInfo, foodRecords]);
 
-    return records.map((record) => {
+  const filteredRecords = useMemo(() => {
+    return selectedFoodRecords.map((record) => {
       const foodInfo = food.find(
         (ex) =>
           ex.foodName.replace(/\s+/g, "").toLowerCase() ===
@@ -81,15 +82,18 @@ const FoodList = ({ food, dateInfo }: FoodListProps) => {
         return { ...record, id: 0, name: "Unknown Food", isNew: false };
       }
     });
-  }, [dateInfo, foodRecords, food]);
+  }, [selectedFoodRecords, food]);
 
   const combinedRecords = useMemo(() => {
     if (!Array.isArray(foodRecords)) {
-      console.log('No food records found');
+      console.log("No food records found");
       return [];
     }
 
-    const maxRecordId = Math.max(0, ...foodRecords.map(record => record.dietId));
+    const maxRecordId = Math.max(
+      0,
+      ...foodRecords.map((record) => record.dietId)
+    );
 
     const selectedFoodRecords: FoodRecord[] = selectedFood.map((food) => {
       return {
@@ -110,7 +114,7 @@ const FoodList = ({ food, dateInfo }: FoodListProps) => {
           sugar: food.sugar,
           cholesterol: food.cholesterol,
           saturatedFat: food.saturatedFat,
-          transFat: food.transFat
+          transFat: food.transFat,
         },
         totalCalories: food.calories * 0,
         memo: "",
@@ -120,25 +124,51 @@ const FoodList = ({ food, dateInfo }: FoodListProps) => {
     return [...filteredRecords, ...selectedFoodRecords];
   }, [filteredRecords, foodRecords, selectedFood, dateInfo]);
 
+  // mealTime별로 묶은 record
+  const groupedRecords = useMemo(() => {
+    const groups: { [key in keyof typeof MEAL_TIMES]: FoodRecord[] } = {
+      BREAKFAST: [],
+      LUNCH: [],
+      DINNER: [],
+      SNACK: [],
+      OTHER: []
+    };
+
+    combinedRecords.forEach((record) => {
+      const mealTimeKey = record.mealTime as keyof typeof groups;
+      if (mealTimeKey in groups) {
+        groups[mealTimeKey].push(record);
+      }
+    });
+
+    return groups;
+  }, [combinedRecords]);
+
+  const handleModalOpen = () => {
+    openModal("foodInfo");
+  }
+
   return (
     <FoodListWrapper>
       <FoodTextContainer>
         <FoodText>오늘의 음식 목록</FoodText>
+        <DetailButton onClick={handleModalOpen}>상세 정보</DetailButton>
       </FoodTextContainer>
       <FoodListContainer>
-        {combinedRecords.length > 0 ? (
-          combinedRecords.map((record) => (
-            <FoodDetails
-              key={record.dietId}
-              food={record}
-            />
-          ))
-        ) : (
-          <FoodTextContainer>
-            <FoodText>음식 기록 없음</FoodText>
-          </FoodTextContainer>
-        )}
+        {Object.entries(groupedRecords).map(([mealTime, records]) => (
+            <React.Fragment key={mealTime}>
+              {records.length > 0 && (
+                <>
+                  <MealTimeHeading>{mealTimeLabels[mealTime as keyof typeof mealTimeLabels]}</MealTimeHeading>
+                  {records.map((record) => (
+                    <FoodDetails key={record.dietId} food={record} />
+                  ))}
+                </>
+              )}
+            </React.Fragment>
+          ))}
       </FoodListContainer>
+      <FoodInfoModal isOpen={modals.foodInfo?.isOpen} onClose={() => closeModal("foodInfo")} />
     </FoodListWrapper>
   );
 };
@@ -157,17 +187,41 @@ const FoodListWrapper = styled.div`
 
 const FoodTextContainer = styled.div`
   margin-top: 0.625rem;
+  display: flex; /* Flexbox로 변경 */
+  align-items: center; /* 수직 중앙 정렬 */
 `;
 
 const FoodText = styled.span`
-  font-weight: bold;
   font-size: 1.25rem;
   margin-left: 0.9375rem;
+`;
+
+const DetailButton = styled.button`
+  margin-left: auto;
+  margin-right: 0.9375rem;
+  margin-top: 0.3125rem;
+  padding: 0.25rem 0.5rem;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 0.875rem;
+  transition: background-color 0.3s;
+
+  &:hover {
+    background-color: #0056b3;
+  }
 `;
 
 const FoodListContainer = styled.div`
   display: flex;
   flex-direction: column;
   width: 97%;
-  margin-top: 0.625rem;
+  margin-top: 0.3125rem;
+`;
+
+const MealTimeHeading = styled.h3`
+  font-size: 1.25rem;
+  margin-left: 0.9375rem;
 `;

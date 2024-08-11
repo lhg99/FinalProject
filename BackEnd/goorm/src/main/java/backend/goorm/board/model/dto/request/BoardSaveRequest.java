@@ -2,6 +2,7 @@ package backend.goorm.board.model.dto.request;
 
 import backend.goorm.board.model.enums.BoardCategory;
 import backend.goorm.board.model.enums.BoardType;
+import jakarta.persistence.Lob;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
@@ -21,6 +22,7 @@ public class BoardSaveRequest {
     @NotBlank
     private String boardTitle;
 
+    @Lob
     @NotBlank
     private String boardContent;
 
@@ -29,6 +31,6 @@ public class BoardSaveRequest {
 
     private BoardCategory boardCategory;
 
-    private List<String> imageUrls;
+    private List<Long> trainingRecords;
 
 }

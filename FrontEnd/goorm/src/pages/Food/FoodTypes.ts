@@ -26,10 +26,10 @@ export interface DietMemo {
 export interface FoodRecord {
     dietId: number;
     mealTime: string;
-    quantity: number;
+    quantity: number | null;
     dietMemo?: string;
     dietDate: string;
-    gram: number;
+    gram: number | null;
     foodRes: {
         foodId: number,
         foodName: string,
@@ -46,4 +46,13 @@ export interface FoodRecord {
     totalCalories: number;
     totalGram?: number;
     memo?: string;
+}
+
+export interface FoodCount {
+    [mealTime: string]: {
+        carbsPercentage: number;
+        fatPercentage: number;
+        proteinPercentage: number;
+        totalCalories: number;
+    };
 }

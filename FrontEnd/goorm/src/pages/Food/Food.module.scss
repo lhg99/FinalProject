@@ -1,12 +1,12 @@
-@font-face {
-    font-family: 'goorm-sans-bold';
-    src: url('https://fastly.jsdelivr.net/gh/projectnoonnu/2408@1.0/goorm-sans-bold.woff2') format('woff2');
-    font-style: normal;
-}
-
-* {
-    font-family: 'goorm-sans-bold', sans-serif;
-    font-weight: 400;
+.pageBackground {
+    background-color: #FFDE95;
+    background-size: cover;
+    background-position: center;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
 }
 
 .food {
@@ -16,6 +16,7 @@
     padding: 0 1.25rem;
     margin: 0 auto;
     max-width: 100rem;
+    background-color: white;
 
     .foodContainer {
         display: flex;

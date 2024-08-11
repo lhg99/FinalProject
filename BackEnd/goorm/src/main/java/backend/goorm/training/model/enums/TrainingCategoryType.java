@@ -8,5 +8,6 @@ public enum TrainingCategoryType {
     어깨,
     이두,
     삼두,
-    복근
+    복근,
+    기타
 }

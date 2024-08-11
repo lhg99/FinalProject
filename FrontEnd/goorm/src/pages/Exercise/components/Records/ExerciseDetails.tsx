@@ -88,9 +88,7 @@ const ExerciseDetails: React.FC<ExerciseDetailProps> = ({
     calorie,
     sets,
     weight,
-    count,
-    updateExerciseRecords,
-    updateExerciseDetails,
+    count
   ]);
 
   const handleModalClick = () => {

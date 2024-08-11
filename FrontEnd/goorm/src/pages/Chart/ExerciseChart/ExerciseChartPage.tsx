@@ -3,6 +3,7 @@ import { useParams } from 'react-router-dom';
 import { ExerciseRecords } from './../../../pages/Exercise/ExerciseTypes';
 import BarChart from './BarChart/BarChart';
 import DoughnutChart from './DoughnutChart/DoughnutChart';
+import ScatterChart from './ScatterChart/ScatterChart';
 import styles from './ExerciseChartPage.module.scss';
 import { getExerciseRecords } from '../../../api/Exercise/exerciseApi';
 import { useExercise } from '../../../contexts/exerciseContext';
@@ -10,7 +11,7 @@ import ChartTabs from '../../../components/Taps/ChartTap/ChartTabs';
 
 const ExerciseChartPage: React.FC = () => {
   const { month } = useParams<{ month: string }>();
-  const [selectedTab, setSelectedTab] = useState<string>(month || 'JAN');
+  const [selectedTab, setSelectedTab] = useState<string>(month || 'AUG');
   const { state: {exerciseRecords,}, setExerciseRecords } = useExercise();
 
   useEffect(() => {
@@ -99,16 +100,23 @@ const ExerciseChartPage: React.FC = () => {
     ],
   };
 
+  const scatterChartData = filteredRecords.map(record => ({
+    x: new Date(record.exerciseDate),
+    y: 1, // y축 값은 임의로 1로 설정
+  }));
+
   return (
     <div className={styles.container}>
-      <h2>2024</h2>
-      <ChartTabs selectedTab={selectedTab} setSelectedTab={setSelectedTab} />
+      <ChartTabs selectedTab={selectedTab} setSelectedTab={setSelectedTab} basePath="/exercise/chart" />
       <div className={styles.chartWrapper}>
-        <div className={styles.chartContainer}>
+        <div className={styles.BarChartContainer}>
           <BarChart data={barChartData} />
         </div>
-        <div className={styles.chartContainer}>
+        <div className={styles.DoughnutChartContainer}>
           <DoughnutChart data={doughnutChartData} />
+        </div>
+        <div className={styles.ScatterchartContainer}>
+          <ScatterChart data={scatterChartData} month={selectedTab} />
         </div>
       </div>
     </div>

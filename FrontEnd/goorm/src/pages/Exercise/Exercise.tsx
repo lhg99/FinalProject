@@ -12,7 +12,7 @@
  * ExerciseMemo: CKEditor를 이용한 텍스트, 사진 넣을 수 있는 컴포넌트
  */
 
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useState } from "react";
 import MyCalendar from "./components/Date/Calendar";
 import ExerciseMemo from "./ExerciseMemo";
 import ExerciseSearch from "./ExerciseSearch";
@@ -22,7 +22,6 @@ import ExerciseCategoryTable from "./ExerciseCategoryTable";
 import { useExercise } from "../../contexts/exerciseContext";
 import { ExerciseData, ExerciseRecords } from "./ExerciseTypes";
 import DateSelector from "./components/Date/DateSelector";
-import { useAuth } from "../Login/auth/AuthContext";
 import {
   EditExerciseRecord,
   postCardioRecord,
@@ -35,7 +34,6 @@ import { formatDateInfo } from "../../utils/DateUtils";
 const Exercise: React.FC = () => {
   const [dateInfo, setDateInfo] = useState<{ year: number; month: number; day: number; weekday: string; formattedDate: string } | null>(null);
   const [customExerciseName, setCustomExerciseName] = useState<string>("");
-  const { user } = useAuth();
 
   const {
     state: {
@@ -52,18 +50,6 @@ const Exercise: React.FC = () => {
     setStartDate,
     setEndDate,
   } = useExercise();
-
-  useEffect(() => {
-    // body 배경 제거
-    document.body.style.background = 'none';
-
-    return () => {
-      // 페이지를 떠날 때 body 배경 복원
-      document.body.style.background = "url('./pages/Login/Landing/landing2.png')";
-      document.body.style.backgroundSize = 'cover';
-      document.body.style.backgroundPosition = 'center';
-    };
-  }, []);
 
   const handleAddExercise = useCallback(
     (exercise: ExerciseData) => {
@@ -177,47 +163,49 @@ const Exercise: React.FC = () => {
   };
 
   return (
-    <div className={styles.exercise}>
-      <div className={styles.exerciseContainer}>
-        <div className={styles.leftColumn}>
-          <div className="calendar">
-            <MyCalendar onDateChange={handleDateChange} />
-            <DateSelector
-              startDate={startDate}
-              endDate={endDate}
-              onHandleStartDate={handleStartDate}
-              onHandleEndDate={handleEndDate}
-            ></DateSelector>
-            <ExerciseCategoryTable />
-          </div>
-        </div>
-        <div className={styles.rightColumn}>
-          {dateInfo && (
-            <div className={styles.dateInfo}>
-              <p
-                className={styles.dateText}
-              >{`${dateInfo.year}년 ${dateInfo.month}월 ${dateInfo.day}일 ${dateInfo.weekday}`}</p>
-            </div>
-          )}
-          <div className={styles.searchListContainer}>
-            <div className={styles.searchColumn}>
-              <ExerciseSearch
-                onAddExercise={handleAddExercise}
-                onAddCustomExercise={handleAddCustomExercise}
-              />
-              <ExerciseList
-                dateInfo={dateInfo}
-                exercises={selectedExercises}
-                onExerciseNameChange={handleExerciseNameChange}
-              />
+    <div className={styles.pageBackground}>
+      <div className={styles.exercise}>
+        <div className={styles.exerciseContainer}>
+          <div className={styles.leftColumn}>
+            <div className="calendar">
+              <MyCalendar onDateChange={handleDateChange} />
+              <DateSelector
+                startDate={startDate}
+                endDate={endDate}
+                onHandleStartDate={handleStartDate}
+                onHandleEndDate={handleEndDate}
+              ></DateSelector>
+              <ExerciseCategoryTable />
             </div>
           </div>
+          <div className={styles.rightColumn}>
+            {dateInfo && (
+              <div className={styles.dateInfo}>
+                <p
+                  className={styles.dateText}
+                >{`${dateInfo.year}년 ${dateInfo.month}월 ${dateInfo.day}일 ${dateInfo.weekday}`}</p>
+              </div>
+            )}
+            <div className={styles.searchListContainer}>
+              <div className={styles.searchColumn}>
+                <ExerciseSearch
+                  onAddExercise={handleAddExercise}
+                  onAddCustomExercise={handleAddCustomExercise}
+                />
+                <ExerciseList
+                  dateInfo={dateInfo}
+                  exercises={selectedExercises}
+                  onExerciseNameChange={handleExerciseNameChange}
+                />
+              </div>
+            </div>
+          </div>
         </div>
-      </div>
-      <ExerciseMemo dateInfo={dateInfo} />
-      <div className={styles.buttonContainer}>
-        <button className={styles.saveButton} onClick={handleEdit}>수정하기</button>
-        <button className={styles.saveButton} onClick={handleSave}>저장하기</button>
+        <ExerciseMemo dateInfo={dateInfo} />
+        <div className={styles.buttonContainer}>
+          <button className={styles.saveButton} onClick={handleEdit}>수정하기</button>
+          <button className={styles.saveButton} onClick={handleSave}>저장하기</button>
+        </div>
       </div>
     </div>
   );

@@ -3,6 +3,8 @@ import { useForm } from 'react-hook-form';
 import { Link, useNavigate } from 'react-router-dom';
 import styles from './Login.module.scss';
 import { useAuth } from './auth/AuthContext';
+import kakaoLogin from '../../image/kakao_login_medium_wide.png'
+import axiosInstance from '../../api/axiosInstance';
 
 interface LoginFormInputs {
   loginId: string;
@@ -13,6 +15,8 @@ const Login: React.FC = () => {
   const { register, handleSubmit, formState: { errors } } = useForm<LoginFormInputs>();
   const navigate = useNavigate();
   const { login } = useAuth();
+
+  const kakaoURL = `http://final-project-app-env.eba-xdjqmujd.ap-northeast-2.elasticbeanstalk.com/oauth2/authorization/kakao`
 
   const submitForm = async (data: LoginFormInputs) => {
     const { loginId, loginPw } = data;
@@ -61,6 +65,9 @@ const Login: React.FC = () => {
         <p>
           아직 계정이 없으신가요? <Link to="/signup" className={styles.link}>회원가입</Link>
         </p>
+        <a href={kakaoURL}>
+          <img src={kakaoLogin} alt='카카오로 로그인'/>
+        </a>
       </div>
     </div>
   );

@@ -1,3 +1,10 @@
+
+export enum BoardType {
+  FREE = 'FREE',
+  WORKOUT = 'WORKOUT',
+  DIET = 'DIET'
+}
+
 export interface BoardPost {
     boardType: string;
     title: string;
@@ -18,6 +25,19 @@ export interface BoardDetails {
     boardCategory: string;
     imageUrls: string[];
     likes: boolean;
+    trainingRecordItems?: { 
+        recordId: number;
+        exerciseDate: string;
+        categoryName: string;
+        trainingName: string;
+        durationMinutes: number;
+        caloriesBurned: number;
+        sets: number;
+        reps: number;
+        weight: number;
+        distance: number;
+        incline: number;
+    }[]; 
 }
 
 export interface PostListProps {
@@ -35,7 +55,6 @@ export interface PaginationProps {
     paginate: (pageNumber: number) => any;
 }
 
-
 export interface PostItemProps {
     post: BoardDetails;
 }
@@ -51,7 +70,7 @@ export interface BoardProps {
     currentPage: number;
     postsPerPage: number;
     posts: BoardDetails[];
-    setPosts: React.Dispatch<React.SetStateAction<BoardDetails[]>>; // setPosts 추가
+    setPosts: React.Dispatch<React.SetStateAction<BoardDetails[]>>;
 }
 
 export interface Comment {
