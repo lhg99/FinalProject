@@ -20,8 +20,12 @@ const MyPageEdit: React.FC<MyPageEditProps> = ({
 
   const navigate = useNavigate();
 
+  const handleButtonClick = () => {
+    navigate('/mypage');
+  };
+
+
   useEffect(() => {
-    // Reset state if initial values change
     setUsername(initialUsername);
     setComment(initialComment);
   }, [initialUsername, initialComment]);
@@ -44,7 +48,8 @@ const MyPageEdit: React.FC<MyPageEditProps> = ({
   };
 
   return (
-    <div className={styles.container}>
+    <div className={styles.pageBackground}>
+      <div className={styles.container}>
       <h2 className={styles.title}>회원정보 수정</h2>
       {error && <div className={styles.error}>{error}</div>}
       <form onSubmit={handleUpdate} className={styles.editForm}>
@@ -54,7 +59,7 @@ const MyPageEdit: React.FC<MyPageEditProps> = ({
             type="text"
             id="username"
             name="username"
-            value={username} // Ensure input reflects state
+            value={username}
             onChange={(e) => setUsername(e.target.value)}
             required
           />
@@ -65,14 +70,16 @@ const MyPageEdit: React.FC<MyPageEditProps> = ({
           <textarea
             id="comment"
             name="comment"
-            value={comment} // Ensure textarea reflects state
+            value={comment}
             onChange={(e) => setComment(e.target.value)}
             required
           />
         </div>
 
-        <button className={styles.button} type="submit">수정사항 저장</button>
+          <button className={styles.button} type="submit">수정사항 저장</button>
+          <button className={styles.button} onClick={handleButtonClick}>취소</button>
       </form>
+    </div>
     </div>
   );
 };
