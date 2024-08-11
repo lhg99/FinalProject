@@ -55,19 +55,20 @@ public class BoardController {
     public ResponseEntity getBoardList(@PathVariable int page,
                                        @RequestParam BoardType boardType,
                                        @RequestParam(defaultValue = "DATE_DESC")BoardSortType sortType,
-                                       @RequestParam(defaultValue = "")List<BoardCategory> categories){
+                                       @RequestParam(defaultValue = "")List<BoardCategory> categories,
+                                       @RequestParam(defaultValue = "")String keyword){
 
-        BoardListResponse boardList = boardService.getBoardList(boardType, page, sortType, categories);
+        BoardListResponse boardList = boardService.getBoardList(boardType, page, sortType, categories, keyword);
 
         return ResponseEntity.ok(boardList);
     }
 
-    @GetMapping("/detail/{number}")
-    public ResponseEntity getBoardDetail(@PathVariable Long number, Authentication authentication){
+    @GetMapping("/detail/{boardId}")
+    public ResponseEntity getBoardDetail(@PathVariable Long boardId, Authentication authentication){
 
         PrincipalDetails principalDetails = (PrincipalDetails) authentication.getPrincipal();
 
-        BoardDetailResponse detailResponse = boardService.getBoardDetail(number, principalDetails.member());
+        BoardDetailResponse detailResponse = boardService.getBoardDetail(boardId, principalDetails.member());
 
         return ResponseEntity.ok(detailResponse);
     }

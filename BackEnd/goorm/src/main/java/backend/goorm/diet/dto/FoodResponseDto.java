@@ -13,9 +13,9 @@ import java.util.stream.Collectors;
 @Builder
 public class FoodResponseDto {
     private Long foodId;
-    private String foodType;
+    private String userName;
     private String foodName;
-    private Double amount;
+    private Float gram;
     private Float calories;
     private Float carbohydrate;
     private Float protein;
@@ -25,16 +25,15 @@ public class FoodResponseDto {
     private Float cholesterol;
     private Float saturatedFat;
     private Float transFat;
-//    private String imageUrl;
     private Integer useCount;
     private Boolean userRegister;
 
     public static FoodResponseDto fromEntity(Food food) {
         return FoodResponseDto.builder()
                 .foodId(food.getFoodId())
-                .foodType(food.getFoodType())
+                .userName(food.getMember() != null ? food.getMember().getMemberNickname() : "admin")
                 .foodName(food.getFoodName())
-                .amount(food.getAmount())
+                .gram(food.getGram())
                 .calories(food.getCalories())
                 .carbohydrate(food.getCarbohydrate())
                 .protein(food.getProtein())
@@ -44,7 +43,6 @@ public class FoodResponseDto {
                 .cholesterol(food.getCholesterol())
                 .saturatedFat(food.getSaturatedFat())
                 .transFat(food.getTransFat())
-//                .imageUrl(food.getImageUrl())
                 .useCount(food.getUseCount())
                 .userRegister(food.getUserRegister())
                 .build();

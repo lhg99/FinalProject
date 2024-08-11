@@ -11,10 +11,11 @@ import java.util.List;
 
 public interface FoodRepository extends JpaRepository<Food, Long> {
 
+    @Query(
+            "SELECT f"
+                    + " FROM Food f"
+                    + " WHERE f.foodName LIKE %?1%"
+                    + " ORDER BY LENGTH(f.foodName), f.foodName")
     List<Food> findDistinctFoodNameByMember(String name, Member member, Pageable pageable);
 
-
-    List<Food> findDistinctFoodByMember( Member member, Pageable pageable);
-
-    List<Food> findDistinctByFoodNameContainingAndMember(String name, Member member, Pageable pageable);
 }

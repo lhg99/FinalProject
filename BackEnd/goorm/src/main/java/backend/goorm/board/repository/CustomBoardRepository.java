@@ -10,5 +10,5 @@ import org.springframework.data.domain.Pageable;
 import java.util.List;
 
 public interface CustomBoardRepository {
-    Page<Board> getBoardList(BoardType type, List<BoardCategory> categories, BoardSortType sortType, Pageable pageable);
+    Page<Board> getBoardList(BoardType type, List<BoardCategory> categories, BoardSortType sortType, String keyword, Pageable pageable);
 }
