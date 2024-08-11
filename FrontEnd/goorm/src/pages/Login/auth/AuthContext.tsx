@@ -89,7 +89,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
   useEffect(() => {
     console.log("현재 로그인 상태:", isLoggedIn());
-  }, [user]);
+  }, []);
 
   const value = { user, login, logout, isLoggedIn };
 
