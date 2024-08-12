@@ -15,6 +15,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.Optional;
 
 @Slf4j
@@ -143,6 +144,13 @@ public class MemberController {
         Optional<Member> byMemberId = memberRepository.findByMemberId(member.getMemberId());
 
         return byMemberId.get().getMemberNickname();
+    }
+
+    @GetMapping("/testtime")
+    public String testTime(){
+        LocalDateTime time = LocalDateTime.now();
+
+        return time.toString();
     }
 
 }
