@@ -53,7 +53,6 @@ export const postCardioRecord = async (request: PostCardioRecordRequest): Promis
     formData.append('durationMinutes', request.durationMinutes.toString());
     formData.append('intensity', request.intensity);
     formData.append('distance', request.distance?.toString() || '');
-    formData.append('incline', request.incline?.toString() || '');
     formData.append('satisfaction', request.satisfaction.toString());
 
     try {
