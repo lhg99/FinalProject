@@ -296,7 +296,7 @@ public class BoardServiceImpl implements BoardService {
                 .reps(record.getReps())
                 .weight(record.getWeight())
                 .distance(record.getDistance())
-                .incline(record.getIncline())
+//                .incline(record.getIncline())
                 .build();
     }
 

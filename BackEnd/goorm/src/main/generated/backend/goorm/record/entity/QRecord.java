@@ -30,8 +30,6 @@ public class QRecord extends EntityPathBase<Record> {
 
     public final DatePath<java.time.LocalDate> exerciseDate = createDate("exerciseDate", java.time.LocalDate.class);
 
-    public final NumberPath<Float> incline = createNumber("incline", Float.class);
-
     public final StringPath intensity = createString("intensity");
 
     public final backend.goorm.member.model.entity.QMember member;

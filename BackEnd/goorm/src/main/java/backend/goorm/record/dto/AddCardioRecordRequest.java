@@ -20,7 +20,6 @@ public class AddCardioRecordRequest {
     private Integer durationMinutes;
     private Intensity intensity; // 변경된 부분
     private Float distance;
-    private Float incline;
     private Integer satisfaction;
     private LocalDate exerciseDate;
 
@@ -31,7 +30,6 @@ public class AddCardioRecordRequest {
                 .durationMinutes(request.getDurationMinutes())
                 .intensity(request.getIntensity().name()) // 변경된 부분
                 .distance(request.getDistance())
-                .incline(request.getIncline())
                 .exerciseDate(request.getExerciseDate() != null ? request.getExerciseDate() : LocalDate.now())
                 .recordDate(LocalDateTime.now())
                 .satisfaction(request.getSatisfaction())
