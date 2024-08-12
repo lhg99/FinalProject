@@ -1,5 +1,6 @@
 package backend.goorm.member.model.entity;
 
+import backend.goorm.member.model.enums.Gender;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -25,5 +26,10 @@ public class MemberInfo {
     private Float memberWeight;
 
     private String comment;
+
+    private Integer memberAge;
+
+    @Enumerated(EnumType.STRING)
+    private Gender memberGender;
 
 }
