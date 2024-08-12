@@ -79,7 +79,7 @@ const ExerciseRecordPage: React.FC = () => {
           <thead>
             <tr>
               {['날짜', '카테고리', '운동', '시간', '칼로리', '세트', '횟수', '중량', '거리'].map((header, index) => (
-                <th key={index} className={classNames(styles.tableHeader)} style={{ width: '60px' }}>{header}</th>
+                <th key={index} className={classNames(styles.tableHeader)} style={{ width: '70px' }}>{header}</th>
               ))}
             </tr>
           </thead>
