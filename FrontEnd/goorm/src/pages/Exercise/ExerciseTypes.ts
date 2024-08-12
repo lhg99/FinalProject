@@ -32,7 +32,6 @@ export interface ExerciseRecords {
     distance?: number;
     durationMinutes: number;
     caloriesBurned?: number;
-    incline?: number; // 경사
     reps?: number;
     memo?: string;
     satisfaction: number;
@@ -40,4 +39,5 @@ export interface ExerciseRecords {
     categoryName: string;
     trainingId: number;
     isAddingExercise?: boolean;
+    totalCaloriesBurned?: number;
 }

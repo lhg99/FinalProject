@@ -25,9 +25,9 @@ public class RecordDto {
     private LocalDate exerciseDate;
     private String categoryName;
     private LocalDateTime modifiedDate;
+    private Float totalCaloriesBurned;
 
-    // fromEntity method to map Record entity and memo content to RecordDto
-    public static RecordDto fromEntity(Record record, String memo) {
+    public static RecordDto fromEntity(Record record, String memo, Float totalCaloriesBurned) {
         RecordDto dto = new RecordDto();
         dto.setRecordId(record.getRecordId());
         dto.setCaloriesBurned(record.getCaloriesBurned());
@@ -44,11 +44,15 @@ public class RecordDto {
         dto.setExerciseDate(record.getExerciseDate());
         dto.setCategoryName(String.valueOf(record.getTraining().getCategory().getCategoryName())); // Correctly retrieve category name
         dto.setModifiedDate(record.getModifiedDate());
+        dto.setTotalCaloriesBurned(totalCaloriesBurned);
         return dto;
     }
 
-    // Overloaded method if memo is not available
+    public static RecordDto fromEntity(Record record, String memo) {
+        return fromEntity(record, memo, null);
+    }
+
     public static RecordDto fromEntity(Record record) {
-        return fromEntity(record, null); // Use null or default value if memo is not provided
+        return fromEntity(record, null, null);
     }
 }

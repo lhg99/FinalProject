@@ -15,7 +15,7 @@ public class AddTrainingRequest {
         Training training = new Training();
         training.setTrainingName(request.getName());
         training.setCategory(category);
-        training.setUserCustom(true);  // Ensure user_custom is set to true for custom training
+        training.setUserCustom(true);
         return training;
     }
 }

@@ -60,7 +60,7 @@ const App: React.FC = () => {
             <Route path="/exercise" element={<ProtectedRoute><Exercise /></ProtectedRoute>} />
             <Route path="/exercise/records/:month" element={<ProtectedRoute><ExerciseRecordPage /></ProtectedRoute>} />
             <Route path="/exercise/chart/:month" element={<ProtectedRoute><ExerciseChartPage /></ProtectedRoute>} />
-            <Route path="/food" element={<Food />} />
+            <Route path="/food" element={<ProtectedRoute><Food /></ProtectedRoute>} />
             <Route path="/food/records/:month" element={<ProtectedRoute><DietRecordList /></ProtectedRoute>} />
             <Route path="/food/chart/:month" element={<ProtectedRoute><DietChartPage /></ProtectedRoute>} />
 

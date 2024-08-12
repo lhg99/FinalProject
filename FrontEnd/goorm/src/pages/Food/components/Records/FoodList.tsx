@@ -179,7 +179,6 @@ const FoodListWrapper = styled.div`
   width: 100%;
   max-height: 36.25rem;
   overflow-y: auto;
-  border: 1px solid #afafaf;
   border-radius: 5px;
   border-left: none;
   box-sizing: content-box;
@@ -193,6 +192,7 @@ const FoodTextContainer = styled.div`
 
 const FoodText = styled.span`
   font-size: 1.25rem;
+  font-weight: bold;
   margin-left: 0.9375rem;
 `;
 
@@ -201,16 +201,15 @@ const DetailButton = styled.button`
   margin-right: 0.9375rem;
   margin-top: 0.3125rem;
   padding: 0.25rem 0.5rem;
-  background-color: #007bff;
-  color: white;
-  border: none;
+  background-color: white;
+  border: 1px solid #AFAFAF;
   border-radius: 5px;
   cursor: pointer;
   font-size: 0.875rem;
   transition: background-color 0.3s;
 
   &:hover {
-    background-color: #0056b3;
+    background-color: #699732;
   }
 `;
 

@@ -1,13 +1,13 @@
-/* @font-face {
-  font-family: 'goorm-sans-bold';
-  src: url('https://fastly.jsdelivr.net/gh/projectnoonnu/2408@1.0/goorm-sans-bold.woff2') format('woff2');
+@font-face {
+  font-family: 'goorm-sans-regular';
+  src: url('./fonts/goorm-sans-regular.ttf') format('truetype');
   font-style: normal;
+  font-weight: normal;
 }
 
 * {
-  font-family: 'goorm-sans-bold', sans-serif;
-  font-weight: 400;
-} */
+  font-family: 'goorm-sans-regular', sans-serif;
+}
 
 /* @font-face {
   font-family: "Goorm Sans", sans-serif;

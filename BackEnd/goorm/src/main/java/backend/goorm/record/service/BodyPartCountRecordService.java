@@ -50,8 +50,6 @@ public class BodyPartCountRecordService {
             newRecord.setEndDate(record.getExerciseDate().withDayOfMonth(record.getExerciseDate().lengthOfMonth()));
             bodyPartCountRecordRepository.save(newRecord);
         }
-
-        log.info("Body part count record saved or updated for record: {}", record.getRecordId());
     }
 
     public Map<TrainingCategoryType, BodyPartCountInfo> getBodyPartCountInfoMap(List<Record> records) {
