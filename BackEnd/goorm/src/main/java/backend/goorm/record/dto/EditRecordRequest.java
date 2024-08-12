@@ -23,7 +23,6 @@ public class EditRecordRequest {
     private Integer weight;
     private Integer reps;
     private Float distance;
-    private Float incline;
     private String memo;
     private Integer satisfaction;
 
@@ -35,7 +34,6 @@ public class EditRecordRequest {
 
         if (isCardio) {
             // 유산소 운동 필드 업데이트
-            record.setIncline(edit.getIncline());
             record.setDistance(edit.getDistance());
             record.setCaloriesBurned(calculatedCalories); // 칼로리 재계산
         } else {
