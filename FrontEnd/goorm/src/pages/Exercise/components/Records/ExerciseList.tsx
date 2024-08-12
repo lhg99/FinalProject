@@ -155,6 +155,7 @@ const ExerciseTextContainer = styled.div`
 
 const ExerciseText = styled.span`
   font-size: 1.25rem;
+  font-weight: bold;
   margin-left: 0.9375rem;
 `;
 

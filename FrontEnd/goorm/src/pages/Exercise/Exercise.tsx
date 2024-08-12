@@ -21,7 +21,6 @@ import styles from "./Exercise.module.scss";
 import ExerciseCategoryTable from "./ExerciseCategoryTable";
 import { useExercise } from "../../contexts/exerciseContext";
 import { ExerciseData } from "./ExerciseTypes";
-import DateSelector from "./components/Date/DateSelector";
 import { EditExerciseRecord, postCardioRecord, postCustomExerciseData, postExerciseMemo, postStrengthRecord } from "../../api/Exercise/exerciseApi";
 import { formatDateInfo } from "../../utils/DateUtils";
 import { EditExerciseRecordRequest, PostCardioRecordRequest, PostStrengthRecordRequest } from "../../api/Exercise/dto/ExerciseRequest";
@@ -34,7 +33,6 @@ const Exercise: React.FC = () => {
   } | null>(null);
 
   const { showToast } = ToastStore();
-
 
   const {
     state: {
@@ -111,8 +109,7 @@ const Exercise: React.FC = () => {
             const cardioRecordData: PostCardioRecordRequest = {
               ...recordData,
               caloriesBurned: details.caloriesBurned || 0,
-              distance: details.distance,
-              incline: details.incline || 0,
+              distance: details.distance
             };
             await postCardioRecord(cardioRecordData);
           } else {
@@ -160,13 +157,12 @@ const Exercise: React.FC = () => {
           <div className={styles.leftColumn}>
             <div className="calendar">
               <MyCalendar onDateChange={handleDateChange} />
-              <DateSelector
+              <ExerciseCategoryTable 
                 startDate={startDate}
                 endDate={endDate}
                 onHandleStartDate={handleStartDate}
                 onHandleEndDate={handleEndDate}
-              ></DateSelector>
-              <ExerciseCategoryTable />
+              />
             </div>
           </div>
           <div className={styles.rightColumn}>
