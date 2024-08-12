@@ -42,7 +42,6 @@ const FoodSearch = ({ onAddFood, onAddCustomFood } : FoodSearchProps) => {
                 setFood(foodData);
                 setFilteredData(foodData);
                 const categories: FoodCategory[] = [
-                    { categoryName: "전체" },
                     { categoryName: "아침" }, // mealTime: BREAKFAST
                     { categoryName: "점심" }, // mealTime: LUNCH
                     { categoryName: "저녁" }, // mealTime: DINNER
@@ -82,24 +81,16 @@ const FoodSearch = ({ onAddFood, onAddCustomFood } : FoodSearchProps) => {
 
     const handleCategoryChange = (categoryName: string) => {
         console.log("Selected category:", categoryName); // 선택된 카테고리 확인
-        if (categoryName === "전체") {
-            if (selectedCategories.includes("전체")) {
-                setSelectedCategories([]);
-            } else {
-                setSelectedCategories(["전체"]);
-            }
-        } else {
-            const newSelectedCategories = selectedCategories.includes(categoryName)
-                ? selectedCategories.filter(name => name !== categoryName)
-                : [...selectedCategories, categoryName];
+        const newSelectedCategories = selectedCategories.includes(categoryName)
+            ? selectedCategories.filter(name => name !== categoryName)
+            : [...selectedCategories, categoryName];
 
-            if (newSelectedCategories.length > 1) {
-                alert("카테고리는 하나만 선택하세요");
-                return;
-            }
-
-            setSelectedCategories(newSelectedCategories);
+        if (newSelectedCategories.length > 1) {
+            alert("카테고리는 하나만 선택하세요");
+            return;
         }
+            
+        setSelectedCategories(newSelectedCategories);
     };
 
     const handleSearchClick = async () => {
@@ -217,10 +208,9 @@ const FoodSearchContainer = styled.div`
     display: flex;
     flex-direction: column;
     padding: .625rem;
-    width: 28%;
+    width: 23%;
     max-height: 36.25rem;
     overflow-y: auto;
-    border: 1px solid #AFAFAF;
     border-radius: 5px;
 
     &::-webkit-scrollbar {
@@ -236,7 +226,7 @@ const FoodSearchContainer = styled.div`
     &::-webkit-scrollbar-thumb {
         background: #888;
         border-radius: 0.9375rem;
-        border: 2px solid #f1f1f1;
+        border: 1px solid #f1f1f1;
     }
 
     &::-webkit-scrollbar-thumb:hover {
@@ -251,7 +241,11 @@ const CategoriesContainer = styled.div`
 `;
 
 const CategoryText = styled.label`
-    margin-right: 0.3125rem;
+    margin-right: 0.1875rem;
+
+    input {
+        margin-right: 0.1875rem; /* 간격 조정 */
+    }
 `
 
 const SearchForm = styled.form`

@@ -3,11 +3,15 @@ import styles from "./MyPage.module.scss";
 import { userData, getusereData } from '../../../api/mypageApi';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from "../../Login/auth/AuthContext";
+import { ModalStore } from "../../../store/store";
+import UserInfoModal from "../../../components/Modal/Login/UserInfoModal";
 
 const MyPage: React.FC = () => {
   const [user, setUser] = useState<userData | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
+
+  const { modals, openModal, closeModal} = ModalStore();
 
   const navigate = useNavigate();
   const location = useLocation();
@@ -43,6 +47,10 @@ const MyPage: React.FC = () => {
         console.log('Fetched data:', data);
         if (data) {
           setUser(data);
+          if (!data.memberHeight) {
+            alert("추가 정보 없음, 추가 정보 입력으로 이동합니다.");
+            openModal("userInfo"); // comment가 없으면 모달을 표시
+          }
         } else {
           setError("사용자 정보가 없습니다.");
         }
@@ -96,7 +104,8 @@ const MyPage: React.FC = () => {
       ) : (
         <div>사용자 정보를 찾을 수 없습니다.</div>
       )}
-    </div>
+      <UserInfoModal isOpen={modals.userInfo?.isOpen} onClose={() => closeModal("userInfo")} />
+      </div>
     </div>
   );
 };

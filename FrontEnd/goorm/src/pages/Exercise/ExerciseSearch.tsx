@@ -216,7 +216,10 @@ const CategoriesContainer = styled.div`
 `;
 
 const CategoryText = styled.label`
-    margin-right: 0.3125rem;
+    margin-right: 0.1875rem;
+    input {
+        margin-right: 0.1875rem; /* 간격 조정 */
+    }
 `
 
 const SearchForm = styled.form`

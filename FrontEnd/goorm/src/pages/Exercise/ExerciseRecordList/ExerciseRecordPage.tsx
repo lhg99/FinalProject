@@ -78,7 +78,7 @@ const ExerciseRecordPage: React.FC = () => {
         <table className={styles.table}>
           <thead>
             <tr>
-              {['번호', '날짜', '카테고리', '운동', '시간', '칼로리', '세트', '횟수', '중량', '거리', '경사'].map((header, index) => (
+              {['번호', '날짜', '카테고리', '운동', '시간', '칼로리', '세트', '횟수', '중량', '거리'].map((header, index) => (
                 <th key={index} className={classNames(styles.tableHeader)} style={{ width: '60px' }}>{header}</th>
               ))}
             </tr>
@@ -96,7 +96,6 @@ const ExerciseRecordPage: React.FC = () => {
                 record.reps !== null ? `${record.reps} 회` : '',
                 record.weight !== null ? `${record.weight} kg` : '',
                 record.distance !== null ? `${record.distance} km` : '',
-                record.incline !== null ? `${record.incline} incline` : ''
               ];
               return (
                 <tr key={record.recordId} className={classNames(styles.tableRow)}>

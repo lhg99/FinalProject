@@ -3,13 +3,19 @@ import styled from "styled-components";
 import { ExerciseCount } from "./ExerciseTypes";
 import { useExercise } from "../../contexts/exerciseContext";
 import { getExercisePercentage } from "../../api/Exercise/exerciseApi";
+import DateSelector from "./components/Date/DateSelector";
 
-const ExerciseCategoryTable = () => {
+interface ExerciseCategoryTableProps {
+  startDate: Date;
+  endDate: Date;
+  onHandleStartDate: (date: Date) => void;
+  onHandleEndDate: (date: Date) => void;
+}
+
+const ExerciseCategoryTable = ({startDate, endDate, onHandleStartDate, onHandleEndDate}: ExerciseCategoryTableProps) => {
   const [data, setData] = useState<ExerciseCount | null>(null);
-
-  const {
-    state: { startDate, endDate },
-  } = useExercise();
+  const [totalCalories, setTotalCalories] = useState<number | undefined>(undefined);
+  const {state: {exerciseRecords}} = useExercise();
 
   useEffect(() => {
     const fetchData = async () => {
@@ -24,29 +30,45 @@ const ExerciseCategoryTable = () => {
     fetchData();
   }, [startDate, endDate]);
 
+  useEffect(() => {
+    // 유산소 운동의 첫 번째 기록의 totalCaloriesBurned 값을 가져옴
+    const cardioRecord = exerciseRecords.find(record => record.categoryName === "유산소");
+    setTotalCalories(cardioRecord?.totalCaloriesBurned);
+  }, [exerciseRecords]);
+
+
   return (
-    <Table>
-      <thead>
-        <tr>
-          <th>카테고리 구분</th>
-          <th>비율</th>
-        </tr>
-      </thead>
-      <tbody>
-        {data ? (
-          Object.entries(data).map(([categoryName, { percentage }]) => (
-            <tr key={categoryName}>
-              <td>{categoryName}</td>
-              <PercentageTd>{percentage.toFixed(2)} %</PercentageTd>
-            </tr>
-          ))
-        ) : (
+    <div>
+      <ExerciseInfo>유산소 칼로리 소모량: <span className="highlight">{totalCalories?.toFixed(2)}</span> kcal</ExerciseInfo>
+      <DateSelector
+                startDate={startDate}
+                endDate={endDate}
+                onHandleStartDate={onHandleStartDate}
+                onHandleEndDate={onHandleEndDate}
+      ></DateSelector>
+      <Table>
+        <thead>
           <tr>
-            <td colSpan={2}>위에 날짜를 선택해주세요</td>
+            <th>카테고리 구분</th>
+            <th>비율</th>
           </tr>
-        )}
-      </tbody>
-    </Table>
+        </thead>
+        <tbody>
+          {data ? (
+            Object.entries(data).map(([categoryName, { percentage }]) => (
+              <tr key={categoryName}>
+                <td>{categoryName}</td>
+                <PercentageTd>{percentage.toFixed(2)} %</PercentageTd>
+              </tr>
+            ))
+          ) : (
+            <tr>
+              <td colSpan={2}>위에 날짜를 선택해주세요</td>
+            </tr>
+          )}
+        </tbody>
+      </Table>
+    </div>
   );
 };
 
@@ -76,6 +98,15 @@ const Table = styled.table`
   tbody {
     background-color: white;
   }
+`;
+
+const ExerciseInfo = styled.span`
+    font-size: 1.25rem;
+    margin-right: 0.625rem;
+
+    .highlight {
+        font-size: 30px;
+    }
 `;
 
 const PercentageTd = styled.td`
