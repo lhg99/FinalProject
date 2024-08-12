@@ -22,8 +22,6 @@ public class QFood extends EntityPathBase<Food> {
 
     public static final QFood food = new QFood("food");
 
-    public final NumberPath<Double> amount = createNumber("amount", Double.class);
-
     public final NumberPath<Float> calories = createNumber("calories", Float.class);
 
     public final NumberPath<Float> carbohydrate = createNumber("carbohydrate", Float.class);
@@ -37,8 +35,6 @@ public class QFood extends EntityPathBase<Food> {
     public final NumberPath<Long> foodId = createNumber("foodId", Long.class);
 
     public final StringPath foodName = createString("foodName");
-
-    public final StringPath foodType = createString("foodType");
 
     public final NumberPath<Float> gram = createNumber("gram", Float.class);
 

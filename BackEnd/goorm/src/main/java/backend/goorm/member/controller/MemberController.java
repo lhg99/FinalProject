@@ -3,6 +3,7 @@ package backend.goorm.member.controller;
 import backend.goorm.member.model.dto.request.*;
 import backend.goorm.member.model.dto.response.DuplicateCheckResponse;
 import backend.goorm.member.model.dto.response.MemberInfoResponse;
+import backend.goorm.member.repository.MemberRepository;
 import backend.goorm.member.service.MemberService;
 import backend.goorm.member.model.entity.Member;
 import backend.goorm.member.oauth.PrincipalDetails;
@@ -14,6 +15,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
+import java.util.Optional;
 
 @Slf4j
 @RestController
@@ -22,6 +24,7 @@ import java.io.IOException;
 public class MemberController {
 
     private final MemberService memberService;
+    private final MemberRepository memberRepository;
 
     /**
      * 일반 회원이 회원가입 요청을 하는 API
@@ -137,8 +140,9 @@ public class MemberController {
         // member 에서 정보 뺴가시면 됩니다
         Member member = principalDetails.member();
         log.info(principalDetails.member().getMemberName());
+        Optional<Member> byMemberId = memberRepository.findByMemberId(member.getMemberId());
 
-        return member.getMemberName();
+        return byMemberId.get().getMemberNickname();
     }
 
 }
