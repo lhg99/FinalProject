@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { addPost } from '../api/boardAPI';
-import Category from '../components/Category';
-import TextEditor from '../../../components/TextEditor/TextEditor';
 import styles from './CreatePost.module.scss';
+import { addPost } from '../../../api/boardAPI';
+import Category from '../../../components/Category';
+import TextEditor from '../../../../../components/TextEditor/TextEditor';
 
 const CreatePost: React.FC = () => {
   const navigate = useNavigate();
@@ -65,12 +65,13 @@ const CreatePost: React.FC = () => {
         />
         <input 
           type='text' 
-          placeholder='제목' 
+          placeholder='제목을 입력해주세요.' 
           value={title} 
           onChange={handleTitleChange} 
           required
         />
-        <TextEditor defaultValue={content} onChange={handleContentChange} />
+        <TextEditor defaultValue={content} onChange={handleContentChange}
+         />
         <div className={styles.buttonGroup}>
           <button type="button" className={styles.backButton} onClick={() => navigate(`/Board/${boardType.toLowerCase()}`)}>작성 취소</button>
           <button type="submit" className={styles.submitButton}>작성 완료</button>

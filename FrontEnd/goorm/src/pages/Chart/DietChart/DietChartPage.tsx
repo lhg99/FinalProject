@@ -101,7 +101,6 @@ const DietChartPage: React.FC = () => {
 
   return (
     <div className={styles.container}>
-      <h2>2024 식단 기록 차트</h2>
       <ChartTabs selectedTab={selectedTab} setSelectedTab={setSelectedTab} basePath="/food/chart" /> 
       <div className={styles.chartWrapper}>
         <div className={styles.chartContainer}>

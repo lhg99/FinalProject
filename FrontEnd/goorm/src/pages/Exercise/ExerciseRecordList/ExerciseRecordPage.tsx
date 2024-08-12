@@ -73,7 +73,6 @@ const ExerciseRecordPage: React.FC = () => {
 
   return (
     <div className={styles.container}>
-      <h2>2024</h2>
       <RecodsTabs selectedTab={selectedTab} setSelectedTab={setSelectedTab} basePath="/exercise/records" />
       <div className={styles.tableContainer}>
         <table className={styles.table}>

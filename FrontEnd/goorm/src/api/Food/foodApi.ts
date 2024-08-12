@@ -4,6 +4,7 @@ import { DietMemo, FoodData, FoodRecord } from "../../pages/Food/FoodTypes";
 import { formatDate } from "../../utils/DateUtils";
 import axiosInstance from "../axiosInstance";
 import { NULL } from "sass";
+import { EditFoodRecordRequest, PostFoodRecordRequest } from "./dto/FoodRequest";
 
 
 export const getFoodData = async (): Promise<FoodData[]> => {
@@ -65,29 +66,23 @@ export const postCustomFoodData = async (): Promise<number> => {
     }
 }
 
-export const postFoodRecord = async (foodId: number, record: FoodRecord) => {
+export const postFoodRecord = async (request: PostFoodRecordRequest) => {
     const formData = new FormData();
-    let foodQuantity = {};
 
-    if(record.quantity === 0) {
-        foodQuantity = {
-            foodId: foodId,
-            gram: record.gram
-        }
-    } else if (record.gram === 0) {
-        foodQuantity = {
-            foodId: foodId,
-            quantity: record.quantity
-        }
-    }
-    
+    const foodQuantity = request.foodQuantities[0];
+
+
     const data = {
-        mealTime: record.mealTime,
-        dietDate: record.dietDate,
-        foodQuantities: [foodQuantity],
-        totalCalories: record.totalCalories,
-        memo: record.memo
-    }
+        mealTime: request.mealTime,
+        dietDate: request.dietDate,
+        foodQuantities: [{
+            foodId: foodQuantity.foodId,
+            quantity: foodQuantity.quantity !== undefined ? foodQuantity.quantity : undefined,
+            gram: foodQuantity.gram !== undefined ? foodQuantity.gram : undefined,
+        }],
+        totalCalories: request.totalCalories,
+        memo: request.memo,
+    };
 
     formData.append("diet", JSON.stringify(data));
     try {
@@ -117,17 +112,13 @@ export const postFoodMemo = async(memo: string, dateInfo: Date) => {
     }
 }
 
-export const EditFoodRecord = async (foodRecords: FoodRecord[], memos: DietMemo): Promise<void> => {
-    const requestData = foodRecords.map(foodRecord => ({
+export const EditFoodRecord = async (request: EditFoodRecordRequest): Promise<void> => {
+    const requestData = request.foodRecords.map(foodRecord => ({
       dietId: foodRecord.dietId,
       dietDate: foodRecord.dietDate,
       mealTime: foodRecord.mealTime,
-      foodQuantities: [{
-        foodId: foodRecord.foodRes.foodId,
-        quantity: foodRecord.quantity,
-        gram: foodRecord.gram
-      }],
-      memo: memos.content
+      foodQuantities: foodRecord.foodQuantities,
+      memo: request.memos.content
     }));
     try {
       const response = await axiosInstance.put(`diet/edit-multiple`, requestData);

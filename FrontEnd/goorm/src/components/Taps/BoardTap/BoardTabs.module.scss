@@ -21,12 +21,13 @@
   transition: color 0.3s, border-bottom 0.3s;
 
   &:hover {
-    color: #0056b3;
+    color: #699732;
+    transition: color 0.3s ease;
   }
 
   &.active {
-    color: #007bff;
-    border-bottom: 2px solid #007bff;
+    color: #699732;
+    border-bottom: 2px solid #699732;
   }
 }
 
@@ -41,24 +42,26 @@
 
 .buttonContainer {
   position: absolute;
-  right: 10px; /* 좀 더 안쪽으로 여유를 줌 */
+  right: 0px; /* 좀 더 안쪽으로 여유를 줌 */
   top: 55px;
-  margin: 10px;
+  margin: 0px auto;
 }
 
 .buttonStyle {
   padding: 10px 15px;
   font-size: 16px;
   font-family: 'Arial', sans-serif;
-  color: #444; /* 더 밝은 색으로 변경 */
-  background-color: white;
-  border: 1px solid #666;
-  border-radius: 1px;
+  color: #699732; /* 더 밝은 색으로 변경 */
+  background-color: #ffffff;
+  border: 1px solid #699732;
+  border-radius: 3px;
   cursor: pointer;
   transition: background-color 0.3s;
 
   &:hover {
-    background-color: #e0e0e0;
+    background-color: #699732;
+    color: #ffffff;
+    transition: background-color 0.2s;
   }
 }
 

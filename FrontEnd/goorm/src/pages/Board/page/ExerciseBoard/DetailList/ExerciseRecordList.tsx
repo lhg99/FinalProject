@@ -22,7 +22,7 @@ const ExerciseRecordList: React.FC<ExerciseRecordListProps> = ({ records }) => {
 
   return (
     <div className={styles.container}>
-      <h2>운동 기록</h2>
+      <h3 className={styles.pagename}>- 운동 기록 - </h3>
       <div className={styles.tableContainer}>
         <table className={styles.table}>
           <thead>
