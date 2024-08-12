@@ -1,5 +1,6 @@
 package backend.goorm.member.model.dto.response;
 
+import backend.goorm.member.model.enums.Gender;
 import backend.goorm.member.model.enums.MemberType;
 import lombok.*;
 
@@ -18,5 +19,7 @@ public class MemberInfoResponse {
     private Float memberWeight;
     private String comment;
     private MemberType memberType;
+    private Integer memberAge;
+    private Gender memberGender;
 
 }
