@@ -76,7 +76,7 @@ const DietRecordList: React.FC = () => {
           <thead>
             <tr>
               {['날짜', '식사 종류', '음식', '칼로리', '탄수화물', '단백질', '지방'].map((header, index) => (
-                <th key={index} className={classNames(styles.tableHeader)} style={{ width: '60px' }}>{header}</th>
+                <th key={index} className={classNames(styles.tableHeader)} style={{ width: '80px' }}>{header}</th>
               ))}
             </tr>
           </thead>
