@@ -18,7 +18,6 @@ public class RecordDto {
     private Integer reps;
     private Integer weight;
     private Float distance;
-    private Float incline;
     private String memo;
     private Integer satisfaction;
     private String trainingName;
@@ -37,7 +36,6 @@ public class RecordDto {
         dto.setReps(record.getReps());
         dto.setWeight(record.getWeight());
         dto.setDistance(record.getDistance());
-        dto.setIncline(record.getIncline());
         dto.setMemo(memo); // Set memo content
         dto.setSatisfaction(record.getSatisfaction());
         dto.setTrainingName(record.getTraining().getTrainingName());
