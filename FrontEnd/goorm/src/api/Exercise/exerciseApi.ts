@@ -1,11 +1,11 @@
 import { ExerciseData, ExerciseRecords, Memo } from '../../pages/Exercise/ExerciseTypes';
-import { formatDate, formatDateData } from '../../utils/DateUtils';
+import { formatDate } from '../../utils/DateUtils';
 import axiosInstance from '../axiosInstance';
+import { EditExerciseRecordRequest, PostCardioRecordRequest, PostCustomExerciseRequest, PostStrengthRecordRequest } from './dto/ExerciseRequest';
 
 export const getExerciseData = async (): Promise<ExerciseData[]> => {
     try {
         const response = await axiosInstance.get<ExerciseData[]>('/admin/trainings');
-        console.log("운동 정보", response.data);
         return response.data;
     } catch (err) {
         console.error("failed to get exercise Data: ", err);
@@ -39,10 +39,10 @@ export const getExercisePercentage = async (startDate: Date, endDate: Date) => {
     }
 }
 
-export const postCustomExerciseData = async (exercise: { name: string; category: {categoryId: number; categoryName: string} }): Promise<number> => {
+export const postCustomExerciseData = async (request: PostCustomExerciseRequest): Promise<number> => {
     try {
         // console.log("trainingName: ", exercise.trainingName);
-        const response = await axiosInstance.post<{id: number}>(`/user/custom-trainings`, exercise);
+        const response = await axiosInstance.post<{id: number}>(`/user/custom-trainings`, request);
         console.log("post custom exercise success", response.data);
         return response.data.id;
     } catch(err) {
@@ -51,19 +51,17 @@ export const postCustomExerciseData = async (exercise: { name: string; category:
     }
 }
 
-export const postCardioRecord = async (trainingId: number, exerciseRecord: ExerciseRecords): Promise<void> => {
+export const postCardioRecord = async (request: PostCardioRecordRequest): Promise<void> => {
     const formData = new FormData();
-    formData.append('caloriesBurned', exerciseRecord.caloriesBurned?.toString() || '');
-    formData.append('durationMinutes', exerciseRecord.durationMinutes.toString());
-    formData.append('intensity', exerciseRecord.intensity);
-    formData.append('distance', exerciseRecord.distance?.toString() || '');
-    formData.append('incline', exerciseRecord.incline?.toString() || '');
-    // formData.append('memo', exerciseRecord.memo || '');
-    formData.append('satisfaction', exerciseRecord.satisfaction.toString());
-    // formData.append('exerciseDate', exerciseRecord.exerciseDate);
+    formData.append('caloriesBurned', request.caloriesBurned?.toString() || '');
+    formData.append('durationMinutes', request.durationMinutes.toString());
+    formData.append('intensity', request.intensity);
+    formData.append('distance', request.distance?.toString() || '');
+    formData.append('incline', request.incline?.toString() || '');
+    formData.append('satisfaction', request.satisfaction.toString());
 
     try {
-        const response = await axiosInstance.post(`/record/training/${trainingId}/add/cardio`, formData, {
+        const response = await axiosInstance.post(`/record/training/${request.trainingId}/add/cardio`, formData, {
             headers: {
                 'Content-Type': 'multipart/form-data'
             }
@@ -75,20 +73,17 @@ export const postCardioRecord = async (trainingId: number, exerciseRecord: Exerc
     }
 }
 
-export const postStrengthRecord = async (trainingId: number, exerciseRecord: ExerciseRecords): Promise<void> => {
+export const postStrengthRecord = async (request: PostStrengthRecordRequest): Promise<void> => {
     const formData = new FormData();
-    // formData.append('caloriesBurned', exerciseRecord.caloriesBurned?.toString() || '');
-    formData.append('durationMinutes', exerciseRecord.durationMinutes?.toString());
-    formData.append('sets', exerciseRecord.sets?.toString() || '');
-    formData.append('weight', exerciseRecord.weight?.toString() || '');
-    formData.append('reps', exerciseRecord.reps?.toString() || '');
-    formData.append('intensity', exerciseRecord.intensity);
-    // formData.append('memo', exerciseRecord.memo || '');
-    formData.append('satisfaction', exerciseRecord.satisfaction.toString());
-    // formData.append('exerciseDate', exerciseRecord.exerciseDate);
+    formData.append('durationMinutes', request.durationMinutes?.toString());
+    formData.append('sets', request.sets?.toString() || '');
+    formData.append('weight', request.weight?.toString() || '');
+    formData.append('reps', request.reps?.toString() || '');
+    formData.append('intensity', request.intensity);
+    formData.append('satisfaction', request.satisfaction.toString());
 
     try {
-        const response = await axiosInstance.post(`/record/training/${trainingId}/add/strength`, formData, {
+        const response = await axiosInstance.post(`/record/training/${request.trainingId}/add/strength`, formData, {
             headers: {
                 'Content-Type': 'multipart/form-data'
             }
@@ -112,9 +107,9 @@ export const postExerciseMemo = async(memo: string) => {
     }
 }
 
-export const EditExerciseRecord = async (exerciseRecords: ExerciseRecords[], memos: Memo): Promise<void> => {
+export const EditExerciseRecord = async (request: EditExerciseRecordRequest): Promise<void> => {
     // requestData를 배열로 준비합니다.
-    const requestData = exerciseRecords.map(exerciseRecord => ({
+    const requestData = request.exerciseRecords.map(exerciseRecord => ({
       recordId: exerciseRecord.recordId,
       sets: exerciseRecord.sets,
       weight: exerciseRecord.weight,
@@ -122,7 +117,7 @@ export const EditExerciseRecord = async (exerciseRecords: ExerciseRecords[], mem
       durationMinutes: exerciseRecord.durationMinutes,
       caloriesBurned: exerciseRecord.caloriesBurned,
       incline: exerciseRecord.incline,
-      memo: memos.content,
+      memo: request.memos.content,
       satisfaction: exerciseRecord.satisfaction,
       intensity: exerciseRecord.intensity,
       distance: exerciseRecord.distance,

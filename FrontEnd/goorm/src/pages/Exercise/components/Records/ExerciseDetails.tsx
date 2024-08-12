@@ -28,8 +28,8 @@ const ExerciseDetails: React.FC<ExerciseDetailProps> = ({
   const [slope, setSlope] = useState<string>(
     exercise.incline?.toString() || "0"
   );
-  const [calorie, setCalorie] = useState<string>(
-    exercise.caloriesBurned?.toString() || "0"
+  const [intensity, setIntensity] = useState<string>(
+    exercise.intensity || ""
   );
   const [sets, setSets] = useState<string>(exercise.sets?.toString() || "0");
   const [weight, setWeight] = useState<string>(
@@ -54,7 +54,7 @@ const ExerciseDetails: React.FC<ExerciseDetailProps> = ({
       distance: distance ? parseFloat(distance) : 0,
       durationMinutes: duration ? parseInt(duration) : 0,
       incline: slope ? parseFloat(slope) : 0,
-      caloriesBurned: calorie ? parseInt(calorie) : 0,
+      intensity: convertIntensity(intensity),
       sets: sets ? parseInt(sets) : 0,
       weight: weight ? parseFloat(weight) : 0,
       reps: count ? parseInt(count) : 0,
@@ -85,7 +85,7 @@ const ExerciseDetails: React.FC<ExerciseDetailProps> = ({
     distance,
     duration,
     slope,
-    calorie,
+    intensity,
     sets,
     weight,
     count
@@ -109,6 +109,19 @@ const ExerciseDetails: React.FC<ExerciseDetailProps> = ({
     }
   };
 
+  const convertIntensity = (value: string): string => {
+    switch (value) {
+      case "가볍게":
+        return "LOW";
+      case "적당히":
+        return "MIDDLE";
+      case "격하게":
+        return "HIGH";
+      default:
+        return "";
+    }
+  };
+
   return (
     <ExerciseDetailsContainer>
       <ExerciseInfo>
@@ -118,22 +131,7 @@ const ExerciseDetails: React.FC<ExerciseDetailProps> = ({
       <InputContainer>
         {exercise.categoryName === "유산소" ? (
           <>
-            <ExerciseLabel>
-              <ExerciseInput
-                type="text"
-                placeholder="거리"
-                value={distance}
-                onChange={(e) => {
-                  setDistance(e.target.value);
-                  const newDistance = parseFloat(e.target.value);
-                  if (!isNaN(newDistance)) {
-                    const updatedDetails = { distance: newDistance };
-                    updateExerciseRecords(exercise.recordId, updatedDetails);
-                  }
-                }}
-              />
-            </ExerciseLabel>
-            <ExerciseText>km</ExerciseText>
+
             <ExerciseLabel>
               <ExerciseInput
                 type="text"
@@ -150,6 +148,24 @@ const ExerciseDetails: React.FC<ExerciseDetailProps> = ({
               />
             </ExerciseLabel>
             <ExerciseText>분</ExerciseText>
+
+            <ExerciseLabel>
+              <ExerciseInput
+                type="text"
+                placeholder="거리"
+                value={distance}
+                onChange={(e) => {
+                  setDistance(e.target.value);
+                  const newDistance = parseFloat(e.target.value);
+                  if (!isNaN(newDistance)) {
+                    const updatedDetails = { distance: newDistance };
+                    updateExerciseRecords(exercise.recordId, updatedDetails);
+                  }
+                }}
+              />
+            </ExerciseLabel>
+            <ExerciseText>km</ExerciseText>
+
             <ExerciseLabel>
               <ExerciseInput
                 type="text"
@@ -166,22 +182,29 @@ const ExerciseDetails: React.FC<ExerciseDetailProps> = ({
               />
             </ExerciseLabel>
             <ExerciseText>도</ExerciseText>
+
             <ExerciseLabel>
               <ExerciseInput
-                type="text"
-                placeholder="칼로리"
-                value={calorie}
+                as="select"
+                value={intensity}
                 onChange={(e) => {
-                  setCalorie(e.target.value);
-                  const newCalorie = parseInt(e.target.value, 10);
-                  if (!isNaN(newCalorie)) {
-                    const updatedDetails = { caloriesBurned: newCalorie };
-                    updateExerciseRecords(exercise.recordId, updatedDetails);
-                  }
+                  const selectedValue = e.target.value;
+                  const intensityValue = convertIntensity(selectedValue);
+
+                  setIntensity(selectedValue);
+                  const updatedDetails = { intensity: intensityValue };
+                  updateExerciseRecords(exercise.recordId, updatedDetails);
                 }}
-              />
+                >
+                  <option value="" disabled>
+                    강도 선택
+                  </option>
+                  <option value="가볍게">가볍게</option>
+                  <option value="적당히">적당히</option>
+                  <option value="격하게">격하게</option>
+              </ExerciseInput>
             </ExerciseLabel>
-            <ExerciseText>kcal</ExerciseText>
+
           </>
         ) : (
           <>
@@ -202,6 +225,7 @@ const ExerciseDetails: React.FC<ExerciseDetailProps> = ({
                 />
               </ExerciseLabel>
               <ExerciseText>분</ExerciseText>
+
               <ExerciseLabel>
                 <ExerciseInput
                   type="number"
@@ -218,6 +242,7 @@ const ExerciseDetails: React.FC<ExerciseDetailProps> = ({
                 />
               </ExerciseLabel>
               <ExerciseText>세트</ExerciseText>
+
               <ExerciseLabel>
                 <ExerciseInput
                   type="number"
@@ -235,6 +260,7 @@ const ExerciseDetails: React.FC<ExerciseDetailProps> = ({
                 />
               </ExerciseLabel>
               <ExerciseText>kg</ExerciseText>
+
               <ExerciseLabel>
                 <ExerciseInput
                   type="number"
@@ -251,6 +277,28 @@ const ExerciseDetails: React.FC<ExerciseDetailProps> = ({
                 />
               </ExerciseLabel>
               <ExerciseText>회</ExerciseText>
+
+              <ExerciseLabel>
+                <ExerciseInput
+                  as="select"
+                  value={intensity}
+                  onChange={(e) => {
+                    const selectedValue = e.target.value;
+                    const intensityValue = convertIntensity(selectedValue);
+                    
+                    setIntensity(selectedValue);
+                    const updatedDetails = { intensity: intensityValue };
+                    updateExerciseRecords(exercise.recordId, updatedDetails);
+                  }}
+                  >
+                    <option value="" disabled>
+                      강도 선택
+                    </option>
+                    <option value="가볍게">가볍게</option>
+                    <option value="적당히">적당히</option>
+                    <option value="격하게">격하게</option>
+                </ExerciseInput>
+              </ExerciseLabel>
             </SetContainer>
           </>
         )}
@@ -286,7 +334,7 @@ const ExerciseInfo = styled.div`
 `;
 
 const CategoryBadge = styled.span`
-  background-color: #007bff;
+  background-color: #699732;
   color: white;
   border-radius: 0.3125rem;
   margin-left: 0.625rem;
@@ -304,7 +352,7 @@ const ExerciseLabel = styled.label`
   display: block;
   flex-direction: row;
   margin-bottom: 1rem;
-  width: 5.625rem;
+  width: 5rem;
   gap: 0;
 `;
 
@@ -336,7 +384,7 @@ const ExerciseInput = styled.input`
 `;
 
 const ExerciseText = styled.span`
-  margin-left: 1.3125rem;
+  margin-left: 0.625rem;
 `;
 
 const SetContainer = styled.div`
@@ -347,7 +395,7 @@ const SetContainer = styled.div`
 
 const DeleteButton = styled.button`
   margin-right: 0.625rem;
-  margin-left: 0.625rem;
+  margin-left: 1.25rem;
   height: 20%;
   background-color: #ff4d4d;
   color: white;

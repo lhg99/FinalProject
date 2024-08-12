@@ -171,14 +171,14 @@ const FoodSearch = ({ onAddFood, onAddCustomFood } : FoodSearchProps) => {
         <FoodSearchContainer>
             <CategoriesContainer>
                 {foodCategories.map((option, index) => (
-                    <label key={index}>
+                    <CategoryText key={index}>
                         <input 
                             type='checkbox' 
                             checked={selectedCategories.includes(option.categoryName)}
                             onChange={() => handleCategoryChange(option.categoryName)} 
                         />
                         {option.categoryName}
-                    </label>
+                    </CategoryText>
                 ))}
             </CategoriesContainer>
             <SearchForm onSubmit={(e) => {
@@ -218,7 +218,7 @@ const FoodSearchContainer = styled.div`
     flex-direction: column;
     padding: .625rem;
     width: 28%;
-    max-height: 35rem;
+    max-height: 36.25rem;
     overflow-y: auto;
     border: 1px solid #AFAFAF;
     border-radius: 5px;
@@ -250,6 +250,10 @@ const CategoriesContainer = styled.div`
     display: flex;
 `;
 
+const CategoryText = styled.label`
+    margin-right: 0.3125rem;
+`
+
 const SearchForm = styled.form`
     margin-top: .625rem;
     width: 100%;
@@ -263,11 +267,23 @@ const SearchInput = styled.input`
 `;
 
 const SearchButton = styled.button`
-    margin-left: 0.625rem;
-    height: 35.2px;
+    padding: 10px;
+    border: 1px solid black;
+    background-color: white;
+    border-radius: 5px;
+    cursor: pointer;
     display: flex;
     align-items: center;
-    justify-content: center;
+    margin-left: 0.625rem;
+
+    svg {
+        width: 20px;
+        height: 20px;
+    }
+
+    &:hover {
+        background-color: #f0f0f0;
+    }
 `;
 
 const FoodListContainer = styled.div`

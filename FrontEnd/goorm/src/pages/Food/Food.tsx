@@ -1,19 +1,23 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import MyCalendar from '../Exercise/components/Date/Calendar';
 import styles from './Food.module.scss';
 import FoodSearch from './FoodSearch';
 import { useFood } from '../../contexts/foodContext';
-import { FoodData, FoodRecord } from './FoodTypes';
+import { FoodData } from './FoodTypes';
 import FoodList from './components/Records/FoodList';
 import FoodMemo from './FoodMemo'
 import { formatDateInfo } from '../../utils/DateUtils';
 import { EditFoodRecord, postFoodMemo, postFoodRecord } from '../../api/Food/foodApi';
-import { formatDate } from 'react-datepicker/dist/date_utils';
 import FoodCategoryTable from './FoodCategoryTable';
+import { EditFoodRecordRequest, PostFoodRecordRequest } from '../../api/Food/dto/FoodRequest';
+import { ToastStore } from '../../store/store';
+import ToastComponent from '../../components/Toast/ToastComponent';
 
 const Food: React.FC = () => {
 
     const [dateInfo, setDateInfo] = useState<{ year: number; month: number; day: number; weekday: string; formattedDate: string } | null>(null);
+
+    const { showToast } = ToastStore();
 
     const handleDateChange = useCallback(
         (info: { year: number; month: number; day: number; weekday: string }) => {
@@ -40,60 +44,68 @@ const Food: React.FC = () => {
             alert("날짜를 선택해주세요.");
             return;
         }
+        try {
+            // selectedFood 배열을 순회하여 각 항목을 처리
+            for (const food of selectedFood) {
+                const details = foodDetails[food.foodName] || {};
+                const existingRecord = foodRecords.find(
+                    (record) => record.foodRes.foodId === food.foodId
+                );
     
-        for (const food of selectedFood) {
-            const details = foodDetails[food.foodName] || {};
-            const existingRecord = foodRecords.find(
-                (record) => record.foodRes.foodId === food.foodId
-            );
-    
-            const record: FoodRecord = {
-                dietId: existingRecord ? existingRecord.dietId : new Date().getTime(), // 새로운 기록일 경우 고유한 dietId 생성
-                mealTime: existingRecord ? existingRecord.mealTime : food.mealTime || "",
-                dietDate: dateInfo.formattedDate,
-                quantity: details.quantity || 0,
-                gram: details.gram || 0,  // 기존 gram 대신 foodDetails에서 가져온 값
-                totalCalories: food.calories * (details.quantity || 1), // 총 칼로리 계산
-                memo: details.memo || "",
-                foodRes: {
-                    foodId: food.foodId,
-                    foodName: food.foodName,
-                    calories: food.calories,
-                    fat: food.fat,
-                    protein: food.protein,
-                    carbohydrate: food.carbohydrate,
-                    sugar: food.sugar,
-                    salt: food.salt,
-                    cholesterol: food.cholesterol,
-                    saturatedFat: food.saturatedFat,
-                    transFat: food.transFat
-                }
-            };
-            try {
-                await postFoodRecord(record.foodRes.foodId, record);
-                await postFoodMemo(memo.content, new Date(dateInfo.formattedDate)); // date 객체로 전달
-                alert("식단 기록이 저장되었습니다.");
-            } catch (error) {
-                console.error("식단 기록 저장 실패:", error);
-                alert("식단 기록이 저장되지 않았습니다.");
+                // PostFoodRecordRequest 객체 생성
+                const foodRecordRequest: PostFoodRecordRequest = {
+                    mealTime: existingRecord ? existingRecord.mealTime : food.mealTime || "",
+                    dietDate: dateInfo.formattedDate,
+                    foodQuantities: [{
+                        foodId: food.foodId,
+                        quantity: details.quantity !== 0 ? details.quantity : undefined,
+                        gram: details.gram !== 0 ? details.gram : undefined
+                    }],
+                    totalCalories: food.calories * (details.quantity || 1), // 총 칼로리 계산
+                    memo: details.memo || ""
+                };
+                await postFoodRecord(foodRecordRequest);
+                
             }
+            await postFoodMemo(memo.content, new Date(dateInfo.formattedDate));
+    
+            showToast("foodSaveToast", "식단 기록이 저장되었습니다.");
+        } catch (error) {
+            console.error("식단 기록 저장 실패:", error);
+            alert("식단 기록이 저장되지 않았습니다.");
         }
     };
 
     const handleEdit = async () => {
         try {
-          // Loop through exerciseRecords to send each record for editing
-          await EditFoodRecord(selectedFoodRecords, memo);
-          // await postExerciseMemo(memo.content);
-          alert("식단 기록이 수정되었습니다.");
+            const editRequest: EditFoodRecordRequest = {
+                foodRecords: selectedFoodRecords.map(record => ({
+                    dietId: record.dietId,
+                    dietDate: record.dietDate,
+                    mealTime: record.mealTime,
+                    foodQuantities: [{
+                        foodId: record.foodRes.foodId,
+                        quantity: record.quantity !== null ? record.quantity : undefined,
+                        gram: record.gram !== null ? record.gram : undefined,
+                    }],
+                    memo: memo.content,  // 메모 내용
+                })),
+                memos: memo,  // 메모 객체
+            };
+            
+            // EditFoodRecord 함수 호출
+            await EditFoodRecord(editRequest);
+            showToast("foodEditToast", "식단 기록이 수정되었습니다.");
         } catch (err) {
-          console.error("식단기록 수정 실패", err);
+            console.error("식단 기록 수정 실패", err);
+            alert("식단 기록 수정에 실패했습니다.");
         }
-      };
+    };
 
     return (
         <div className={styles.pageBackground}>
             <div className={styles.food}>
+                <ToastComponent />
                 <div className={styles.foodContainer}>
                     <div className={styles.leftColumn}>
                         <div className='calendar'>

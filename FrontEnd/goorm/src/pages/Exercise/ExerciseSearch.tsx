@@ -139,14 +139,14 @@ const ExerciseSearch = ({ onAddExercise, onAddCustomExercise }: ExerciseSearchPr
         <ExerciseSearchContainer>
             <CategoriesContainer>
                 {categories.map((option, index) => (
-                    <label key={index}>
+                    <CategoryText key={index}>
                         <input 
                             type='checkbox' 
                             checked={selectedCategories.includes(option.categoryName)}
                             onChange={() => handleCategoryChange(option.categoryName)} 
                         />
                         {option.categoryName}
-                    </label>
+                    </CategoryText>
                 ))}
             </CategoriesContainer>
             <SearchForm onSubmit={handleSearchClick}>
@@ -183,10 +183,9 @@ const ExerciseSearchContainer = styled.div`
     display: flex;
     flex-direction: column;
     padding: .625rem;
-    width: 20%;
-    max-height: 35rem;
+    width: 22%;
+    max-height: 36.25rem;
     overflow-y: auto;
-    border: 1px solid #AFAFAF;
     border-radius: 5px;
 
     &::-webkit-scrollbar {
@@ -213,7 +212,12 @@ const ExerciseSearchContainer = styled.div`
 const CategoriesContainer = styled.div`
     margin-top: .625rem;
     font-size: 0.875rem;
+    gap: 0.3125rem;
 `;
+
+const CategoryText = styled.label`
+    margin-right: 0.3125rem;
+`
 
 const SearchForm = styled.form`
     margin-top: .625rem;
@@ -225,14 +229,27 @@ const SearchInput = styled.input`
     width: 72%;
     padding: 8px;
     display: flex;
+    font-size: 0.875rem;
 `;
 
 const SearchButton = styled.button`
-    margin-left: 0.625rem;
-    height: 35.2px;
+    padding: 10px;
+    border: 1px solid black;
+    background-color: white;
+    border-radius: 5px;
+    cursor: pointer;
     display: flex;
     align-items: center;
-    justify-content: center;
+    margin-left: 0.625rem;
+
+    svg {
+        width: 20px;
+        height: 20px;
+    }
+
+    &:hover {
+        background-color: #f0f0f0;
+    }
 `;
 
 const ExerciseListContainer = styled.div`

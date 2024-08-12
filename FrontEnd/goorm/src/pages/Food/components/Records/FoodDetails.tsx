@@ -141,7 +141,7 @@ const FoodInfo = styled.div`
 `;
 
 const CategoryBadge = styled.span`
-  background-color: #007bff;
+  background-color: #699732;
   color: white;
   border-radius: 0.3125rem;
   margin-left: 0.625rem;
