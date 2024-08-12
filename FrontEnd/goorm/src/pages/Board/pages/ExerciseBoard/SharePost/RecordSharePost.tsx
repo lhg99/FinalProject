@@ -141,7 +141,7 @@ const RecordSharePost: React.FC = () => {
           />
           <TextEditor defaultValue={content} onChange={handleContentChange} />
 
-          <h3>나의 운동 리스트</h3>
+          <h5 className={styles.h5}>나의 운동 리스트</h5>
           <div className={styles.monthTabs}>
             {Object.keys(monthMapping).map((month) => (
               <button
