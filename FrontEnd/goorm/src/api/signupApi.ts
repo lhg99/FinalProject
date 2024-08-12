@@ -8,12 +8,6 @@ export interface SignUpData {
     username: string;
 }
 
-export interface KakaoSignupData {
-    loginId: string;
-    loginPw: string;
-    name: string;
-}
-
 export const postSignUpData = async (signup: SignUpData): Promise<void> => {
     try {
         const response = await axiosInstance.post<SignUpData[]>(`/member/signup`, signup);

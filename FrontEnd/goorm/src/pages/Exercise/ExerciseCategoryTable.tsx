@@ -64,14 +64,17 @@ const Table = styled.table`
 
   th,
   td {
-    border: 1px solid #bbb;
+    border: 1px solid black;
     padding: 0.5rem;
   }
 
   th {
-    background-color: #333;
-    color: white;
+    background-color: #FFBDBD;
     text-align: center;
+  }
+
+  tbody {
+    background-color: white;
   }
 `;
 

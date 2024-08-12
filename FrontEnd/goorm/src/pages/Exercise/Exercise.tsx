@@ -20,36 +20,27 @@ import ExerciseList from "./components/Records/ExerciseList";
 import styles from "./Exercise.module.scss";
 import ExerciseCategoryTable from "./ExerciseCategoryTable";
 import { useExercise } from "../../contexts/exerciseContext";
-import { ExerciseData, ExerciseRecords } from "./ExerciseTypes";
+import { ExerciseData } from "./ExerciseTypes";
 import DateSelector from "./components/Date/DateSelector";
-import {
-  EditExerciseRecord,
-  postCardioRecord,
-  postCustomExerciseData,
-  postExerciseMemo,
-  postStrengthRecord,
-} from "../../api/Exercise/exerciseApi";
+import { EditExerciseRecord, postCardioRecord, postCustomExerciseData, postExerciseMemo, postStrengthRecord } from "../../api/Exercise/exerciseApi";
 import { formatDateInfo } from "../../utils/DateUtils";
+import { EditExerciseRecordRequest, PostCardioRecordRequest, PostStrengthRecordRequest } from "../../api/Exercise/dto/ExerciseRequest";
+import { ToastStore } from "../../store/store";
+import ToastComponent from "../../components/Toast/ToastComponent";
 
 const Exercise: React.FC = () => {
-  const [dateInfo, setDateInfo] = useState<{ year: number; month: number; day: number; weekday: string; formattedDate: string } | null>(null);
-  const [customExerciseName, setCustomExerciseName] = useState<string>("");
+  const [dateInfo, setDateInfo] = useState<{ 
+    year: number; month: number; day: number; weekday: string; formattedDate: string 
+  } | null>(null);
+
+  const { showToast } = ToastStore();
+
 
   const {
     state: {
-      selectedExercises,
-      exerciseRecords,
-      exerciseDetails,
-      startDate,
-      endDate,
-      memo,
-      selectedExerciseRecords
-    },
-    addSelectedExercises,
-    addCustomExercises,
-    setStartDate,
-    setEndDate,
-  } = useExercise();
+      selectedExercises, exerciseRecords, exerciseDetails, startDate,
+      endDate, memo, selectedExerciseRecords }, addSelectedExercises, 
+      addCustomExercises, setStartDate, setEndDate } = useExercise();
 
   const handleAddExercise = useCallback(
     (exercise: ExerciseData) => {
@@ -66,14 +57,10 @@ const Exercise: React.FC = () => {
     [addCustomExercises, addSelectedExercises]
   );
 
-  const handleExerciseNameChange = (name: string) => {
-    setCustomExerciseName(name);
-  };
-
   const handleDateChange = useCallback(
     (info: { year: number; month: number; day: number; weekday: string }) => {
-      const formattedDate = formatDateInfo(info); // Format the date as a string
-      setDateInfo({ ...info, formattedDate }); // Store both the original info and formatted date
+      const formattedDate = formatDateInfo(info);
+      setDateInfo({ ...info, formattedDate });
     },[]
   );
 
@@ -90,7 +77,7 @@ const Exercise: React.FC = () => {
       const customExercises = selectedExercises.filter(
         (ex) => ex.isAddingExercise
       );
-  
+
       for (const customExercise of customExercises) {
         const customExercisePayload = {
           name: customExercise.name,
@@ -99,53 +86,49 @@ const Exercise: React.FC = () => {
             categoryName: customExercise.categoryName,
           },
         };
-  
-        console.log("Payload to send:", customExercisePayload); // Payload 확인
+
+        console.log("Payload to send:", customExercisePayload);
         const newExerciseId: number = await postCustomExerciseData(
           customExercisePayload
         );
-        customExercise.id = newExerciseId; // 서버로부터 받은 새 ID로 업데이트
+        customExercise.id = newExerciseId;
       }
-  
-      // selectedExercises에서 각 운동을 확인하여 기록 생성 또는 업데이트
+
       for (const exercise of selectedExercises) {
         const details = exerciseDetails[exercise.name] || {};
         const existingRecord = exerciseRecords.find(
           (record) => record.trainingId === exercise.id
         );
-  
-        const recordData: ExerciseRecords = {
-          recordId: existingRecord ? existingRecord.recordId : new Date().getTime(), // Use existing ID or generate new
-          trainingName: exercise.name,
-          exerciseDate: dateInfo ? dateInfo.formattedDate : "",
-          sets: details.sets || 0,
-          weight: details.weight || 0,
-          distance: details.distance,
+
+        const recordData = {
+          trainingId: exercise.id,
           durationMinutes: details.durationMinutes || 0,
-          caloriesBurned: details.caloriesBurned || 0,
-          incline: details.incline || 0,
-          reps: details.reps || 0,
           satisfaction: details.satisfaction || 0,
           intensity: details.intensity || "",
-          memo: details.memo || "",
-          categoryName: exercise.categoryName,
-          trainingId: exercise.id,
         };
-  
-        // 운동 종류에 따라 postCardioRecord 또는 postStrengthRecord로 기록을 생성
         if (!existingRecord) {
-          if (recordData.categoryName === "유산소") {
-            await postCardioRecord(recordData.trainingId, recordData);
+          if (exercise.categoryName === "유산소") {
+            const cardioRecordData: PostCardioRecordRequest = {
+              ...recordData,
+              caloriesBurned: details.caloriesBurned || 0,
+              distance: details.distance,
+              incline: details.incline || 0,
+            };
+            await postCardioRecord(cardioRecordData);
           } else {
-            await postStrengthRecord(recordData.trainingId, recordData);
+            const strengthRecordData: PostStrengthRecordRequest = {
+              ...recordData,
+              sets: details.sets || 0,
+              weight: details.weight || 0,
+              reps: details.reps || 0,
+            };
+            await postStrengthRecord(strengthRecordData);
           }
           console.log("Created record:", recordData);
         }
       }
-  
-      // 운동 메모 저장
       await postExerciseMemo(memo.content);
-      alert("운동 기록이 저장되었습니다.");
+      showToast("saveToast", "운동 기록이 저장되었습니다.");
     } catch (err) {
       console.error("운동기록 저장 실패", err);
     }
@@ -153,10 +136,17 @@ const Exercise: React.FC = () => {
 
   const handleEdit = async () => {
     try {
-      // Loop through exerciseRecords to send each record for editing
-      await EditExerciseRecord(selectedExerciseRecords, memo);
-      // await postExerciseMemo(memo.content);
-      alert("운동 기록이 수정되었습니다.");
+      // EditExerciseRequest 객체 생성
+      const editRequest: EditExerciseRecordRequest = {
+        exerciseRecords: selectedExerciseRecords,
+        memos: memo
+      };
+      
+      // 수정된 EditExerciseRecord 함수 호출
+      await EditExerciseRecord(editRequest);
+      
+      // 수정 성공 시 토스트 메시지 표시
+      showToast("editToast", "운동 기록이 수정되었습니다.");
     } catch (err) {
       console.error("운동기록 수정 실패", err);
     }
@@ -165,6 +155,7 @@ const Exercise: React.FC = () => {
   return (
     <div className={styles.pageBackground}>
       <div className={styles.exercise}>
+        <ToastComponent />
         <div className={styles.exerciseContainer}>
           <div className={styles.leftColumn}>
             <div className="calendar">
@@ -195,7 +186,6 @@ const Exercise: React.FC = () => {
                 <ExerciseList
                   dateInfo={dateInfo}
                   exercises={selectedExercises}
-                  onExerciseNameChange={handleExerciseNameChange}
                 />
               </div>
             </div>
