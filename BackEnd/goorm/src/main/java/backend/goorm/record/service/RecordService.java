@@ -42,7 +42,7 @@ public class RecordService {
     @Transactional
     public RecordDto addCardioRecord(Long trainingId, AddCardioRecordRequest request, Member member, MultipartFile[] images) {
         Training training = trainingRepository.findById(trainingId)
-                .orElseThrow(() -> new IllegalArgumentException("Training not found with id: " + trainingId));
+                .orElseThrow(() -> new IllegalArgumentException("해당 id의 운동을 찾지 못했습니다.: " + trainingId));
 
         // 러닝인지 확인하고, 러닝일 경우 칼로리 계산
         Float caloriesBurned = null;
@@ -68,7 +68,7 @@ public class RecordService {
     @Transactional
     public RecordDto addStrengthRecord(Long trainingId, AddStrengthRecordRequest request, Member member, MultipartFile[] images) {
         Training training = trainingRepository.findById(trainingId)
-                .orElseThrow(() -> new IllegalArgumentException("Training not found with id: " + trainingId));
+                .orElseThrow(() -> new IllegalArgumentException("해당 id의 운동을 찾지 못했습니다.: " + trainingId));
 
         Record record = AddStrengthRecordRequest.toEntity(request, training);
         record.setMember(member); // Member 설정

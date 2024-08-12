@@ -20,7 +20,7 @@ public class ExerciseCalculator {
     public Float calculateRMR(Member member) {
         // RMR 계산 로직
         MemberInfo memberInfo = memberInfoRepository.findByMemberId(member)
-                .orElseThrow(() -> new IllegalArgumentException("Member information not found for member id: " + member.getMemberId()));
+                .orElseThrow(() -> new IllegalArgumentException("해당 id의 유저 정보를 찾지 못했습니다. " + member.getMemberId()));
 
         Float weight = memberInfo.getMemberWeight();
         Float height = memberInfo.getMemberHeight();
@@ -37,7 +37,7 @@ public class ExerciseCalculator {
     public Float calculateCaloriesBurned(Member member, Float metValue, Float durationInMinutes) {
         // RMR을 사용해 소모된 칼로리를 계산하는 로직
         MemberInfo memberInfo = memberInfoRepository.findByMemberId(member)
-                .orElseThrow(() -> new IllegalArgumentException("Member information not found for member id: " + member.getMemberId()));
+                .orElseThrow(() -> new IllegalArgumentException("해당 id의 유저 정보를 찾지 못했습니다. "+ member.getMemberId()));
 
         Float rmrKcalPerDay = calculateRMR(member);
         Float rmrMlKgMin = (rmrKcalPerDay / 1440) / 5 * 1000 / memberInfo.getMemberWeight();

@@ -16,8 +16,6 @@ import java.util.List;
 @Repository
 public interface RecordRepository extends JpaRepository<Record, Long> {
     List<Record> findAll();
-    List<Record> findByTraining_TrainingId(Long trainingId);
-
     List<Record> findAllByMember(Member member);
     Page<Record> findAllByMember(Member member, Pageable pageable);
 
@@ -25,7 +23,6 @@ public interface RecordRepository extends JpaRepository<Record, Long> {
 
     List<Record> findAllByExerciseDateAndMember(LocalDate date, Member member);
 
-//    Page<Record> findPagedByExerciseDateAndMember(LocalDate date, Member member, Pageable pageable);
 
     @Query("SELECT r FROM Record r " +
             "JOIN FETCH r.training t " +
