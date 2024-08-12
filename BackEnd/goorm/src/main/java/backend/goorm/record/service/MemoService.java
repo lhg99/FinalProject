@@ -38,7 +38,7 @@ public class MemoService {
 
     public MemoDto getMemoByDateAndMember(LocalDate date, Member member) {
         Memo memo = memoRepository.findByMemberAndDate(member, date)
-                .orElseThrow(() -> new IllegalArgumentException("Memo not found for date: " + date));
+                .orElseThrow(() -> new IllegalArgumentException("해당 날짜의 메모를 찾지 못했습니다: " + date));
 
         return MemoDto.fromEntity(memo);
     }

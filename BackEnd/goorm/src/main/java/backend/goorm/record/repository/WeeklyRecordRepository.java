@@ -10,5 +10,4 @@ import java.util.Optional;
 
 @Repository
 public interface WeeklyRecordRepository extends JpaRepository<WeeklyRecord, Long> {
-    Optional<WeeklyRecord> findByMemberAndStartDateAndEndDate(Member member, LocalDate startDate, LocalDate endDate);
 }

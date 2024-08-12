@@ -24,6 +24,10 @@ public class QMemberInfo extends EntityPathBase<MemberInfo> {
 
     public final StringPath comment = createString("comment");
 
+    public final NumberPath<Integer> memberAge = createNumber("memberAge", Integer.class);
+
+    public final EnumPath<backend.goorm.member.model.enums.Gender> memberGender = createEnum("memberGender", backend.goorm.member.model.enums.Gender.class);
+
     public final NumberPath<Float> memberHeight = createNumber("memberHeight", Float.class);
 
     public final QMember memberId;
