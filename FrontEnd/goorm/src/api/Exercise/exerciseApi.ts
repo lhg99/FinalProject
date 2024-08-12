@@ -16,7 +16,6 @@ export const getExerciseData = async (): Promise<ExerciseData[]> => {
 export const getExerciseRecords = async (): Promise<ExerciseRecords[]> => {
     try {
         const response = await axiosInstance.get<ExerciseRecords[]>('/record/all');
-        console.log("운동기록 가져오기 성공: ", response.data);
         return response.data;
     } catch(err) {
         console.error("failed to get exercise records: ", err);
@@ -31,7 +30,6 @@ export const getExercisePercentage = async (startDate: Date, endDate: Date) => {
     };
     try {
         const response = await axiosInstance.get('/bodyPartCount/range', { params });
-        console.log("운동 퍼센트 가져오기 성공", response.data);
         return response.data;
     } catch (err) {
         console.error("운동 퍼센트 가져오기 실패", err);
@@ -41,9 +39,7 @@ export const getExercisePercentage = async (startDate: Date, endDate: Date) => {
 
 export const postCustomExerciseData = async (request: PostCustomExerciseRequest): Promise<number> => {
     try {
-        // console.log("trainingName: ", exercise.trainingName);
         const response = await axiosInstance.post<{id: number}>(`/user/custom-trainings`, request);
-        console.log("post custom exercise success", response.data);
         return response.data.id;
     } catch(err) {
         console.error("failed to post custom exercise ", err);
@@ -66,7 +62,7 @@ export const postCardioRecord = async (request: PostCardioRecordRequest): Promis
                 'Content-Type': 'multipart/form-data'
             }
         });
-        console.log("유산소 운동 기록 post 성공", response.data);
+        return response.data;
     } catch(err) {
         console.error("유산소 운동 기록 post 실패", err);
         throw err;
@@ -88,7 +84,7 @@ export const postStrengthRecord = async (request: PostStrengthRecordRequest): Pr
                 'Content-Type': 'multipart/form-data'
             }
         });
-        console.log("근력운동 기록 post 성공", response.data);
+        return response.data;
     } catch(err) {
         console.error("근력운동 기록 post 실패", err);
         throw err;
@@ -101,7 +97,7 @@ export const postExerciseMemo = async(memo: string) => {
     }
     try {
         const response = await axiosInstance.post(`/memo`, request);
-        console.log("운동 메모 post 성공!!", response.data);
+        return response.data;
     } catch (error) {
         console.error("운동 메모 post 실패", error);
     }
@@ -116,7 +112,6 @@ export const EditExerciseRecord = async (request: EditExerciseRecordRequest): Pr
       reps: exerciseRecord.reps,
       durationMinutes: exerciseRecord.durationMinutes,
       caloriesBurned: exerciseRecord.caloriesBurned,
-      incline: exerciseRecord.incline,
       memo: request.memos.content,
       satisfaction: exerciseRecord.satisfaction,
       intensity: exerciseRecord.intensity,
@@ -125,7 +120,7 @@ export const EditExerciseRecord = async (request: EditExerciseRecordRequest): Pr
   
     try {
       const response = await axiosInstance.put(`record/edit-multiple`, requestData);
-      console.log("운동 기록 수정 성공", response.data);
+      return response.data;
     } catch (err) {
       console.error("운동 기록 수정 오류", err);
     }
@@ -134,7 +129,7 @@ export const EditExerciseRecord = async (request: EditExerciseRecordRequest): Pr
 export const deleteRecord = async(recordId: number) => {
     try {
         const response = await axiosInstance.delete(`/record/training/${recordId}/delete`);
-        console.log("운동 기록 삭제 성공", response.data);
+        return response.data;
     } catch(err) {
         console.error("운동 기록 삭제 실패: ", err);
     }

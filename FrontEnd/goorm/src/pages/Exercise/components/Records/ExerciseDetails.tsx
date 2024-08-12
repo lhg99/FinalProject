@@ -25,9 +25,6 @@ const ExerciseDetails: React.FC<ExerciseDetailProps> = ({
   const [duration, setDuration] = useState<string>(
     exercise.durationMinutes?.toString() || "0"
   );
-  const [slope, setSlope] = useState<string>(
-    exercise.incline?.toString() || "0"
-  );
   const [intensity, setIntensity] = useState<string>(
     exercise.intensity || ""
   );
@@ -53,7 +50,6 @@ const ExerciseDetails: React.FC<ExerciseDetailProps> = ({
       trainingName: exerciseName,
       distance: distance ? parseFloat(distance) : 0,
       durationMinutes: duration ? parseInt(duration) : 0,
-      incline: slope ? parseFloat(slope) : 0,
       intensity: convertIntensity(intensity),
       sets: sets ? parseInt(sets) : 0,
       weight: weight ? parseFloat(weight) : 0,
@@ -80,16 +76,7 @@ const ExerciseDetails: React.FC<ExerciseDetailProps> = ({
       }
     }
     prevDetailsRef.current = updatedDetails;
-  }, [
-    exerciseName,
-    distance,
-    duration,
-    slope,
-    intensity,
-    sets,
-    weight,
-    count
-  ]);
+  }, [exerciseName, distance, duration, intensity, sets, weight, count]);
 
   const handleModalClick = () => {
     openModal("deleteModal");
@@ -165,23 +152,6 @@ const ExerciseDetails: React.FC<ExerciseDetailProps> = ({
               />
             </ExerciseLabel>
             <ExerciseText>km</ExerciseText>
-
-            <ExerciseLabel>
-              <ExerciseInput
-                type="text"
-                placeholder="경사"
-                value={slope}
-                onChange={(e) => {
-                  setSlope(e.target.value);
-                  const newSlope = parseFloat(e.target.value);
-                  if (!isNaN(newSlope)) {
-                    const updatedDetails = { incline: newSlope };
-                    updateExerciseRecords(exercise.recordId, updatedDetails);
-                  }
-                }}
-              />
-            </ExerciseLabel>
-            <ExerciseText>도</ExerciseText>
 
             <ExerciseLabel>
               <ExerciseInput
@@ -345,6 +315,7 @@ const CategoryBadge = styled.span`
 const ExerciseTitle = styled.h3`
   font-size: 1.125rem;
   margin-left: 0.625rem;
+  margin-top: 0.3125rem;
 `;
 
 const ExerciseLabel = styled.label`

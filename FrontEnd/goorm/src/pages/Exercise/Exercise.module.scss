@@ -1,3 +1,14 @@
+@font-face {
+    font-family: 'goorm-sans-regular';
+    src: url('../../fonts/goorm-sans-regular.ttf') format('truetype');
+    font-style: normal;
+    font-weight: normal;
+}
+
+* {
+    font-family: 'goorm-sans-regular', sans-serif;
+}
+
 .pageBackground {
     background-color: #FFDE95;
     background-size: cover;
@@ -40,6 +51,7 @@
             display: flex;
             flex-direction: column;
             border-radius: .625rem;
+            font-weight: bold;
 
             margin-top: .625rem;
             flex: 1;

@@ -3,8 +3,8 @@ import React, { useState, createContext, useContext, ReactNode, useEffect } from
 
 interface User {
   memberId: string;
-  info: string; // 로그인 상태에 대한 정보 (예: "false" 등)
-  message: string; // 메시지 ("로그인이 정상적으로 완료되었습니다" 등)
+  info: string;
+  message: string;
 }
 
 interface AuthContextType {
@@ -102,7 +102,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         } else {
           resolve(false);
         }
-      }, 1000);
+      }, 500);
     });
   };
 

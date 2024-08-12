@@ -39,7 +39,7 @@ const Map = () => {
             window.kakao.maps.load(kakaoMapsLoaded);
         } else {
             const script = document.createElement('script');
-            script.src = `//dapi.kakao.com/v2/maps/sdk.js?appkey=YOUR_APP_KEY&libraries=services`;
+            script.src = `//dapi.kakao.com/v2/maps/sdk.js?appkey=6c9da3b498117d3fb633b93eac292808&libraries=services`;
             script.onload = kakaoMapsLoaded;
             document.head.appendChild(script);
         }
@@ -223,9 +223,11 @@ const Map = () => {
     return (
         <div className='pageBackground'>
             <div className='findGym'>
-                <p className='gymText'>헬스장 검색</p>
+                <div className='gymText'>
+                    <p className='gymText'>헬스장 검색</p>
+                </div>
                 <div className="option">
-                    <div>
+                    <div className='searchForm'>
                         <form onSubmit={(e) => {
                             e.preventDefault();
                             if(inputRef.current) {
