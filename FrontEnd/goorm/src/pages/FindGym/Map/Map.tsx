@@ -94,7 +94,15 @@ const Map = () => {
             bounds.extend(placePosition);
 
             if (itemEl) {
-                (function (marker, title, itemEl) {
+                (function (marker, title, itemEl, placeId) {
+                    window.kakao.maps.event.addListener(marker, 'click', function () {
+                        window.open(`https://place.map.kakao.com/${placeId}`, '_blank');
+                    });
+    
+                    itemEl.addEventListener('click', function () {
+                        window.open(`https://place.map.kakao.com/${placeId}`, '_blank');
+                    });
+
                     window.kakao.maps.event.addListener(marker, 'mouseover', function () {
                         displayInfowindow(marker, title);
                     });
@@ -110,7 +118,7 @@ const Map = () => {
                     itemEl.onmouseout = function () {
                         infowindowRef.current.close();
                     };
-                })(marker, places[i].place_name, itemEl);
+                })(marker, places[i].place_name, itemEl, places[i].id);
             }
 
             fragment.appendChild(itemEl);
@@ -213,32 +221,34 @@ const Map = () => {
     };
 
     return (
-        <div className='findGym'>
-            <p className='gymText'>헬스장 검색</p>
-            <div className="option">
-                <div>
-                    <form onSubmit={(e) => {
-                        e.preventDefault();
-                        if(inputRef.current) {
-                            setKeyword(inputRef.current.value);
-                            } else {
-                                console.error("검색어 로직 실패");
-                        }
-                    }}>
-                        키워드 : <input type="text" ref={inputRef} defaultValue={keyword} id="keyword" size={15} />
-                        <button type="submit" id="searchButton">
-                            <SearchIcon />
-                        </button>
-                    </form>
+        <div className='pageBackground'>
+            <div className='findGym'>
+                <p className='gymText'>헬스장 검색</p>
+                <div className="option">
+                    <div>
+                        <form onSubmit={(e) => {
+                            e.preventDefault();
+                            if(inputRef.current) {
+                                setKeyword(inputRef.current.value);
+                                } else {
+                                    console.error("검색어 로직 실패");
+                            }
+                        }}>
+                            키워드 : <input type="text" ref={inputRef} defaultValue={keyword} id="keyword" size={15} />
+                            <button type="submit" id="searchButton">
+                                <SearchIcon />
+                            </button>
+                        </form>
+                    </div>
                 </div>
-            </div>
-            <div className="map_wrap">
-                <div id="map" style={{  }}></div>
+                <div className="map_wrap">
+                    <div id="map" style={{  }}></div>
 
-                <div id="menu_wrap" className="bg_white">
-                    <hr />
-                    <ul id="placesList"></ul>
-                    <div id="pagination"></div>
+                    <div id="menu_wrap" className="bg_white">
+                        <hr />
+                        <ul id="placesList"></ul>
+                        <div id="pagination"></div>
+                    </div>
                 </div>
             </div>
         </div>

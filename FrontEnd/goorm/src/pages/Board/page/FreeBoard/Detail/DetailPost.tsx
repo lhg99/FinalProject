@@ -1,14 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate, useLocation } from 'react-router-dom';
-import { BoardDetails, BoardType } from '../types';
-import { fetchPostDetail, deletePost, toggleLike as apiToggleLike } from '../api/boardAPI';
+import { BoardDetails, BoardType } from '../../../types';
+import { fetchPostDetail, deletePost, toggleLike as apiToggleLike } from '../../../api/boardAPI';
 import styles from './DetailPost.module.scss';
-import CommentSection from '../Comment/CommentSection';
-import Tabs from '../../../components/Taps/BoardTap/BoardTabs';
-import { ReportModal, DeleteModal, DeleteCommentModal } from '../components/Modal';
-import LikeButton from '../components/LikeButton';
-import ChatBox from '../Chat/ChatBox';
-import ExerciseRecordList from '../page/ExerciseBoard/DetailList/ExerciseRecordList';
+import CommentSection from '../../../Comment/CommentSection';
+import Tabs from '../../../../../components/Taps/BoardTap/BoardTabs';
+import { ReportModal, DeleteModal, DeleteCommentModal } from '../../../components/Modal';
+import LikeButton from '../../../components/LikeButton';
+import ExerciseRecordList from '../../ExerciseBoard/DetailList/ExerciseRecordList';
+import ChatBox from '../../../Chat/ChatBox';
+
 
 const DetailPost: React.FC = () => {
   const { id, tab } = useParams<{ id?: string, tab?: BoardType }>();

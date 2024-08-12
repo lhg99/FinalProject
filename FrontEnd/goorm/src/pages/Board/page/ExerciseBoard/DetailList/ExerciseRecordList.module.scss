@@ -6,11 +6,14 @@
     padding: 0px 0px 40px 0px;
   }
   
+  .pagename {
+    color: #699732;
+  }
+
   .tableContainer {
     width: 100%;
     max-width: 1000px;
     margin: 0 auto;
-    padding: 0 20px;
   }
   
   .table {
@@ -19,18 +22,19 @@
   }
   
   .tableHeader {
-    border-top: 1px solid #000;
+    border-top: 2px solid #699732;
+    border-bottom: 2px solid #699732;
     padding: 10px;
-    background-color: #FFBDBD;
-    color: #000;
+    background-color: #ffffff;
+    color: #699732;
   }
   
   .tableRow {
-    background-color: #f9f9f9;
+    background-color: #ffffff;
   }
   
   .tableCell {
-    border-bottom: 1px solid #ddd;
+    border-bottom: 1px solid #699732;
     padding: 12px;
     text-align: center;
     color: #000;

@@ -12,6 +12,7 @@ export const CommentEditorWrapper = styled.div`
     height: 90px; // 댓글 에디터 높이를 더 작게 설정
     border-bottom: 1;
     overflow-y: auto; 
+    margin-bottom: 20px;
   }
 
   .ck-content {

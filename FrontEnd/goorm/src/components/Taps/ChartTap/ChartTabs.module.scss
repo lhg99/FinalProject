@@ -11,6 +11,15 @@
     margin-top: 20px;
   }
   
+  .year {
+    margin-top: 50px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: #699732;
+  }
+
+
   .tab {
     padding: 10px 20px;
     margin: 0 10px;
@@ -20,12 +29,12 @@
     border-bottom: 2px solid transparent;
   
     &:hover {
-      color: #0056b3;
+      color: #699732;
     }
   }
   
   .active {
-    color: #007bff;
-    border-bottom: 2px solid #007bff;
+    color: #699732;
+    border-bottom: 2px solid #699732;
   }
   
