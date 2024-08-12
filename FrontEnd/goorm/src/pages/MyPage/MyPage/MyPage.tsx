@@ -49,7 +49,7 @@ const MyPage: React.FC = () => {
           setUser(data);
           if (!data.memberHeight) {
             alert("추가 정보 없음, 추가 정보 입력으로 이동합니다.");
-            openModal("userInfo"); // comment가 없으면 모달을 표시
+            openModal("userInfo");
           }
         } else {
           setError("사용자 정보가 없습니다.");
