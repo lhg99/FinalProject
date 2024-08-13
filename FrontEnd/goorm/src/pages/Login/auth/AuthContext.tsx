@@ -102,7 +102,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         } else {
           resolve(false);
         }
-      }, 500);
+      }, 100);
     });
   };
 

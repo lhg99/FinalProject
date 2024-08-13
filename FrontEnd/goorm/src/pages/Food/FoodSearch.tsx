@@ -39,6 +39,7 @@ const FoodSearch = ({ onAddFood, onAddCustomFood } : FoodSearchProps) => {
         const fetchdata = async () => {
             try {
                 const foodData = await getFoodData();
+                console.log("음식 가져오기", foodData);
                 setFood(foodData);
                 setFilteredData(foodData);
                 const categories: FoodCategory[] = [
@@ -207,8 +208,8 @@ export default FoodSearch;
 const FoodSearchContainer = styled.div`
     display: flex;
     flex-direction: column;
-    padding: .625rem;
-    width: 23%;
+    padding: 0.625rem;
+    width: 17.5rem;
     max-height: 36.25rem;
     overflow-y: auto;
     border-radius: 5px;
@@ -241,10 +242,10 @@ const CategoriesContainer = styled.div`
 `;
 
 const CategoryText = styled.label`
-    margin-right: 0.1875rem;
+    margin-right: 5px;
 
     input {
-        margin-right: 0.1875rem; /* 간격 조정 */
+        margin-right: 5px; /* 간격 조정 */
     }
 `
 

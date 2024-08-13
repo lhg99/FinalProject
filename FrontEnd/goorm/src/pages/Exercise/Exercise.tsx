@@ -12,7 +12,7 @@
  * ExerciseMemo: CKEditor를 이용한 텍스트, 사진 넣을 수 있는 컴포넌트
  */
 
-import React, { useCallback, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import MyCalendar from "./components/Date/Calendar";
 import ExerciseMemo from "./ExerciseMemo";
 import ExerciseSearch from "./ExerciseSearch";
@@ -26,13 +26,32 @@ import { formatDateInfo } from "../../utils/DateUtils";
 import { EditExerciseRecordRequest, PostCardioRecordRequest, PostStrengthRecordRequest } from "../../api/Exercise/dto/ExerciseRequest";
 import { ToastStore } from "../../store/store";
 import ToastComponent from "../../components/Toast/ToastComponent";
+import { getusereData } from "../../api/mypageApi";
+import { useNavigate } from "react-router-dom";
 
 const Exercise: React.FC = () => {
   const [dateInfo, setDateInfo] = useState<{ 
     year: number; month: number; day: number; weekday: string; formattedDate: string 
   } | null>(null);
 
+  const navigate = useNavigate();
   const { showToast } = ToastStore();
+
+  useEffect(() => {
+    const checkUserInfo = async() => {
+      try {
+        const userInfo = await getusereData();
+        if(!userInfo.memberHeight) {
+          alert("유저 추가 정보가 없습니다. 마이페이지에서 추가정보를 입력하세요.");
+          navigate("/mypage");
+        }
+      } catch(err) {
+        console.error("유저 정보 가져오기 실패", err);
+      }
+    }
+    checkUserInfo();
+  }, []);
+  
 
   const {
     state: {
@@ -85,7 +104,6 @@ const Exercise: React.FC = () => {
           },
         };
 
-        console.log("Payload to send:", customExercisePayload);
         const newExerciseId: number = await postCustomExerciseData(
           customExercisePayload
         );
@@ -121,11 +139,11 @@ const Exercise: React.FC = () => {
             };
             await postStrengthRecord(strengthRecordData);
           }
-          console.log("Created record:", recordData);
         }
       }
       await postExerciseMemo(memo.content);
       showToast("saveToast", "운동 기록이 저장되었습니다.");
+      window.location.reload();
     } catch (err) {
       console.error("운동기록 저장 실패", err);
     }
@@ -133,17 +151,15 @@ const Exercise: React.FC = () => {
 
   const handleEdit = async () => {
     try {
-      // EditExerciseRequest 객체 생성
       const editRequest: EditExerciseRecordRequest = {
         exerciseRecords: selectedExerciseRecords,
         memos: memo
       };
       
-      // 수정된 EditExerciseRecord 함수 호출
       await EditExerciseRecord(editRequest);
       
-      // 수정 성공 시 토스트 메시지 표시
       showToast("editToast", "운동 기록이 수정되었습니다.");
+      window.location.reload();
     } catch (err) {
       console.error("운동기록 수정 실패", err);
     }
