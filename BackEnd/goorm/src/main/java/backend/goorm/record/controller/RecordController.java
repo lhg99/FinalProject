@@ -90,11 +90,17 @@ public class RecordController {
 
 
     @GetMapping("/daily-summary")
-    public ResponseEntity<Map<String, Integer>> getRecordSummary(@AuthenticationPrincipal PrincipalDetails principalDetails) {
-        LocalDate today = LocalDate.now();
+    public ResponseEntity<Map<String, Integer>> getRecordSummary(
+            @AuthenticationPrincipal PrincipalDetails principalDetails,
+            @RequestParam(value = "date", required = false) LocalDate date) {
 
-        int totalCaloriesBurned = recordService.getTotalCaloriesBurnedByDateAndMember(today, principalDetails.member());
-        int totalDurationMinutes = recordService.getTotalDurationByDateAndMember(today, principalDetails.member());
+        // 날짜를 입력하지 않으면 오늘 날짜를 기본으로 사용
+        if (date == null) {
+            date = LocalDate.now();
+        }
+
+        int totalCaloriesBurned = recordService.getTotalCaloriesBurnedByDateAndMember(date, principalDetails.member());
+        int totalDurationMinutes = recordService.getTotalDurationByDateAndMember(date, principalDetails.member());
 
         Map<String, Integer> response = new HashMap<>();
         response.put("totalCaloriesBurned", totalCaloriesBurned);
