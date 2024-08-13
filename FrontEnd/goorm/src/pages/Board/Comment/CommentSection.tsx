@@ -2,7 +2,7 @@ import React, { useState, useEffect, FormEvent, Dispatch, SetStateAction } from 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faUser } from '@fortawesome/free-solid-svg-icons';
 import styles from './CommentSection.module.scss';
-import { fetchComments, addComment, deleteComment, updateComment } from '../api/boardAPI';
+import { fetchComments, addComment, deleteComment, updateComment } from '../api/commentAPI';
 import { Comment } from '../types';
 import CommentTextEditor from './CommentTextEditor';
 import { DeleteCommentModal } from '../components/Modal';

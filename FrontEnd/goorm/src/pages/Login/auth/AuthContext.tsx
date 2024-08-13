@@ -3,8 +3,8 @@ import React, { useState, createContext, useContext, ReactNode, useEffect } from
 
 interface User {
   memberId: string;
-  info: string; // 로그인 상태에 대한 정보 (예: "false" 등)
-  message: string; // 메시지 ("로그인이 정상적으로 완료되었습니다" 등)
+  info: string;
+  message: string;
 }
 
 interface AuthContextType {
@@ -80,16 +80,31 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const isLoggedIn = () => {
     return new Promise<boolean>((resolve) => {
       setTimeout(() => {
-        const result = user.message.includes("로그인이 정상적으로 완료되었습니다");
-        resolve(result);
-        return result;
-      }, 2000); // 2초 시간
+        const storedUser = sessionStorage.getItem('user');
+        if (storedUser) {
+          const user = JSON.parse(storedUser);
+          const initialUser = {
+            memberId: "",
+            info: "",
+            message: ""
+          };
+          
+          // initialUser와 동일한지 비교하여 동일하면 false 반환
+          const isInitialUser = user.memberId === initialUser.memberId &&
+                                user.info === initialUser.info &&
+                                user.message === initialUser.message;
+  
+          if (isInitialUser) {
+            resolve(false);
+          } else {
+            resolve(user.message.includes("로그인이 정상적으로 완료되었습니다"));
+          }
+        } else {
+          resolve(false);
+        }
+      }, 100);
     });
   };
-
-  useEffect(() => {
-    console.log("현재 로그인 상태:", isLoggedIn());
-  }, []);
 
   const value = { user, login, logout, isLoggedIn };
 

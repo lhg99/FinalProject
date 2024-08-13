@@ -15,7 +15,7 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children }) => {
   useEffect(() => {
     const checkLogin = async () => {
       const result = await isLoggedIn();
-      setLoggedIn(result !== undefined ? result : false);
+      setLoggedIn(result);
       setLoading(false);
     };
     checkLogin();

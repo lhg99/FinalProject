@@ -23,7 +23,7 @@ const MainPage: React.FC = () => {
     <div className={styles.pageBackground}>
       <div className={styles.container}>
         <div className={styles.leftPane}>
-          <img src="/main.png" alt="캐릭터" className={styles.characterImage} />
+          <img src="/Main.png" alt="캐릭터" className={styles.characterImage} />
         </div>
         <div className={styles.rightPane}>
           <div className={styles.buttons}>

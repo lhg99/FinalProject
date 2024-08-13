@@ -12,7 +12,7 @@
  * ExerciseMemo: CKEditor를 이용한 텍스트, 사진 넣을 수 있는 컴포넌트
  */
 
-import React, { useCallback, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import MyCalendar from "./components/Date/Calendar";
 import ExerciseMemo from "./ExerciseMemo";
 import ExerciseSearch from "./ExerciseSearch";
@@ -20,36 +20,44 @@ import ExerciseList from "./components/Records/ExerciseList";
 import styles from "./Exercise.module.scss";
 import ExerciseCategoryTable from "./ExerciseCategoryTable";
 import { useExercise } from "../../contexts/exerciseContext";
-import { ExerciseData, ExerciseRecords } from "./ExerciseTypes";
-import DateSelector from "./components/Date/DateSelector";
-import {
-  EditExerciseRecord,
-  postCardioRecord,
-  postCustomExerciseData,
-  postExerciseMemo,
-  postStrengthRecord,
-} from "../../api/Exercise/exerciseApi";
+import { ExerciseData } from "./ExerciseTypes";
+import { EditExerciseRecord, postCardioRecord, postCustomExerciseData, postExerciseMemo, postStrengthRecord } from "../../api/Exercise/exerciseApi";
 import { formatDateInfo } from "../../utils/DateUtils";
+import { EditExerciseRecordRequest, PostCardioRecordRequest, PostStrengthRecordRequest } from "../../api/Exercise/dto/ExerciseRequest";
+import { ToastStore } from "../../store/store";
+import ToastComponent from "../../components/Toast/ToastComponent";
+import { getusereData } from "../../api/mypageApi";
+import { useNavigate } from "react-router-dom";
 
 const Exercise: React.FC = () => {
-  const [dateInfo, setDateInfo] = useState<{ year: number; month: number; day: number; weekday: string; formattedDate: string } | null>(null);
-  const [customExerciseName, setCustomExerciseName] = useState<string>("");
+  const [dateInfo, setDateInfo] = useState<{ 
+    year: number; month: number; day: number; weekday: string; formattedDate: string 
+  } | null>(null);
+
+  const navigate = useNavigate();
+  const { showToast } = ToastStore();
+
+  useEffect(() => {
+    const checkUserInfo = async() => {
+      try {
+        const userInfo = await getusereData();
+        if(!userInfo.memberHeight) {
+          alert("유저 추가 정보가 없습니다. 마이페이지에서 추가정보를 입력하세요.");
+          navigate("/mypage");
+        }
+      } catch(err) {
+        console.error("유저 정보 가져오기 실패", err);
+      }
+    }
+    checkUserInfo();
+  }, []);
+  
 
   const {
     state: {
-      selectedExercises,
-      exerciseRecords,
-      exerciseDetails,
-      startDate,
-      endDate,
-      memo,
-      selectedExerciseRecords
-    },
-    addSelectedExercises,
-    addCustomExercises,
-    setStartDate,
-    setEndDate,
-  } = useExercise();
+      selectedExercises, exerciseRecords, exerciseDetails, startDate,
+      endDate, memo, selectedExerciseRecords }, addSelectedExercises, 
+      addCustomExercises, setStartDate, setEndDate } = useExercise();
 
   const handleAddExercise = useCallback(
     (exercise: ExerciseData) => {
@@ -66,14 +74,10 @@ const Exercise: React.FC = () => {
     [addCustomExercises, addSelectedExercises]
   );
 
-  const handleExerciseNameChange = (name: string) => {
-    setCustomExerciseName(name);
-  };
-
   const handleDateChange = useCallback(
     (info: { year: number; month: number; day: number; weekday: string }) => {
-      const formattedDate = formatDateInfo(info); // Format the date as a string
-      setDateInfo({ ...info, formattedDate }); // Store both the original info and formatted date
+      const formattedDate = formatDateInfo(info);
+      setDateInfo({ ...info, formattedDate });
     },[]
   );
 
@@ -90,7 +94,7 @@ const Exercise: React.FC = () => {
       const customExercises = selectedExercises.filter(
         (ex) => ex.isAddingExercise
       );
-  
+
       for (const customExercise of customExercises) {
         const customExercisePayload = {
           name: customExercise.name,
@@ -99,53 +103,47 @@ const Exercise: React.FC = () => {
             categoryName: customExercise.categoryName,
           },
         };
-  
-        console.log("Payload to send:", customExercisePayload); // Payload 확인
+
         const newExerciseId: number = await postCustomExerciseData(
           customExercisePayload
         );
-        customExercise.id = newExerciseId; // 서버로부터 받은 새 ID로 업데이트
+        customExercise.id = newExerciseId;
       }
-  
-      // selectedExercises에서 각 운동을 확인하여 기록 생성 또는 업데이트
+
       for (const exercise of selectedExercises) {
         const details = exerciseDetails[exercise.name] || {};
         const existingRecord = exerciseRecords.find(
           (record) => record.trainingId === exercise.id
         );
-  
-        const recordData: ExerciseRecords = {
-          recordId: existingRecord ? existingRecord.recordId : new Date().getTime(), // Use existing ID or generate new
-          trainingName: exercise.name,
-          exerciseDate: dateInfo ? dateInfo.formattedDate : "",
-          sets: details.sets || 0,
-          weight: details.weight || 0,
-          distance: details.distance,
+
+        const recordData = {
+          trainingId: exercise.id,
           durationMinutes: details.durationMinutes || 0,
-          caloriesBurned: details.caloriesBurned || 0,
-          incline: details.incline || 0,
-          reps: details.reps || 0,
           satisfaction: details.satisfaction || 0,
           intensity: details.intensity || "",
-          memo: details.memo || "",
-          categoryName: exercise.categoryName,
-          trainingId: exercise.id,
         };
-  
-        // 운동 종류에 따라 postCardioRecord 또는 postStrengthRecord로 기록을 생성
         if (!existingRecord) {
-          if (recordData.categoryName === "유산소") {
-            await postCardioRecord(recordData.trainingId, recordData);
+          if (exercise.categoryName === "유산소") {
+            const cardioRecordData: PostCardioRecordRequest = {
+              ...recordData,
+              caloriesBurned: details.caloriesBurned || 0,
+              distance: details.distance
+            };
+            await postCardioRecord(cardioRecordData);
           } else {
-            await postStrengthRecord(recordData.trainingId, recordData);
+            const strengthRecordData: PostStrengthRecordRequest = {
+              ...recordData,
+              sets: details.sets || 0,
+              weight: details.weight || 0,
+              reps: details.reps || 0,
+            };
+            await postStrengthRecord(strengthRecordData);
           }
-          console.log("Created record:", recordData);
         }
       }
-  
-      // 운동 메모 저장
       await postExerciseMemo(memo.content);
-      alert("운동 기록이 저장되었습니다.");
+      showToast("saveToast", "운동 기록이 저장되었습니다.");
+      window.location.reload();
     } catch (err) {
       console.error("운동기록 저장 실패", err);
     }
@@ -153,10 +151,15 @@ const Exercise: React.FC = () => {
 
   const handleEdit = async () => {
     try {
-      // Loop through exerciseRecords to send each record for editing
-      await EditExerciseRecord(selectedExerciseRecords, memo);
-      // await postExerciseMemo(memo.content);
-      alert("운동 기록이 수정되었습니다.");
+      const editRequest: EditExerciseRecordRequest = {
+        exerciseRecords: selectedExerciseRecords,
+        memos: memo
+      };
+      
+      await EditExerciseRecord(editRequest);
+      
+      showToast("editToast", "운동 기록이 수정되었습니다.");
+      window.location.reload();
     } catch (err) {
       console.error("운동기록 수정 실패", err);
     }
@@ -164,18 +167,19 @@ const Exercise: React.FC = () => {
 
   return (
     <div className={styles.pageBackground}>
-      <div className={styles.exercise}>
+      <div className={styles.Wrapper}>
+        <div className={styles.exercise}>
+        <ToastComponent />
         <div className={styles.exerciseContainer}>
           <div className={styles.leftColumn}>
             <div className="calendar">
               <MyCalendar onDateChange={handleDateChange} />
-              <DateSelector
+              <ExerciseCategoryTable 
                 startDate={startDate}
                 endDate={endDate}
                 onHandleStartDate={handleStartDate}
                 onHandleEndDate={handleEndDate}
-              ></DateSelector>
-              <ExerciseCategoryTable />
+              />
             </div>
           </div>
           <div className={styles.rightColumn}>
@@ -195,7 +199,6 @@ const Exercise: React.FC = () => {
                 <ExerciseList
                   dateInfo={dateInfo}
                   exercises={selectedExercises}
-                  onExerciseNameChange={handleExerciseNameChange}
                 />
               </div>
             </div>
@@ -206,6 +209,7 @@ const Exercise: React.FC = () => {
           <button className={styles.saveButton} onClick={handleEdit}>수정하기</button>
           <button className={styles.saveButton} onClick={handleSave}>저장하기</button>
         </div>
+      </div>
       </div>
     </div>
   );

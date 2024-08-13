@@ -15,7 +15,6 @@ interface ExerciseListProps {
     weekday: string;
     formattedDate: string;
   } | null;
-  onExerciseNameChange: (name: string) => void;
 }
 
 // 운동을 나열하는 컴포넌트
@@ -145,7 +144,6 @@ const ExerciseListWrapper = styled.div`
   width: 100%;
   max-height: 36.25rem;
   overflow-y: auto;
-  border: 1px solid #afafaf;
   border-radius: 5px;
   border-left: none;
   box-sizing: content-box;
@@ -157,6 +155,7 @@ const ExerciseTextContainer = styled.div`
 
 const ExerciseText = styled.span`
   font-size: 1.25rem;
+  font-weight: bold;
   margin-left: 0.9375rem;
 `;
 

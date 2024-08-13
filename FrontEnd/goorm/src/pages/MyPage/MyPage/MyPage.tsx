@@ -3,11 +3,15 @@ import styles from "./MyPage.module.scss";
 import { userData, getusereData } from '../../../api/mypageApi';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from "../../Login/auth/AuthContext";
+import { ModalStore } from "../../../store/store";
+import UserInfoModal from "../../../components/Modal/Login/UserInfoModal";
 
 const MyPage: React.FC = () => {
   const [user, setUser] = useState<userData | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
+
+  const { modals, openModal, closeModal} = ModalStore();
 
   const navigate = useNavigate();
   const location = useLocation();
@@ -43,6 +47,10 @@ const MyPage: React.FC = () => {
         console.log('Fetched data:', data);
         if (data) {
           setUser(data);
+          if (!data.memberHeight) {
+            alert("추가 정보 없음, 추가 정보 입력으로 이동합니다.");
+            openModal("userInfo");
+          }
         } else {
           setError("사용자 정보가 없습니다.");
         }
@@ -56,13 +64,14 @@ const MyPage: React.FC = () => {
     if (location.state?.updated) {
       fetchUserData();
       navigate('/mypage', { state: {} });
+      window.location.reload();
     } else {
       fetchUserData();
     }
   }, [location.state?.updated, navigate]);
 
   if (loading) {
-    return <div>로딩 중...</div>;
+    return <div></div>;
   }
 
   if (error) {
@@ -87,7 +96,7 @@ const MyPage: React.FC = () => {
           </div>
 
           <button
-            className={styles.button}
+            className={styles.button1}
             onClick={() => navigate('/edit')}
           >
             회원정보 수정
@@ -96,7 +105,8 @@ const MyPage: React.FC = () => {
       ) : (
         <div>사용자 정보를 찾을 수 없습니다.</div>
       )}
-    </div>
+      <UserInfoModal isOpen={modals.userInfo?.isOpen} onClose={() => closeModal("userInfo")} />
+      </div>
     </div>
   );
 };

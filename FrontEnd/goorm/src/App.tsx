@@ -11,9 +11,9 @@ import Main from './pages/MyPage/Main/Main';
 import { AuthProvider } from './pages/Login/auth/AuthContext';
 import ProtectedRoute from './pages/Login/auth/ProtectedRoute';
 import Food from './pages/Food/Food';
-import FreeBoardPage from './pages/Board/page/FreeBoard/FreeBoardPage';
-import UpdatePost from './pages/Board/page/FreeBoard/Update/UpdatePost';
-import CreatePost from './pages/Board/page/FreeBoard/Create/CreatePost';
+import FreeBoardPage from './pages/Board/pages/FreeBoard/FreeBoardPage';
+import UpdatePost from './pages/Board/pages/FreeBoard/Update/UpdatePost';
+import CreatePost from './pages/Board/pages/FreeBoard/Create/CreatePost';
 import ExerciseChartPage from './pages/Chart/ExerciseChart/ExerciseChartPage';
 import ExerciseRecordPage from './pages/Exercise/ExerciseRecordList/ExerciseRecordPage';
 import ExerciseVideo from './pages/HealthVideo/ExerciseVideo/ExerciseVideo';
@@ -23,9 +23,10 @@ import CareVideo from './pages/HealthVideo/CareVideo/CareVideo';
 import Landing from './pages/Login/Landing/Landing';
 import MyPage from './pages/MyPage/MyPage/MyPage';
 import DietChartPage from './pages/Chart/DietChart/DietChartPage';
-import RecordSharePost from './pages/Board/page/ExerciseBoard/SharePost/RecordSharePost';
-import ExerciseBoardPage from './pages/Board/page/ExerciseBoard/ExerciseBoardPage/ExerciseBoardPage';
-import DetailPost from './pages/Board/page/FreeBoard/Detail/DetailPost';
+import RecordSharePost from './pages/Board/pages/ExerciseBoard/SharePost/RecordSharePost';
+import ExerciseBoardPage from './pages/Board/pages/ExerciseBoard/ExerciseBoardPage/ExerciseBoardPage';
+import DietBoardPage from './pages/Board/pages/DietBoard/DietBoardPage/DietBoardPage';
+import DetailPost from './pages/Board/pages/FreeBoard/Detail/DetailPost';
 
 
 const Layout: React.FC = () => (
@@ -60,16 +61,16 @@ const App: React.FC = () => {
             <Route path="/exercise" element={<ProtectedRoute><Exercise /></ProtectedRoute>} />
             <Route path="/exercise/records/:month" element={<ProtectedRoute><ExerciseRecordPage /></ProtectedRoute>} />
             <Route path="/exercise/chart/:month" element={<ProtectedRoute><ExerciseChartPage /></ProtectedRoute>} />
-            <Route path="/food" element={<Food />} />
+            <Route path="/food" element={<ProtectedRoute><Food /></ProtectedRoute>} />
             <Route path="/food/records/:month" element={<ProtectedRoute><DietRecordList /></ProtectedRoute>} />
             <Route path="/food/chart/:month" element={<ProtectedRoute><DietChartPage /></ProtectedRoute>} />
-
-
 
             <Route path="/Board" element={<Outlet />}>
               <Route path="free" element={<FreeBoardPage />} />
               <Route path="exercise" element={<ExerciseBoardPage />} />
+              <Route path="diet" element={<DietBoardPage />} />
               <Route path="exercise/record" element={<RecordSharePost />} />
+              <Route path="diet/record" element={<RecordSharePost />} />
               <Route path="free/post/:id" element={<DetailPost />} />
               <Route path="exercise/post/:id" element={<DetailPost />} />
               <Route path="free/post/edit/:id" element={<UpdatePost />} />

@@ -1,6 +1,9 @@
 import styled from 'styled-components';
 
 export const EditorWrapper = styled.div`
+  .image {
+    width: 400px;
+  }
   .ck.ck-toolbar {
     border-right: 0;
     border-left: 0;
@@ -10,7 +13,7 @@ export const EditorWrapper = styled.div`
   .ck.ck-editor__editable_inline {
     border-left: 1;
     border-right: 1;
-    height: 300px;
+    height: 200px;
     border-bottom: 1;
   }
 

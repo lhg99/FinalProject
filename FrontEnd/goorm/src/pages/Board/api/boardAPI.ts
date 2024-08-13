@@ -1,5 +1,5 @@
 import axiosInstance from '../../../api/axiosInstance';
-import { Comment , BoardType} from '../types';
+import { BoardType} from '../types';
 
 // 게시글 목록 조회
 export const fetchPosts = async (
@@ -19,17 +19,23 @@ export const fetchPosts = async (
     const response = await axiosInstance.get(`/board/list/${page}`, { params });
     console.log('Fetched posts:', response.data);
 
-    return response.data;
+    return {
+      boardItems: response.data.boardItems || [], // 기본값으로 빈 배열 설정
+      totalPages: response.data.totalPages || 1, // 기본값으로 1페이지 설정
+      pageSize: response.data.pageSize || 0, // 기본값으로 0 설정
+      totalCnt: response.data.totalCnt || 0, // 기본값으로 0 설정
+    };
   } catch (error) {
     console.error('Error fetching posts:', error);
     return {
       boardItems: [],
-      totalPages: 0,
+      totalPages: 1,
       pageSize: 0,
       totalCnt: 0,
     };
   }
 };
+
 
 // 게시글 추가 (이미지 없이)
 export const addPost = async (postData: { boardTitle: string; boardContent: string; boardType: string; boardCategory: string; imageUrls?: string[]; trainingRecords?: (number | string)[] }): Promise<any> => {
@@ -82,64 +88,7 @@ export const fetchPostDetail = async (boardId: string): Promise<any> => {
   }
 };
 
-// 댓글 목록 조회
-export const fetchComments = async (boardId: string): Promise<Comment[]> => {
-  try {
-    console.log('Fetching comments for board ID:', boardId);
-    const response = await axiosInstance.get(`/comment/list/${boardId}`);
-    console.log('Fetched comments:', response.data.comments);
-    return Array.isArray(response.data.comments) ? response.data.comments : [];
-  } catch (error) {
-    console.error('댓글 목록 조회 에러:', error);
-    return [];
-  }
-};
 
-// 댓글 추가
-export const addComment = async (postData: { boardId: number; commentContent: string; writer: string }): Promise<any> => {
-  try {
-    console.log('Adding comment with data:', postData);
-    const response = await axiosInstance.post('/comment/save', postData, {
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    });
-    console.log('Added comment:', response.data);
-    return response.data;
-  } catch (error) {
-    console.error('Error adding comment:', error);
-    throw error;
-  }
-};
-
-// 댓글 삭제
-export const deleteComment = async (commentId: string): Promise<any> => {
-  try {
-    console.log('Deleting comment with ID:', commentId);
-    await axiosInstance.post(`/comment/delete/${commentId}`);
-    console.log('Deleted comment successfully');
-  } catch (error) {
-    console.error('Error deleting comment:', error);
-    throw error;
-  }
-};
-
-// 댓글 수정
-export const updateComment = async (commentData: { commentId: number; commentContent: string }): Promise<any> => {
-  try {
-    console.log('Updating comment with data:', commentData);
-    const response = await axiosInstance.post('/comment/update', commentData, {
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    });
-    console.log('Updated comment:', response.data);
-    return response.data;
-  } catch (error) {
-    console.error('Error updating comment:', error);
-    throw error;
-  }
-};
 
 // 좋아요 토글
 export const toggleLike = async (boardId: number): Promise<any> => {
