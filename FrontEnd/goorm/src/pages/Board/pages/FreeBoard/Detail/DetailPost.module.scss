@@ -176,3 +176,51 @@ border-radius: 5px;
 .Author:hover {
   color: rgb(53, 84, 137);
 }
+
+
+.RecordListContainer {
+  margin-top: 20px;
+  padding: 20px;
+  background-color: #f9f9f9;
+  border-radius: 5px;
+  width: 100%;
+}
+
+.RecordTableContainer {
+  width: 100%;
+  overflow-x: auto;
+}
+
+.RecordTable {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 10px;
+
+  th, td {
+    padding: 10px;
+    text-align: center;
+    border-bottom: 1px solid #ddd;
+  }
+
+  th {
+    background-color: #FFBDBD; /* 운동 기록과 동일한 배경색 사용 */
+    color: #000;
+  }
+
+  td {
+    background-color: #fff;
+    color: #333;
+  }
+
+  @media (max-width: 480px) {
+    th, td {
+      padding: 8px;
+    }
+  }
+}
+
+.NoRecords {
+  text-align: center;
+  padding: 20px;
+  color: #777;
+}

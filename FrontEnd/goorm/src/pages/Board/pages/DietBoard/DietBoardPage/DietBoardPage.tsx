@@ -24,6 +24,8 @@ const DietBoardPage: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState<string>('');
   const navigate = useNavigate();
 
+  const postsPerPage = 10; // 한 페이지에 표시할 게시글 수
+
   const paginate = (pageNumber: number) => {
     setCurrentPage(pageNumber);
   };
@@ -31,13 +33,13 @@ const DietBoardPage: React.FC = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        console.log(`Fetching posts for tab: ${selectedTab}, page: ${currentPage}, searchQuery: ${searchQuery}`); // 요청 전 로그
+        console.log(`Fetching posts for tab: ${selectedTab}, page: ${currentPage}, searchQuery: ${searchQuery}`); 
         const data = await fetchPosts(selectedTab, currentPage - 1, searchQuery);
-        console.log('Fetched posts:', data);  // 성공적으로 데이터를 받아왔을 때의 로그
+        console.log('Fetched posts:', data); 
         setCurrentPosts(data.boardItems);
         setTotalPages(data.totalPages);
       } catch (error) {
-        console.error('Error fetching posts:', error); // 오류 발생 시 로그
+        console.error('Error fetching posts:', error); 
       }
     };
     fetchData();
@@ -50,21 +52,23 @@ const DietBoardPage: React.FC = () => {
 
   return (
     <div className={styles.container}>
-      <BoardTabs selectedTab={selectedTab} setSelectedTab={setSelectedTab} />  {/* selectedTab 전달 */}
+      <BoardTabs selectedTab={selectedTab} setSelectedTab={setSelectedTab} /> 
       <table className={styles.table}>
         <thead>
           <tr>
-            <th className={styles.tableHeader} style={{ width: '30px' }}>번호</th>
-            <th className={styles.tableHeader} style={{ width: '30px' }}>카테고리</th>
-            <th className={styles.tableHeader} style={{ width: '200px' }}>제목</th>
+            <th className={styles.tableHeader} style={{ width: '40px' }}>번호</th>
+            <th className={styles.tableHeader} style={{ width: '20px' }}>카테고리</th>
+            <th className={styles.tableHeader} style={{ width: '300px' }}>제목</th>
             <th className={styles.tableHeader} style={{ width: '30px' }}>작성자</th>
             <th className={styles.tableHeader} style={{ width: '30px' }}>작성일</th>
           </tr>
         </thead>
         <tbody>
-          {currentPosts.map((post) => (
+        {currentPosts.map((post, index) => (
             <tr key={post.boardId} className={styles.tableRow}>
-              <td className={styles.tableCell}>{post.boardId}</td>
+              <td className={styles.tableCell}>
+              {index + 1 + (currentPage - 1) * postsPerPage}
+              </td>
               <td className={styles.tableCell}>{categoryMap[post.boardCategory] || post.boardCategory}</td>
               <td className={styles.titleCell} onClick={() => navigate(`/Board/diet/post/${post.boardId}`)}>
                 {post.boardTitle}
