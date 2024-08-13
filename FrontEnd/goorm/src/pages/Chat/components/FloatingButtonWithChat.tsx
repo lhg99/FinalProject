@@ -265,7 +265,7 @@ const FloatingButtonWithChat: React.FC = () => {
 
          fetchChatHistory();
 
-         const socket = new SockJS("http://final-project-app-env.eba-xdjqmujd.ap-northeast-2.elasticbeanstalk.com/api/websocket", {
+         const socket = new SockJS("http://www.eadyfit.com/api/websocket", {
             withCredentials: true,
          });
          const client = Stomp.over(socket);
