@@ -38,7 +38,15 @@ export const fetchPosts = async (
 
 
 // 게시글 추가 (이미지 없이)
-export const addPost = async (postData: { boardTitle: string; boardContent: string; boardType: string; boardCategory: string; imageUrls?: string[]; trainingRecords?: (number | string)[] }): Promise<any> => {
+export const addPost = async (postData: { 
+  boardTitle: string; 
+  boardContent: string; 
+  boardType: string; 
+  boardCategory: string; 
+  imageUrls?: string[]; 
+  trainingRecords?: (number | string)[]; 
+  dietRecords?: (number | string)[]; // 식단 기록 추가
+}): Promise<any> => {
   try {
     console.log('Adding post with data:', postData);
     const response = await axiosInstance.post('/board/save', postData);
@@ -49,6 +57,7 @@ export const addPost = async (postData: { boardTitle: string; boardContent: stri
     throw error;
   }
 };
+
 
 // 게시글 수정
 export const updatePost = async (formData: FormData): Promise<any> => {
