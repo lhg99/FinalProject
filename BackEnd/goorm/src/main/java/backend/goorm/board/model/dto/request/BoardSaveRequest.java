@@ -33,6 +33,6 @@ public class BoardSaveRequest {
 
     private List<Long> trainingRecords;
 
-    private List<Long> foodRecords;
+    private List<Long> dietRecords;
 
 }

@@ -1,10 +1,9 @@
 package backend.goorm.board.model.dto.response;
 
-import backend.goorm.board.model.dto.BoardFoodRecordItem;
 import backend.goorm.board.model.dto.BoardTrainingRecordItem;
-import backend.goorm.board.model.entity.BoardFoodRecord;
 import backend.goorm.board.model.enums.BoardCategory;
 import backend.goorm.board.model.enums.BoardType;
+import backend.goorm.diet.dto.DietResponseDto;
 import lombok.*;
 
 import java.util.List;
@@ -40,7 +39,7 @@ public class BoardDetailResponse {
 
     private List<BoardTrainingRecordItem> trainingRecordItems;
 
-    private List<BoardFoodRecordItem> foodRecordItems;
+    private List<DietResponseDto> dietRecordItems;
 
     //List<String> imageUrls;
 

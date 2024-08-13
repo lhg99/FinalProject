@@ -12,7 +12,7 @@ import lombok.*;
 @NoArgsConstructor
 @Builder
 @Entity
-public class BoardFoodRecord {
+public class BoardDietRecord {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -20,5 +20,5 @@ public class BoardFoodRecord {
 
     private Long boardId;
 
-    private Long foodRecordId;
+    private Long dietId;
 }
