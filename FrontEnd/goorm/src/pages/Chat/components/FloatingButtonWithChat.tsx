@@ -38,6 +38,7 @@ const FloatingButtonWithChat: React.FC = () => {
    const [currentUser, setCurrentUser] = useState<string>("");
    const [isLeaveModalOpen, setIsLeaveModalOpen] = useState<boolean>(false); // 채팅방 나가기 모달 상태
    const [leavingChatRoomId, setLeavingChatRoomId] = useState<number | null>(null); // 나가려는 채팅방 ID
+   const [tabAnimationKey, setTabAnimationKey] = useState<number>(0);
 
    const config = {
       apiRequestUrl: process.env.REACT_APP_API_REQUEST_URL,
@@ -53,6 +54,12 @@ const FloatingButtonWithChat: React.FC = () => {
          setInChatRoom(false); // 채팅창이 닫힐 때 채팅방 상태 초기화
       }
    };
+
+   const handleTabChange = (tab: string) => {
+      setActiveTab(tab);
+      setTabAnimationKey((prevKey) => prevKey + 1); // 애니메이션 트리거
+    };
+    
 
    // 입장확인 모달 열기 함수
    const openModal = (chatRoom: any) => {
@@ -475,75 +482,85 @@ const FloatingButtonWithChat: React.FC = () => {
 
    const renderNavigation = () => (
       <nav className="chat-nav">
-         <button
-            onClick={() => setActiveTab("home")}
-            className={activeTab === "home" ? "active" : ""}
-         >
-            <img src={homeIcon} alt="Home" className="nav-icon" />
-            <span>홈</span>
-         </button>
-         <button
-            onClick={() => setActiveTab("chat")}
-            className={activeTab === "chat" ? "active" : ""}
-         >
-            <img src={chatting} alt="Chat" className="nav-icon" />
-            <span>채팅</span>
-         </button>
-         <button
-            onClick={() => setActiveTab("openChat")}
-            className={activeTab === "openChat" ? "active" : ""}
-         >
-            <img src={openChatting} alt="Open Chat" className="nav-icon" />
-            <span>오픈채팅</span>
-         </button>
+        <button
+          onClick={() => handleTabChange("home")}
+          className={activeTab === "home" ? "active" : ""}
+        >
+          <img src={homeIcon} alt="Home" className="nav-icon" />
+          <span>홈</span>
+        </button>
+        <button
+          onClick={() => handleTabChange("chat")}
+          className={activeTab === "chat" ? "active" : ""}
+        >
+          <img src={chatting} alt="Chat" className="nav-icon" />
+          <span>채팅</span>
+        </button>
+        <button
+          onClick={() => handleTabChange("openChat")}
+          className={activeTab === "openChat" ? "active" : ""}
+        >
+          <img src={openChatting} alt="Open Chat" className="nav-icon" />
+          <span>오픈채팅</span>
+        </button>
       </nav>
-   );
+    );
+    
 
    //채팅방에 입장하면 채팅내용과 메시지 입력란을 렌더링하는 함수
    const renderContent = () => {
       if (inChatRoom) {
-         return (
-            <div className="chat-room">
-               {renderChatMessages()}
-               <div className="chat-footer">
-                  <input
-                     type="text"
-                     placeholder="메시지를 입력하세요"
-                     value={inputMessage}
-                     onChange={(e) => setInputMessage(e.target.value)}
-                     onKeyPress={(e) => {
-                        if (e.key === "Enter") {
-                           sendMessage();
-                        }
-                     }}
-                  />
-                  <button onClick={sendMessage}>전송</button>
-               </div>
+        return (
+          <div className="chat-room">
+            {renderChatMessages()}
+            <div className="chat-footer">
+              <input
+                type="text"
+                placeholder="메시지를 입력하세요"
+                value={inputMessage}
+                onChange={(e) => setInputMessage(e.target.value)}
+                onKeyPress={(e) => {
+                  if (e.key === "Enter") {
+                    sendMessage();
+                  }
+                }}
+              />
+              <button onClick={sendMessage}>전송</button>
             </div>
-         );
+          </div>
+        );
       }
-
+    
       switch (activeTab) {
-         case "home":
-            return (
-               <div className="chat-body">
-                  {renderHomeList()}
-                  <button
-                     className="create-open-chat-button"
-                     onClick={openCreateModal}
-                  >
-                     오픈채팅 만들기
-                  </button>
-               </div>
-            );
-         case "chat":
-            return <div className="chat-body">{renderChatRoomList()}</div>;
-         case "openChat":
-            return <div className="chat-body">{renderOpenChatRoomList()}</div>;
-         default:
-            return null;
+        case "home":
+          return (
+            <div key={tabAnimationKey} className="chat-body">
+              {renderHomeList()}
+              <button
+                className="create-open-chat-button"
+                onClick={openCreateModal}
+              >
+                오픈채팅 만들기
+              </button>
+            </div>
+          );
+        case "chat":
+          return (
+            <div key={tabAnimationKey} className="chat-body">
+              {renderChatRoomList()}
+            </div>
+          );
+        case "openChat":
+          return (
+            <div key={tabAnimationKey} className="chat-body">
+              {renderOpenChatRoomList()}
+            </div>
+          );
+        default:
+          return null;
       }
-   };
+    };
+    
 
    return (
       <div>
