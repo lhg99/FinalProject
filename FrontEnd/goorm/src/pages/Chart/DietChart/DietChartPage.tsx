@@ -101,7 +101,7 @@ const DietChartPage: React.FC = () => {
 
   return (
     <div className={styles.container}>
-      <ChartTabs selectedTab={selectedTab} setSelectedTab={setSelectedTab} basePath="/food/chart" /> 
+      <ChartTabs selectedTab={selectedTab} setSelectedTab={setSelectedTab} basePath="/diet/chart" /> 
       <div className={styles.chartWrapper}>
         <div className={styles.chartContainer}>
           <BarChart data={barChartData} />
