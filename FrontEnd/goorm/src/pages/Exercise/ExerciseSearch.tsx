@@ -182,10 +182,11 @@ const ExerciseSearchContainer = styled.div`
     display: flex;
     flex-direction: column;
     padding: .625rem;
-    width: 24%;
+    width: 17.5rem;
     max-height: 36.25rem;
     overflow-y: auto;
     border-radius: 5px;
+    margin-bottom: 1.25rem;
 
     &::-webkit-scrollbar {
         width: 12px;

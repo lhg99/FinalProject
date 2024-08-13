@@ -1,21 +1,28 @@
 import React, { useEffect, useState } from "react";
 import styled from "styled-components";
-import { ExerciseCount } from "./ExerciseTypes";
+import { ExerciseCount, TotalExerciseData } from "./ExerciseTypes";
 import { useExercise } from "../../contexts/exerciseContext";
-import { getExercisePercentage } from "../../api/Exercise/exerciseApi";
+import { getExercisePercentage, getTotalData } from "../../api/Exercise/exerciseApi";
 import DateSelector from "./components/Date/DateSelector";
+import { formatDate } from "../../utils/DateUtils";
 
 interface ExerciseCategoryTableProps {
   startDate: Date;
   endDate: Date;
   onHandleStartDate: (date: Date) => void;
   onHandleEndDate: (date: Date) => void;
+  dateInfo: {
+    year: number;
+    month: number;
+    day: number;
+    weekday: string;
+    formattedDate: string;
+  } | null;
 }
 
-const ExerciseCategoryTable = ({startDate, endDate, onHandleStartDate, onHandleEndDate}: ExerciseCategoryTableProps) => {
+const ExerciseCategoryTable = ({startDate, endDate, onHandleStartDate, onHandleEndDate, dateInfo}: ExerciseCategoryTableProps) => {
   const [data, setData] = useState<ExerciseCount | null>(null);
-  const [totalCalories, setTotalCalories] = useState<number | undefined>(undefined);
-  const {state: {exerciseRecords}} = useExercise();
+  const [totalExerciseData, setTotalExerciseData] = useState<TotalExerciseData | null>(null);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -26,20 +33,33 @@ const ExerciseCategoryTable = ({startDate, endDate, onHandleStartDate, onHandleE
         console.error("데이터를 가져오는 데 실패했습니다.", err);
       }
     };
-
     fetchData();
   }, [startDate, endDate]);
 
   useEffect(() => {
-    // 유산소 운동의 첫 번째 기록의 totalCaloriesBurned 값을 가져옴
-    const cardioRecord = exerciseRecords.find(record => record.categoryName === "유산소");
-    setTotalCalories(cardioRecord?.totalCaloriesBurned);
-  }, [exerciseRecords]);
+    if (!dateInfo) {
+      console.warn("dateInfo가 null입니다. 데이터를 가져올 수 없습니다.");
+      return;
+    }
 
+    const fetchCalorie = async() => {
+      try {
+        const response = await getTotalData(new Date(dateInfo.formattedDate));
+        setTotalExerciseData(response);
+        return response.data;
+      } catch (error) {
+        console.error("getTotalData 실패", error);
+      }
+    }
+    fetchCalorie();
+  }, [dateInfo]);
+  
 
   return (
     <div>
-      <ExerciseInfo>유산소 칼로리 소모량: <span className="highlight">{totalCalories?.toFixed(2)}</span> kcal</ExerciseInfo>
+      <ExerciseInfo>유산소 칼로리 소모량: <span className="highlight">{totalExerciseData?.totalCaloriesBurned}</span> kcal</ExerciseInfo>
+      <br></br>
+      <ExerciseInfo>총 운동 시간 : <span className="highlight">{totalExerciseData?.totalDurationMinutes}</span> 분</ExerciseInfo>
       <DateSelector
                 startDate={startDate}
                 endDate={endDate}
@@ -102,7 +122,7 @@ const Table = styled.table`
 
 const ExerciseInfo = styled.span`
     font-size: 1.25rem;
-    margin-right: 0.625rem;
+    margin-left: 0.625rem;
 
     .highlight {
         font-size: 30px;

@@ -28,6 +28,7 @@ const Map = () => {
                 mapRef.current = new window.kakao.maps.Map(container, options);
                 psRef.current = new window.kakao.maps.services.Places();
                 infowindowRef.current = new window.kakao.maps.InfoWindow({ zIndex: 1 });
+                console.log('PlaceService initialized:', psRef.current);
             }
 
             searchPlaces();
