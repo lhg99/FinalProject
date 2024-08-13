@@ -3,6 +3,7 @@ package backend.goorm.board.model.dto.response;
 import backend.goorm.board.model.dto.BoardTrainingRecordItem;
 import backend.goorm.board.model.enums.BoardCategory;
 import backend.goorm.board.model.enums.BoardType;
+import backend.goorm.diet.dto.DietResponseDto;
 import lombok.*;
 
 import java.util.List;
@@ -36,7 +37,9 @@ public class BoardDetailResponse {
 
     private BoardCategory boardCategory;
 
-    List<BoardTrainingRecordItem> trainingRecordItems;
+    private List<BoardTrainingRecordItem> trainingRecordItems;
+
+    private List<DietResponseDto> dietRecordItems;
 
     //List<String> imageUrls;
 
