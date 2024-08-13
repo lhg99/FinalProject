@@ -20,7 +20,7 @@ public class MemoService {
     private final RecordRepository recordRepository;
 
     public MemoDto addOrUpdateMemo(MemoDto memoDto, Member member) {
-        LocalDate date = LocalDate.now(); // 오늘 날짜로 메모 관리
+        LocalDate date = memoDto.getDate(); // 입력받은 날짜로 메모 관리
         List<Record> records = recordRepository.findAllByExerciseDateAndMember(date, member);
 
         Memo memo = memoRepository.findByMemberAndDate(member, date)
