@@ -8,6 +8,7 @@ import backend.goorm.chat.repository.ChatRepository;
 import backend.goorm.chat.repository.ChatRoomRepository;
 import backend.goorm.chat.service.ChatRoomService;
 import backend.goorm.chat.service.ChatService;
+import backend.goorm.member.oauth.PrincipalDetails;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -15,6 +16,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.SendTo;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -27,8 +29,8 @@ public class ChatController {
     //채팅입력
     @MessageMapping("/chat/{roomId}")
     @SendTo("/api/sub/chat/{roomId}")
-    public ResponseEntity<ChatResponse> chat(@DestinationVariable Long roomId, @RequestBody ChatRequest chatRequest) {
-        ChatResponse chatResponse = chatService.sendChat(roomId, chatRequest);
+    public ResponseEntity<ChatResponse> chat(@DestinationVariable Long roomId, @RequestBody ChatRequest chatRequest, Authentication authentication) {
+        ChatResponse chatResponse = chatService.sendChat(roomId, chatRequest, authentication);
 
         return new ResponseEntity<>(chatResponse, HttpStatus.OK);
     }
