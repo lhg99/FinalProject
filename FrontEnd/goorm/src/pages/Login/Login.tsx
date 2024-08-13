@@ -3,7 +3,7 @@ import { useForm } from 'react-hook-form';
 import { Link, useNavigate } from 'react-router-dom';
 import styles from './Login.module.scss';
 import { useAuth } from './auth/AuthContext';
-import kakaoLogin from '../../image/kakao_login_medium_wide.png'
+import kakaoLogin from '../../image/kakao.png'
 import axiosInstance from '../../api/axiosInstance';
 
 interface LoginFormInputs {
@@ -62,12 +62,13 @@ const Login: React.FC = () => {
           </button>
         </form>
 
+        <a href={kakaoURL}>
+          <img src={kakaoLogin} alt='카카오로 로그인' className={styles.kakaoLogin}/>
+        </a>
+
         <p>
           아직 계정이 없으신가요? <Link to="/signup" className={styles.link}>회원가입</Link>
         </p>
-        <a href={kakaoURL}>
-          <img src={kakaoLogin} alt='카카오로 로그인'/>
-        </a>
       </div>
     </div>
   );

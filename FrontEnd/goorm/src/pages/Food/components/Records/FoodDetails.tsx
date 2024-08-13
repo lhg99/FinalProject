@@ -127,7 +127,7 @@ const FoodDetailsContainer = styled.div`
   display: flex;
   width: 100%;
   border: 1px solid #afafaf;
-  border-radius: 0.9375rem;
+  border-radius: 0.1875rem;
   justify-content: space-between;
   align-items: center;
   text-align: center;

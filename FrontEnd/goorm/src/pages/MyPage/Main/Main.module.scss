@@ -1,3 +1,9 @@
+// @font-face {
+//   font-family: 'goorm-sans-bold';
+//   src: url('https://fastly.jsdelivr.net/gh/projectnoonnu/2408@1.0/goorm-sans-bold.woff2') format('woff2');
+//   font-style: normal;
+// }
+
 .pageBackground {
     background-color: #FFDE95;
     background-size: cover;
@@ -46,9 +52,11 @@
 }
 
 .button1 {
+    font-weight: 700;
     width: 350px;
     height: 200px;
     font-size: 55px;
+    font-weight: 700;
     padding: 8px;
     border: none;
     border-radius: 15px;
@@ -70,23 +78,25 @@
 }
 
 .button2 {
+        font-weight: 700;
     width: 350px;
-    height: 200px;
-    font-size: 55px;
-    padding: 8px;
-    border: none;
-    border-radius: 15px;
-    cursor: pointer;
-    background-color: #699732; // 기본 배경색
-    background-image: url('../../../../public/Button2.png');
+        height: 200px;
+        font-size: 55px;
+        font-weight: 700;
+        padding: 8px;
+        border: none;
+        border-radius: 15px;
+        cursor: pointer;
+        background-color: #FFB1B1;
+        background-image: url('../../../../public/Button2.png');
         background-size: cover;
         background-position: center;
         background-repeat: no-repeat;
-    color: #fff;
-    transition: background-color 0.3s;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+        color: #ffffff;
+        transition: background-color 0.3s;
+        display: flex;
+        align-items: center;
+        justify-content: center;
 }
 
 .button2:hover {

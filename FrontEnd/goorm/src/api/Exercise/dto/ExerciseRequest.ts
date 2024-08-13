@@ -26,6 +26,7 @@ export interface PostStrengthRecordRequest {
     reps?: number;
     intensity: string;
     satisfaction: number;
+    date: Date;
 }
 
 export interface EditExerciseRecordRequest {
