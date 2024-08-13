@@ -39,7 +39,7 @@ const FoodCategoryTable = ({dateInfo}: FoodCategoryTableProps) => {
 
   return (
     <FoodCategoryContainer>
-        <FoodInfo>오늘 섭취한 칼로리: <span className="highlight">{data?.TOTAL?.totalCalories || 0}</span> kcal</FoodInfo>
+        <FoodInfo>오늘 섭취한 칼로리: <span className="highlight">{data?.TOTAL?.totalCalories.toFixed(2) || 0}</span> kcal</FoodInfo>
       {data ? (
         Object.keys(mealTimeLabels).map((mealTime) => {
           const mealData = data[mealTime];
