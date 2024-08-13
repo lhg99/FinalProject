@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import styles from './FoodRecordsList.module.scss';
-import { getFoodRecord } from '../../../../../api/Food/foodApi'; // Assuming you have this API function
+import { getFoodRecord } from '../../../../../api/Food/foodApi'; 
 import { FoodRecord } from '../../../../Food/FoodTypes';
 
 interface FoodRecordsListProps {
@@ -33,6 +33,7 @@ const FoodRecordsList: React.FC<FoodRecordsListProps> = ({ selectedMonth, select
       try {
         const records = await getFoodRecord();
         setFoodRecord(records);
+        console.log('Fetched food records:', records);
       } catch (error) {
         console.error('식단 기록을 불러오는 중 오류가 발생했습니다:', error);
       }
@@ -51,6 +52,7 @@ const FoodRecordsList: React.FC<FoodRecordsListProps> = ({ selectedMonth, select
         })
         .sort((a, b) => new Date(b.dietDate).getTime() - new Date(a.dietDate).getTime());
       setFilteredRecords(filtered);
+      console.log(`Filtered records for month ${selectedMonth}:`, filtered);
     };
 
     filterRecordsByMonth();

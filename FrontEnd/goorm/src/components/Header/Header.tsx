@@ -65,9 +65,9 @@ const Header: React.FC = () => {
             </button>
             {activeDropdown === 'diet' && (
               <ul className={styles.dropdownMenu}>
-                <li onClick={() => { navigate('/food'); closeDropdown(); }}>식단 기록 작성</li>
-                <li onClick={() => { navigate('/food/records/AUG'); closeDropdown(); }}>식단 기록</li>
-                <li onClick={() => { navigate('/food/chart/AUG'); closeDropdown(); }}>식단 통계</li>
+                <li onClick={() => { navigate('/diet'); closeDropdown(); }}>식단 기록 작성</li>
+                <li onClick={() => { navigate('/diet/records/AUG'); closeDropdown(); }}>식단 기록</li>
+                <li onClick={() => { navigate('/diet/chart/AUG'); closeDropdown(); }}>식단 통계</li>
                 <li onClick={() => { navigate('/main'); closeDropdown(); }}>식단 정보</li>
               </ul>
             )}

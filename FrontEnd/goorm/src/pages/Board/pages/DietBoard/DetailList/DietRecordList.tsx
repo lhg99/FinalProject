@@ -1,10 +1,10 @@
 import React from 'react';
 import classNames from 'classnames';
-import styles from './DietBoardPage.module.scss'
+import styles from './DietRecordList.module.scss';
 import { BoardDetails } from '../../../types';
 
 interface DietRecordListProps {
-  records: BoardDetails['trainingRecordItems'];
+  records: BoardDetails['dietRecordItems']; // 식단 기록에 맞게 수정
 }
 
 const DietRecordList: React.FC<DietRecordListProps> = ({ records }) => {
@@ -14,6 +14,21 @@ const DietRecordList: React.FC<DietRecordListProps> = ({ records }) => {
     const month = String(date.getMonth() + 1).padStart(2, '0');
     const day = String(date.getDate()).padStart(2, '0');
     return `${year}/${month}/${day}`;
+  };
+
+  const translateMealTime = (mealTime: string): string => {
+    switch (mealTime) {
+      case 'BREAKFAST':
+        return '아침';
+      case 'LUNCH':
+        return '점심';
+      case 'DINNER':
+        return '저녁';
+      case 'SNACK':
+        return '간식';
+      default:
+        return mealTime; // Unknown meal time will be returned as is
+    }
   };
 
   if (!records || records.length === 0) {
@@ -35,19 +50,20 @@ const DietRecordList: React.FC<DietRecordListProps> = ({ records }) => {
           <tbody>
             {records.map((record, index) => {
               const values = [
-                record.recordId,
-                formatDate(record.exerciseDate), // 이 부분도 식단에 맞게 수정 필요
-                record.categoryName, // 이 부분도 식단에 맞게 수정 필요
-                record.trainingName, // 이 부분도 식단에 맞게 수정 필요
-                record.caloriesBurned !== null ? `${record.caloriesBurned} kcal` : '', // 이 부분도 식단에 맞게 수정 필요
-                record.sets !== null ? `${record.sets} g` : '', // 탄수화물 양으로 수정 필요
-                record.reps !== null ? `${record.reps} g` : '', // 단백질 양으로 수정 필요
-                record.weight !== null ? `${record.weight} g` : '', // 지방 양으로 수정 필요
-                record.distance !== null ? `${record.distance} g` : '', // 설탕 양으로 수정 필요
-                record.incline !== null ? `${record.incline} mg` : '' // 나트륨 양으로 수정 필요
+                record.dietId, // 식단 기록 번호
+                formatDate(record.dietDate), // 식단 날짜
+                translateMealTime(record.mealTime), // 식사 시간
+                record.foodRes.foodName, // 음식 이름
+                `${record.totalCalories} kcal`, // 칼로리
+                `${record.foodRes.carbohydrate} g`, // 탄수화물
+                `${record.foodRes.protein} g`, // 단백질
+                `${record.foodRes.fat} g`, // 지방
+                record.foodRes.sugar !== null ? `${record.foodRes.sugar} g` : '', // 설탕
+                record.foodRes.salt !== null ? `${record.foodRes.salt} mg` : '' // 나트륨
               ];
+
               return (
-                <tr key={record.recordId} className={classNames(styles.tableRow)}>
+                <tr key={record.dietId} className={classNames(styles.tableRow)}>
                   {values.map((value, index) => (
                     <td key={index} className={classNames(styles.tableCell)}>
                       {value}
