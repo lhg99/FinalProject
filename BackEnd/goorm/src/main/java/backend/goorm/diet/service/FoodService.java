@@ -42,8 +42,9 @@ public class FoodService {
         return FoodResponseDto.fromEntityList(foods);
     }
 
-    public List<FoodResponseDto> getAllFoods() {
-        List<Food> foods = foodRepository.findAll();
+    public List<FoodResponseDto> getAllFoods(int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        List<Food> foods = foodRepository.findAll(pageable).getContent();
         return FoodResponseDto.fromEntityList(foods);
     }
 
