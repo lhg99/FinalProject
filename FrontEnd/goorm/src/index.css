@@ -1,17 +1,21 @@
-/* @font-face {
-  font-family: 'goorm-sans-bold';
-  src: url('https://fastly.jsdelivr.net/gh/projectnoonnu/2408@1.0/goorm-sans-bold.woff2') format('woff2');
+@font-face {
+  font-family: 'Goorm Sans';
+  src: url('https://statics.goorm.io/fonts/GoormSans/v1.0.0/GoormSans.woff2') format('woff2');
+  font-weight: 400;
   font-style: normal;
 }
 
-* {
-  font-family: 'goorm-sans-bold', sans-serif;
-  font-weight: 400;
-} */
-
-/* @font-face {
-  font-family: "Goorm Sans", sans-serif;
-  font-weight: 400;
-  src: url('https://statics.goorm.io/fonts/GoormSans/v1.0.0/GoormSans.min.css') format('woff2');
+@font-face {
+  font-family: 'Goorm Sans';
+  src: url('https://statics.goorm.io/fonts/GoormSans/v1.0.0/GoormSans.woff2') format('woff2');
+  font-weight: 500;
   font-style: normal;
-} */
+}
+
+@font-face {
+  font-family: 'Goorm Sans';
+  src: url('https://statics.goorm.io/fonts/GoormSans/v1.0.0/GoormSans.woff2') format('woff2');
+  font-weight: 700;
+  font-style: normal;
+}
+
