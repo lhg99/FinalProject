@@ -46,37 +46,39 @@ const ExerciseMemo = ({dateInfo}:ExerciseMemoProps) => {
       <MemoDetails>
         <DetailsText>메모</DetailsText>
         {!isAnyModalOpen() && (
-          <CKEditor
-            editor={ClassicEditor}
-            data={editorData}
-            onChange={(event, editor) => {
-              const data = editor.getData();
-              setEditorData(data);
-              if (dateInfo) {
-                const formattedDate = formatDateInfo(dateInfo);
-                setMemo({
-                  content: data,
-                  date: formattedDate,
-                });
-              }
-            }}
-            config={{
-              toolbar: [
-                "heading",
-                "|",
-                "bold",
-                "italic",
-                "link",
-                "bulletedList",
-                "numberedList",
-                "blockQuote",
-                "imageUpload",
-              ],
-              ckfinder: {
-                uploadUrl: `${axiosInstance.defaults.baseURL}/s3/ck/upload`,
-              },
-            }}
-          />
+          <EditorContainer>
+            <CKEditor
+              editor={ClassicEditor}
+              data={editorData}
+              onChange={(event, editor) => {
+                const data = editor.getData();
+                setEditorData(data);
+                if (dateInfo) {
+                  const formattedDate = formatDateInfo(dateInfo);
+                  setMemo({
+                    content: data,
+                    date: formattedDate,
+                  });
+                }
+              }}
+              config={{
+                toolbar: [
+                  "heading",
+                  "|",
+                  "bold",
+                  "italic",
+                  "link",
+                  "bulletedList",
+                  "numberedList",
+                  "blockQuote",
+                  "imageUpload",
+                ],
+                ckfinder: {
+                  uploadUrl: `${axiosInstance.defaults.baseURL}/s3/ck/upload`,
+                },
+              }}
+            />
+          </EditorContainer>
         )}
       </MemoDetails>
     </MemoContainer>
@@ -122,3 +124,9 @@ const DetailsText = styled.p`
   font-size: 0.875rem;
   text-align: center;
 `;
+
+const EditorContainer = styled.div`
+  .image {
+    width: 400px;
+  }
+`

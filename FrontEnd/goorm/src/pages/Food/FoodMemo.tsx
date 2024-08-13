@@ -47,39 +47,40 @@ const FoodMemo = ({ dateInfo }: FoodMemoProps) => {
     <MemoContainer>
       <MemoDetails>
         <DetailsText>메모</DetailsText>
-        {!isAnyModalOpen() && ( // 다른 모달이 열려있지 않을 때 CKeditor 표시
-          <CKEditor
-            editor={ClassicEditor}
-            data={editorData}
-            onChange={(event, editor) => {
-              const data = editor.getData();
-              setEditorData(data);
-              // 선택된 날짜에 대한 메모를 업데이트합니다
-              if (dateInfo) {
-                const formattedDate = formatDateInfo(dateInfo); // 날짜 형식화
-                setMemo({
-                  content: data,
-                  date: formattedDate,
-                });
-              }
-            }}
-            config={{
-              toolbar: [
-                "heading",
-                "|",
-                "bold",
-                "italic",
-                "link",
-                "bulletedList",
-                "numberedList",
-                "blockQuote",
-                "imageUpload",
-              ],
-              ckfinder: {
-                uploadUrl: `${axiosInstance.defaults.baseURL}/s3/ck/upload`,
-              },
-            }}
-          />
+        {!isAnyModalOpen() && (
+          <EditorContainer>
+            <CKEditor
+              editor={ClassicEditor}
+              data={editorData}
+              onChange={(event, editor) => {
+                const data = editor.getData();
+                setEditorData(data);
+                if (dateInfo) {
+                  const formattedDate = formatDateInfo(dateInfo); 
+                  setMemo({
+                    content: data,
+                    date: formattedDate,
+                  });
+                }
+              }}
+              config={{
+                toolbar: [
+                  "heading",
+                  "|",
+                  "bold",
+                  "italic",
+                  "link",
+                  "bulletedList",
+                  "numberedList",
+                  "blockQuote",
+                  "imageUpload",
+                ],
+                ckfinder: {
+                  uploadUrl: `${axiosInstance.defaults.baseURL}/s3/ck/upload`,
+                },
+              }}
+            />
+          </EditorContainer>
         )}
       </MemoDetails>
     </MemoContainer>
@@ -124,4 +125,10 @@ const DetailsText = styled.p`
   flex-direction: row;
   font-size: 0.875rem;
   text-align: center;
+`;
+
+const EditorContainer = styled.div`
+  .image {
+    width: 400px;
+  }
 `;
