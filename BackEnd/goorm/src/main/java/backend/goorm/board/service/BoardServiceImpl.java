@@ -6,10 +6,7 @@ import backend.goorm.board.model.dto.request.BoardSaveRequest;
 import backend.goorm.board.model.dto.request.BoardUpdateRequest;
 import backend.goorm.board.model.dto.response.BoardDetailResponse;
 import backend.goorm.board.model.dto.response.BoardListResponse;
-import backend.goorm.board.model.entity.Board;
-import backend.goorm.board.model.entity.BoardImages;
-import backend.goorm.board.model.entity.BoardLikes;
-import backend.goorm.board.model.entity.BoardTrainingRecord;
+import backend.goorm.board.model.entity.*;
 import backend.goorm.board.model.enums.BoardCategory;
 import backend.goorm.board.model.enums.BoardSortType;
 import backend.goorm.board.model.enums.BoardType;
@@ -51,6 +48,7 @@ public class BoardServiceImpl implements BoardService {
     private final S3ImageService s3ImageService;
     private final MemberRepository memberRepository;
     private final BoardTrainingRecordRepository boardTrainingRecordRepository;
+    private final BoardFoodRecordRepository boardFoodRecordRepository;
     private final RecordRepository recordRepository;
 
     @Value("${board.page.size}")
@@ -95,6 +93,18 @@ public class BoardServiceImpl implements BoardService {
 
 
                 boardTrainingRecordRepository.save(boardTrainingRecord);
+            }
+
+        }else if(saveBoard.getBoardType() == BoardType.DIET && saveRequest.getFoodRecords() != null && !saveRequest.getFoodRecords().isEmpty()){
+
+            for(Long id : saveRequest.getFoodRecords()){
+
+                BoardFoodRecord foodRecord = BoardFoodRecord.builder()
+                        .boardFRId(saveBoard.getBoardId())
+                        .foodRecordId(id)
+                        .build();
+
+                boardFoodRecordRepository.save(foodRecord);
             }
 
         }
@@ -151,6 +161,7 @@ public class BoardServiceImpl implements BoardService {
         //List<String> imageUrls = boardImageRepository.findImageUrlsByBoardId(board.getBoardId());
         List<BoardTrainingRecordItem> trainingRecordItems = null;
 
+
         if(findBoard.get().getBoardType() == BoardType.WORKOUT){
 
             List<Long> recordIds = boardTrainingRecordRepository.findRecordIdsByBoardId(findBoard.get().getBoardId());
@@ -163,6 +174,17 @@ public class BoardServiceImpl implements BoardService {
                         .collect(Collectors.toList());
 
             }
+        }else if(findBoard.get().getBoardType() == BoardType.DIET){
+
+            List<Long> foodRecordIds = boardFoodRecordRepository.findRecordIdsByBoardId(findBoard.get().getBoardId());
+
+            if(foodRecordIds != null && !foodRecordIds.isEmpty()){
+
+
+
+
+            }
+
         }
 
         BoardDetailResponse detailResponse = BoardDetailResponse.builder()
@@ -179,7 +201,6 @@ public class BoardServiceImpl implements BoardService {
                 .boardCategory(board.getBoardCategory())
                 .trainingRecordItems(trainingRecordItems)
                 .build();
-
 
         return detailResponse;
     }
