@@ -125,7 +125,8 @@ const Food: React.FC = () => {
 
     return (
         <div className={styles.pageBackground}>
-            <div className={styles.food}>
+            <div className={styles.Wrapper}>
+                <div className={styles.food}>
                 <ToastComponent />
                 <div className={styles.foodContainer}>
                     <div className={styles.leftColumn}>
@@ -157,6 +158,8 @@ const Food: React.FC = () => {
                     저장하기
                     </button>
                 </div>
+            </div>
+
             </div>
         </div>
     );
