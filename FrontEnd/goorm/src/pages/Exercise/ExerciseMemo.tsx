@@ -93,9 +93,10 @@ const MemoContainer = styled.div`
   margin-top: 0.625rem;
   width: 76%;
   height: 470px;
+  border: 0.5px solid black;
   margin-left: 23.75rem;
   flex-direction: column;
-  margin-bottom: 20px;
+  margin-bottom: 1.25rem;
 `;
 
 const MemoDetails = styled.div`

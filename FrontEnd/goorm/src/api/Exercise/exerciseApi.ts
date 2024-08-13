@@ -90,6 +90,7 @@ export const postStrengthRecord = async (request: PostStrengthRecordRequest): Pr
     formData.append('reps', request.reps?.toString() || '');
     formData.append('intensity', request.intensity);
     formData.append('satisfaction', request.satisfaction.toString());
+    formData.append('date', request.date.toString());
 
     try {
         const response = await axiosInstance.post(`/record/training/${request.trainingId}/add/strength`, formData, {

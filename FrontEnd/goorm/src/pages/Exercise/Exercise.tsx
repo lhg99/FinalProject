@@ -22,7 +22,7 @@ import ExerciseCategoryTable from "./ExerciseCategoryTable";
 import { useExercise } from "../../contexts/exerciseContext";
 import { ExerciseData } from "./ExerciseTypes";
 import { EditExerciseRecord, postCardioRecord, postCustomExerciseData, postExerciseMemo, postStrengthRecord } from "../../api/Exercise/exerciseApi";
-import { formatDateInfo } from "../../utils/DateUtils";
+import { formatDate, formatDateInfo } from "../../utils/DateUtils";
 import { EditExerciseRecordRequest, PostCardioRecordRequest, PostStrengthRecordRequest } from "../../api/Exercise/dto/ExerciseRequest";
 import { ToastStore } from "../../store/store";
 import ToastComponent from "../../components/Toast/ToastComponent";
@@ -136,6 +136,7 @@ const Exercise: React.FC = () => {
               sets: details.sets || 0,
               weight: details.weight || 0,
               reps: details.reps || 0,
+              date: new Date(details.exerciseDate)
             };
             await postStrengthRecord(strengthRecordData);
           }
