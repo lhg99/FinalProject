@@ -9,8 +9,8 @@ interface TabsWithButtonProps {
 }
 
 const Boardtabs = [
-  { key: BoardType.FREE, label: '자유게시판', path: '/Board/free', writePath: '/Board/free/createpost' },
-  { key: BoardType.WORKOUT, label: '운동게시판', path: '/Board/exercise', writePath: '/Board/exercise/record' },
+  { key: BoardType.FREE, label: '자유게시판', path: '/Board/free', writePath: '/Board/free/record' },
+  { key: BoardType.WORKOUT, label: '운동게시판', path: '/Board/workout', writePath: '/Board/workout/record' },
   { key: BoardType.DIET, label: '식단게시판', path: '/Board/diet', writePath: '/Board/diet/record' },
 ];
 
