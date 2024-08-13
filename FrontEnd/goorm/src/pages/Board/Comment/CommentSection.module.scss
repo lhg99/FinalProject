@@ -112,13 +112,14 @@
   flex-direction: column;
   margin-left: 10px;
   width: 100%;
+  border: none;
 
   .inputContainer {
     display: flex;
     align-items: center;
     width: 100%;
-    // margin-top: 20px;
-    // padding-top: 20px;
+    border: none; 
+    margin-top: 0;
 
     .userIcon {
       margin-right: 20px;
@@ -131,7 +132,7 @@
     }
 
     .submitButton {
-      padding: 36px 45px;
+      padding: 34px 35px;
       margin-left: 0px;
       background-color: #ffffff;
       border: 1px solid #333333;
@@ -141,7 +142,7 @@
       font-size: 16px;
       transition: background-color 0.3s ease;
       margin-right: 40px;
-      margin-bottom: 0px;
+      margin-bottom: 18px;
 
       // display: flex;
       // justify-content: center;
