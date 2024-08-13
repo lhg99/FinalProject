@@ -61,8 +61,8 @@ const App: React.FC = () => {
             <Route path="/exercise/records/:month" element={<ProtectedRoute><ExerciseRecordPage /></ProtectedRoute>} />
             <Route path="/exercise/chart/:month" element={<ProtectedRoute><ExerciseChartPage /></ProtectedRoute>} />
             <Route path="/food" element={<ProtectedRoute><Food /></ProtectedRoute>} />
-            <Route path="/food/records/:month" element={<ProtectedRoute><DietRecordList /></ProtectedRoute>} />
-            <Route path="/food/chart/:month" element={<ProtectedRoute><DietChartPage /></ProtectedRoute>} />
+            <Route path="/diet/records/:month" element={<ProtectedRoute><DietRecordList /></ProtectedRoute>} />
+            <Route path="/diet/chart/:month" element={<ProtectedRoute><DietChartPage /></ProtectedRoute>} />
 
             <Route path="/Board" element={<Outlet />}>
               <Route path="free" element={<FreeBoardPage />} />
