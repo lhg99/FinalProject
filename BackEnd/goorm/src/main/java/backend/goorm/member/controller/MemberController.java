@@ -16,6 +16,8 @@ import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.Optional;
 import java.util.TimeZone;
 
@@ -152,7 +154,10 @@ public class MemberController {
         LocalDateTime time = LocalDateTime.now();
         TimeZone tz = TimeZone.getDefault();
 
-        return time.toString() + " / " + tz.getID();
+        ZonedDateTime zonedDateTime = ZonedDateTime.now(ZoneId.of("UTC"));
+
+
+        return time.toString() + " / " + tz.getID() + " / " + zonedDateTime.toString();
     }
 
 }
