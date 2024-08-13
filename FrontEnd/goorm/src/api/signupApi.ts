@@ -8,7 +8,6 @@ export interface SignUpData {
     username: string;
 }
 
-
 export const postSignUpData = async (signup: SignUpData): Promise<void> => {
     try {
         const response = await axiosInstance.post<SignUpData[]>(`/member/signup`, signup);
@@ -16,5 +15,15 @@ export const postSignUpData = async (signup: SignUpData): Promise<void> => {
     } catch(err) {
         console.error("failed to post signup ", err);
         throw err;
+    }
+}
+
+export const postKakaoSignup = async (memberId: string, name: string) => {
+    try {
+        const response = await axiosInstance.post("/member/oauth/signup", { memberId: memberId, memberName: name });
+        console.log("카카오 회원가입 성공", response.data);
+        return response.data;
+    } catch (error) {
+        console.error("카카오 회원가입 실패", error);
     }
 }

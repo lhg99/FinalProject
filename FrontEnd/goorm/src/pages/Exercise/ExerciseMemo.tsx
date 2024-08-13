@@ -1,90 +1,124 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
-import { ExerciseStore } from "../../store/store";
+import { CKEditor } from "@ckeditor/ckeditor5-react";
+import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
+import { useExercise } from "../../contexts/exerciseContext";
+import { ModalStore } from "../../store/store";
+import axiosInstance from "../../api/axiosInstance";
+import { formatDateInfo } from "../../utils/DateUtils";
 
 interface ExerciseMemoProps {
-  onFileUpload: (file: File) => void;
+  dateInfo: {
+    year: number;
+    month: number;
+    day: number;
+    weekday: string;
+    formattedDate: string;
+  } | null;
 }
 
-const ExerciseMemo: React.FC<ExerciseMemoProps> = ({onFileUpload}) => {
-  const [imagePreviewUrl, setImagePreviewUrl] = useState<string | null>(null);
-  const setImageFile = ExerciseStore(state => state.setImageFile);
+const ExerciseMemo = ({dateInfo}:ExerciseMemoProps) => {
+  const {
+    state: { exerciseRecords },
+    setMemo
+  } = useExercise();
+  const { isAnyModalOpen } = ModalStore();
+  const [editorData, setEditorData] = useState<string>("");
 
-  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    if(event.target.files && event.target.files.length > 0) {
-      const file = event.target.files[0];
-      setImageFile(file);
-      setImagePreviewUrl(URL.createObjectURL(file));
-      onFileUpload(file);
+  useEffect(() => {
+    if (dateInfo) {
+      const formattedDate = formatDateInfo(dateInfo);
+      const record = exerciseRecords.find(
+        (record) => record.exerciseDate === formattedDate
+      );
+      const memoContent = record?.memo || "";
+      setEditorData(memoContent);
+
+      setMemo({
+        content: memoContent,
+        date: formattedDate,
+      });
     }
-  }
+  }, [dateInfo, exerciseRecords]);
 
   return (
     <MemoContainer>
-      <ImageContainer>
-        <ImageInput type="file" accept="image/*" onChange={handleFileChange}/>
-        {imagePreviewUrl && <ImagePreview src={imagePreviewUrl} alt="미리보기 이미지" />}
-      </ImageContainer>
       <MemoDetails>
         <DetailsText>메모</DetailsText>
-        <MemoDetailsInput className="memo-input" type="text" placeholder='운동 관련 메모 기록하기'></MemoDetailsInput>
+        {!isAnyModalOpen() && (
+          <CKEditor
+            editor={ClassicEditor}
+            data={editorData}
+            onChange={(event, editor) => {
+              const data = editor.getData();
+              setEditorData(data);
+              if (dateInfo) {
+                const formattedDate = formatDateInfo(dateInfo);
+                setMemo({
+                  content: data,
+                  date: formattedDate,
+                });
+              }
+            }}
+            config={{
+              toolbar: [
+                "heading",
+                "|",
+                "bold",
+                "italic",
+                "link",
+                "bulletedList",
+                "numberedList",
+                "blockQuote",
+                "imageUpload",
+              ],
+              ckfinder: {
+                uploadUrl: `${axiosInstance.defaults.baseURL}/s3/ck/upload`,
+              },
+            }}
+          />
+        )}
       </MemoDetails>
     </MemoContainer>
-  )
-}
+  );
+};
 
-export default ExerciseMemo
+export default ExerciseMemo;
 
 const MemoContainer = styled.div`
   display: flex;
-  margin-top: 20px;
-  width: 100%;
-  height: 12.5rem;
-  margin-left: 410px;
-`;
-
-const ImageContainer = styled.div`
-  display: flex;
-  width: 30%;
-  height: 100%;
-  border: 1.5px solid black;
-  border-radius: 0.3125rem;
-`;
-
-const ImageInput = styled.input`
+  background-color: white;
   margin-top: 0.625rem;
-  margin-left: 0.625rem;
-`;
-
-const ImagePreview = styled.img`
-  margin-top: 10px;
-  margin-bottom: 0.625rem;
-  max-width: 100%;
-  max-height: 100%;
-  border-radius: 0.625rem;
+  width: 76%;
+  height: 470px;
+  margin-left: 23.75rem;
+  flex-direction: column;
+  margin-bottom: 20px;
 `;
 
 const MemoDetails = styled.div`
   display: flex;
-  width: 43%;
-  margin-left: 1.25rem;
-  margin-right: 1.875rem;
-  border: 1px solid black;
+  width: 100%;
+  margin-bottom: 10px;
+  flex-direction: row; /* Stack items vertically */
+  border-right: none;
+  height: 100%;
+
+  .ck.ck-editor__main > .ck-editor__editable {
+    width: 68.75rem;
+    height: 430px;
+    max-height: 430px;
+    overflow-y: auto;
+    font-size: 0.875rem;
+  }
 `;
 
-const DetailsText = styled.p `
+const DetailsText = styled.p`
   width: 5%;
   margin-left: 1.25rem;
   margin-right: 1.25rem;
+  margin-top: 0.625rem;
+  flex-direction: row;
   font-size: 0.875rem;
-  font-weight: bold;
-`;
-
-const MemoDetailsInput = styled.input`
-  width: 100%;
-  font-size: 0.875rem;
-  border-top: none;
-  border-right: none;
-  border-bottom: none;
-  border-left: 1px solid black;
+  text-align: center;
 `;

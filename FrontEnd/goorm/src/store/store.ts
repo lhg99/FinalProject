@@ -1,67 +1,73 @@
 import { create } from "zustand";
-import { Category, ExerciseData, ExerciseRecords } from "../pages/Exercise/api/exerciseApi";
 
-interface ExerciseState {
-    exercises: ExerciseData[];
-    exerciseDetails: {[key: string]: ExerciseRecords};
-    customExercises: ExerciseData[];
-    selectedExercises: ExerciseData[];
-    categories: Category[];
-    exerciseRecords: ExerciseRecords[];
-    imageFile: File | null;
-    addExercise: (exercise: ExerciseData) => void;
-    addCustomExercises: (exercise: ExerciseData) => void;
-    addSelectedExercises: (exercise: ExerciseData) => void;
-    addExerciseRecord: (record: ExerciseRecords) => void;
-    setExercises: (exercises: ExerciseData[]) => void;
-    setCategories: (categories: Category[]) => void;
-    setImageFile: (file: File | null) => void;
-    setExerciseRecords: (records: ExerciseRecords[]) => void;
-    removeExercise: (exerciseName: string) => void;
-    updateExerciseDetails: (details: ExerciseRecords) => void;
+interface ModalState {
+  modals: {
+    [key: string]: { isOpen: boolean };
+  };
+  openModal: (id: string) => void;
+  closeModal: (id: string) => void;
+  isAnyModalOpen: () => boolean;
 }
 
-export const ExerciseStore = create<ExerciseState>((set, get) => ({
-    exercises: [],
-    exerciseDetails: {},
-    customExercises: [],
-    selectedExercises: [],
-    categories: [],
-    exerciseRecords: [],
-    imageFile: null,
-    addExercise: (exercise) => set((state) => ({
-        exercises: [...state.exercises, exercise]
-    })),
-    addCustomExercises: (exercise) => set((state) => ({
-        customExercises: [...state.customExercises, exercise]
-    })),
-    addSelectedExercises: (exercise) => set((state) => {
-        console.log("Adding selected exercise:", exercise);
-        return {
-            selectedExercises: state.selectedExercises.some(ex => ex.name === exercise.name)
-                ? state.selectedExercises
-                : [...state.selectedExercises, exercise]
-        };
-    }),
-    addExerciseRecord: (record) => set((state) => ({
-        exerciseRecords: [...state.exerciseRecords, record]
-    })),
-    setExercises: (exercises) => set({ exercises }),
-    setCategories: (categories) => set({ categories }),
-    setExerciseRecords: (records) => set({ exerciseRecords: records }),
-    setImageFile: (file) => set({imageFile: file}),
-    removeExercise: (exerciseName) => set((state) => ({
-        selectedExercises: state.selectedExercises.filter((ex) => ex.name !== exerciseName)
-    })),
-    updateExerciseDetails: (details) => {
-        const state = get();
-        if (JSON.stringify(state.exerciseDetails[details.trainingName]) !== JSON.stringify(details)) {
-            set((state) => ({
-                exerciseDetails: {
-                    ...state.exerciseDetails,
-                    [details.trainingName]: details
-                }
-            }));
-        }
-    }
+interface ToastState {
+  toasts: {
+    [key: string]: { isVisible: boolean; message: string };
+  };
+  showToast: (id: string, message: string) => void;
+  hideToast: (id: string) => void;
+  isAnyToastVisible: () => boolean;
+}
+
+export const ModalStore = create<ModalState>((set) => ({
+  modals: {},
+
+  openModal: (id: string) => {
+    set((state) => ({
+      modals: {
+        ...state.modals,
+        [id]: { isOpen: true },
+      },
+    }));
+  },
+
+  closeModal: (id: string) => {
+    set((state) => ({
+      modals: {
+        ...state.modals,
+        [id]: { isOpen: false },
+      },
+    }));
+  },
+
+  isAnyModalOpen: (): boolean => {
+    const { modals } = ModalStore.getState();
+    return Object.values(modals).some((modal) => modal.isOpen);
+  },
+}));
+
+export const ToastStore = create<ToastState>((set) => ({
+  toasts: {},
+
+  showToast: (id: string, message: string) => {
+    set((state) => ({
+      toasts: {
+        ...state.toasts,
+        [id]: { isVisible: true, message },
+      },
+    }));
+  },
+
+  hideToast: (id: string) => {
+    set((state) => ({
+      toasts: {
+        ...state.toasts,
+        [id]: { isVisible: false, message: '' },
+      },
+    }));
+  },
+
+  isAnyToastVisible: (): boolean => {
+    const { toasts } = ToastStore.getState();
+    return Object.values(toasts).some((toast) => toast.isVisible);
+  },
 }));

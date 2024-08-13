@@ -1,0 +1,94 @@
+.pageBackground {
+    background-color: #FFDE95;
+    background-size: cover;
+    background-position: center;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+    }
+
+.food {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start; // 상단 정렬
+    padding: 0 1.25rem;
+    padding: 0 1.25rem;
+    margin: 0 auto;
+    max-width: 100rem;
+
+    .foodContainer {
+        display: flex;
+        width: 100%;
+        margin-bottom: .625rem;
+        margin-top: .625rem;
+        justify-content: space-between;
+        align-items: stretch;
+
+        .leftColumn {
+            display: flex;
+            flex-direction: column;
+            margin-right: .625rem;
+
+            .calendar {
+                margin-bottom: .625rem;
+            }
+        }
+
+        .rightColumn {
+            display: flex;
+            flex-direction: column;
+            border-radius: .625rem;
+            width: 75rem;
+
+            margin-top: .625rem;
+            flex: 1;
+
+            .dateInfo {
+                text-align: center;
+                background-color: #FFBDBD;
+                padding: .25rem .25rem;
+
+                .dateText {
+                    margin-top: .625rem;
+                    margin-bottom: .625rem;
+                    font-size: 2rem;
+                }
+            }
+
+            .searchListContainer {
+                display: flex;
+                flex-direction: row;
+                background-color: white;
+                justify-content: space-between;
+                width: 100%;
+                height: 37.5rem;
+                margin-left: 0;
+
+                .searchColumn {
+                    display: flex;
+                    width: 100%;
+                    height: 37.5rem;
+                    margin-left: .9375rem;
+                    margin-right: .9375rem;
+                }
+            }
+        }
+    }
+
+    .buttonContainer { 
+        display: flex;
+        flex-direction: row;
+        justify-content: flex-end;
+        width: 100%;
+    }
+
+    .saveButton {
+        padding: .5rem .5rem;
+        background-color: #699732;
+        color: white;
+        margin-left: 0.625rem;
+        border: none;
+    }
+}

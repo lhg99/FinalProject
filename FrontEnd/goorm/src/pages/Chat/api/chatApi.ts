@@ -1,3 +1,4 @@
+import { error } from "console";
 import axiosInstance from "../../../api/axiosInstance";
 
 //1:1 채팅방 목록 가져오기
@@ -6,7 +7,7 @@ export const getPrivateChatRoomsByMember = async (loginId: string) => {
       const response = await axiosInstance.get(`/chatroom/private/${loginId}`);
       return response.data;
    } catch (error) {
-      // console.error('채팅방 불러오기 오류 : chatApi에서 발생', error);
+      console.error('채팅방 불러오기 오류 : chatApi에서 발생', error);
       throw error;
    }
 };
@@ -70,3 +71,37 @@ export const createChatRoom = async (
       throw error;
    }
 };
+
+//채팅방 초대
+export const inviteChat = async (receiverName: string) => {
+   console.log(receiverName, "ChatApi")
+   try {
+      const response = await axiosInstance.post('/chatroom/invite', {
+         receiverName
+      })
+      return response.data
+   } catch (error) {
+      throw error;
+   }
+}
+
+//현재 로그인된 사용자 정보 받아오기
+export const getMemberNickname = async () => {
+   try {
+      const response = await axiosInstance.get('/member/get/info')
+      return response.data
+   } catch (error) {
+      throw error;
+   }
+}
+
+export const leaveChatRoom = async (chatRoomId: number) => {
+   try {
+      const response = await axiosInstance.post('/chatroom/leave', {
+         chatRoomId
+      })
+      return response.data
+   } catch (error) {
+      throw error;
+   }
+}

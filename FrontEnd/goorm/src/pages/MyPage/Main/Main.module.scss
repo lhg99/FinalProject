@@ -1,0 +1,114 @@
+.pageBackground {
+    background-color: #FFDE95;
+    background-size: cover;
+    background-position: center;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+}
+
+.container {
+    width: 100vw;
+    display: flex;
+    height: 90vh;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    gap: 30px;
+}
+
+.leftPane,
+.rightPane {
+    display: flex;
+    justify-content: space-between;
+    flex-direction: column;
+    gap: 20px;
+    width: 800px;
+    height: 640px;
+    //border: 1px solid #000000;
+    background-color: transparent;
+}
+
+.rightPane {
+    display: flex;
+    flex-direction: row;
+    gap: 20px;
+    align-items: center;
+}
+
+.buttons {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: 50px;
+}
+
+.button1 {
+    width: 350px;
+    height: 200px;
+    font-size: 55px;
+    padding: 8px;
+    border: none;
+    border-radius: 15px;
+    cursor: pointer;
+    background-color: #FFB1B1;
+    background-image: url('../../../../public/Button1.png');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    color: #885d5d;
+    transition: background-color 0.3s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.button1:hover {
+    background-color: #f88e8e;
+}
+
+.button2 {
+    width: 350px;
+    height: 200px;
+    font-size: 55px;
+    padding: 8px;
+    border: none;
+    border-radius: 15px;
+    cursor: pointer;
+    background-color: #699732; // 기본 배경색
+    background-image: url('../../../../public/Button2.png');
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
+    color: #fff;
+    transition: background-color 0.3s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.button2:hover {
+    background-color: #387F39; // 호버 시 배경색
+}
+
+.buttonContent {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    width: 100%;
+    height: 100%;
+}
+
+.calPane {
+    width: 400px;
+    height: 640px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    border: 1px solid #ccc;
+    background-color: transparent;
+}
