@@ -50,7 +50,7 @@ const ExerciseDetails: React.FC<ExerciseDetailProps> = ({
       trainingName: exerciseName,
       distance: distance ? parseFloat(distance) : 0,
       durationMinutes: duration ? parseInt(duration) : 0,
-      intensity: convertIntensity(intensity),
+      intensity: intensity,
       sets: sets ? parseInt(sets) : 0,
       weight: weight ? parseFloat(weight) : 0,
       reps: count ? parseInt(count) : 0,
@@ -96,18 +96,18 @@ const ExerciseDetails: React.FC<ExerciseDetailProps> = ({
     }
   };
 
-  const convertIntensity = (value: string): string => {
-    switch (value) {
-      case "가볍게":
-        return "LOW";
-      case "적당히":
-        return "MIDDLE";
-      case "격하게":
-        return "HIGH";
-      default:
-        return "";
-    }
-  };
+  // const convertIntensity = (value: string): string => {
+  //   switch (value) {
+  //     case "가볍게":
+  //       return "LOW";
+  //     case "적당히":
+  //       return "MIDDLE";
+  //     case "격하게":
+  //       return "HIGH";
+  //     default:
+  //       return "";
+  //   }
+  // };
 
   return (
     <ExerciseDetailsContainer>
@@ -159,19 +159,18 @@ const ExerciseDetails: React.FC<ExerciseDetailProps> = ({
                 value={intensity}
                 onChange={(e) => {
                   const selectedValue = e.target.value;
-                  const intensityValue = convertIntensity(selectedValue);
 
                   setIntensity(selectedValue);
-                  const updatedDetails = { intensity: intensityValue };
+                  const updatedDetails = { intensity: selectedValue };
                   updateExerciseRecords(exercise.recordId, updatedDetails);
                 }}
                 >
                   <option value="" disabled>
                     강도 선택
                   </option>
-                  <option value="가볍게">가볍게</option>
-                  <option value="적당히">적당히</option>
-                  <option value="격하게">격하게</option>
+                  <option value="LOW">가볍게</option>
+                  <option value="MIDDLE">적당히</option>
+                  <option value="HIGH">격하게</option>
               </ExerciseInput>
             </ExerciseLabel>
 
@@ -254,10 +253,9 @@ const ExerciseDetails: React.FC<ExerciseDetailProps> = ({
                   value={intensity}
                   onChange={(e) => {
                     const selectedValue = e.target.value;
-                    const intensityValue = convertIntensity(selectedValue);
                     
                     setIntensity(selectedValue);
-                    const updatedDetails = { intensity: intensityValue };
+                    const updatedDetails = { intensity: selectedValue };
                     updateExerciseRecords(exercise.recordId, updatedDetails);
                   }}
                   >

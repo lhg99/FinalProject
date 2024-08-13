@@ -38,10 +38,10 @@ export const postChangeData = async (change: ChangeData): Promise<void> => {
 }
 
 export interface UserDetailInfo {
-    age: number;
+    memberAge: number;
     memberHeight: number;
     memberWeight: number;
-    gender: string;
+    memberGender: string;
     comment: string;
 }
 
