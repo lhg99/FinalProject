@@ -75,18 +75,18 @@ const ExerciseRecordPage: React.FC = () => {
     <div className={styles.container}>
       <RecodsTabs selectedTab={selectedTab} setSelectedTab={setSelectedTab} basePath="/exercise/records" />
       <div className={styles.tableContainer}>
-        <table className={styles.table}>
+        <table className={styles.exercisetable}>
           <thead>
             <tr>
-              {['번호', '날짜', '카테고리', '운동', '시간', '칼로리', '세트', '횟수', '중량', '거리', '경사'].map((header, index) => (
-                <th key={index} className={classNames(styles.tableHeader)} style={{ width: '60px' }}>{header}</th>
+              {['날짜', '카테고리', '운동', '시간', '칼로리', '세트', '횟수', '중량', '거리'].map((header, index) => (
+                <th key={index} className={classNames(styles.tableHeader)} style={{ width: '70px' }}>{header}</th>
               ))}
             </tr>
           </thead>
           <tbody>
             {currentRecords.slice((currentPage - 1) * recordsPerPage, currentPage * recordsPerPage).map((record) => {
               const values = [
-                record.recordId,
+                // record.recordId,
                 formatDate(record.exerciseDate),
                 record.categoryName === '유산소' ? record.categoryName : `근력 / ${record.categoryName}`,
                 record.trainingName,
@@ -96,7 +96,6 @@ const ExerciseRecordPage: React.FC = () => {
                 record.reps !== null ? `${record.reps} 회` : '',
                 record.weight !== null ? `${record.weight} kg` : '',
                 record.distance !== null ? `${record.distance} km` : '',
-                record.incline !== null ? `${record.incline} incline` : ''
               ];
               return (
                 <tr key={record.recordId} className={classNames(styles.tableRow)}>
