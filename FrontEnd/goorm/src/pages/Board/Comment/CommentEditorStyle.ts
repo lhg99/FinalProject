@@ -6,13 +6,14 @@ export const CommentEditorWrapper = styled.div`
   }
 
   .ck.ck-editor__editable_inline {
-    width: 100%;
-    border-left: 1;
-    border-right: 1;
-    height: 97px; // 댓글 에디터 높이를 더 작게 설정
+    width: 98%;
+    height: 93px; // 댓글 에디터 높이를 더 작게 설정
     overflow-y: auto; 
     margin-bottom: 20px;
-    margin-top: 20px;
+    border-left: none; // 경계선 제거
+    border-right: none; // 경계선 제거
+    border-top: none; 
+    border-bottom: none; 
   }
 
   .ck-content {

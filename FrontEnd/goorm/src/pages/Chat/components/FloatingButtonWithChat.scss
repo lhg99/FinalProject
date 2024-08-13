@@ -71,6 +71,9 @@
   flex-direction: column;
   overflow: hidden;
 }
+.chat-body {
+  animation: slide-up 0.5s ease-in-out;
+}
 
 .chat-body,
 .chat-messages {
@@ -277,6 +280,7 @@
   list-style: none;
   padding: 0;
   margin: 0;
+  animation: slide-up 0.5s ease-in-out; // 애니메이션 적용
 
   li {
     display: flex;
@@ -294,6 +298,17 @@
         display: block;
       }
     }
+  }
+}
+
+@keyframes slide-up {
+  0% {
+    transform: translateY(20px); // 시작 위치를 아래로 설정
+    opacity: 0; // 시작 투명도를 0으로 설정
+  }
+  100% {
+    transform: translateY(0); // 원래 위치로 이동
+    opacity: 1; // 최종 투명도를 1로 설정
   }
 }
 

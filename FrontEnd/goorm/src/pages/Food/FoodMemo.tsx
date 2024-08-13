@@ -98,6 +98,7 @@ const MemoContainer = styled.div`
   margin-bottom: 20px;
   background-color: white;
   margin-top: 0.625rem;
+  border: 0.5px solid black;
 `;
 
 const MemoDetails = styled.div`

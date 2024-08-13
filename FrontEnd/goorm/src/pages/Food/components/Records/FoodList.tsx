@@ -180,7 +180,7 @@ const FoodListWrapper = styled.div`
   width: 100%;
   max-height: 36.25rem;
   overflow-y: auto;
-  border-radius: 5px;
+  border-radius: 3px;
   border-left: none;
   box-sizing: content-box;
 `;
