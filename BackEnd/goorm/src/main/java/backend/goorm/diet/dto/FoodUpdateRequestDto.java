@@ -8,9 +8,7 @@ import lombok.Setter;
 @Setter
 public class FoodUpdateRequestDto {
 
-        private String foodType;
         private String foodName;
-        private Double amount;
         private Float calories;
         private Float carbohydrate;
         private Float protein;
@@ -22,13 +20,8 @@ public class FoodUpdateRequestDto {
         private Float transFat;
 
         public void updateEntity(Food food) {
-                if (this.amount == null) {
-                        throw new IllegalArgumentException("Amount cannot be null");
-                }
 
-                food.setFoodType(this.foodType);
                 food.setFoodName(this.foodName);
-                food.setAmount(this.amount);
                 food.setCalories(this.calories);
                 food.setCarbohydrate(this.carbohydrate);
                 food.setProtein(this.protein);

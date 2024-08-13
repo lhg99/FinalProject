@@ -1,6 +1,7 @@
 package backend.goorm.record.dto;
 
 import backend.goorm.record.entity.Record;
+import backend.goorm.record.enums.Intensity;
 import backend.goorm.training.model.entity.Training;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -16,27 +17,21 @@ import java.time.LocalDateTime;
 @Builder
 public class AddCardioRecordRequest {
 
-    private Float caloriesBurned;
     private Integer durationMinutes;
-    private String intensity;
+    private Intensity intensity; // 변경된 부분
     private Float distance;
-    private Float incline;
-//    private String memo;
     private Integer satisfaction;
     private LocalDate exerciseDate;
 
-
-    public static Record toEntity(AddCardioRecordRequest request, Training training) {
+    public static Record toEntity(AddCardioRecordRequest request, Training training, Float calculatedCalories) {
         return Record.builder()
                 .training(training)
-                .caloriesBurned(request.getCaloriesBurned())
+                .caloriesBurned(calculatedCalories) // 계산된 칼로리만 사용
                 .durationMinutes(request.getDurationMinutes())
-                .intensity(request.getIntensity())
+                .intensity(request.getIntensity().name()) // 변경된 부분
                 .distance(request.getDistance())
-                .incline(request.getIncline())
                 .exerciseDate(request.getExerciseDate() != null ? request.getExerciseDate() : LocalDate.now())
                 .recordDate(LocalDateTime.now())
-//                .memo(request.getMemo())
                 .satisfaction(request.getSatisfaction())
                 .build();
     }

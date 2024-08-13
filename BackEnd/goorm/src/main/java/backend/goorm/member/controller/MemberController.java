@@ -15,7 +15,11 @@ import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.Optional;
+import java.util.TimeZone;
 
 @Slf4j
 @RestController
@@ -143,6 +147,17 @@ public class MemberController {
         Optional<Member> byMemberId = memberRepository.findByMemberId(member.getMemberId());
 
         return byMemberId.get().getMemberNickname();
+    }
+
+    @GetMapping("/testtime")
+    public String testTime(){
+        LocalDateTime time = LocalDateTime.now();
+        TimeZone tz = TimeZone.getDefault();
+
+        ZonedDateTime zonedDateTime = ZonedDateTime.now(ZoneId.of("UTC"));
+
+
+        return time.toString() + " / " + tz.getID() + " / " + zonedDateTime.toString();
     }
 
 }
