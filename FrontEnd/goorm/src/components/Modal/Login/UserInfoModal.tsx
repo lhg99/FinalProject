@@ -23,10 +23,10 @@ const UserInfoModal = ({ isOpen, onClose }: UserInfoModalProps) => {
             return;
         }
         const userData: UserDetailInfo = {
-            age: parseInt(age),
+            memberAge: parseInt(age),
             memberHeight: parseInt(height),
             memberWeight: parseInt(weight),
-            gender: gender,
+            memberGender: gender,
             comment: comment
         }
 
@@ -78,9 +78,9 @@ const UserInfoModal = ({ isOpen, onClose }: UserInfoModalProps) => {
                         onChange={(e) => {
                             const gender = e.target.value;
                             if(gender === "남")
-                                setGender("male");
+                                setGender("MALE");
                             else if(gender === "여")
-                                setGender("female");
+                                setGender("FEMALE");
                         }}
                         >
                         <option value="" disabled>
@@ -129,7 +129,7 @@ const ModalContainer = styled.div`
     background: white;
     padding: 1.5rem;
     border-radius: 0.5rem;
-    width: 400px;
+    width: 25rem;
     max-width: 100%;
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
 `;
