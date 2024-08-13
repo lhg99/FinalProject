@@ -73,6 +73,7 @@ const App: React.FC = () => {
               <Route path="diet/record" element={<RecordSharePost />} />
               <Route path="free/post/:id" element={<DetailPost />} />
               <Route path="exercise/post/:id" element={<DetailPost />} />
+              <Route path="diet/post/:id" element={<DetailPost />} />
               <Route path="free/post/edit/:id" element={<UpdatePost />} />
               <Route path="free/createpost" element={<CreatePost />} />
             </Route>
