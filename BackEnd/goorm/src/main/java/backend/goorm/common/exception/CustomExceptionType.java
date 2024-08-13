@@ -20,8 +20,8 @@ public enum CustomExceptionType {
     COMMENT_NOT_FOUND(HttpStatus.BAD_REQUEST, "E011", "존재하지 않는 댓글입니다"),
     COMMENT_DELETED_BOARD(HttpStatus.BAD_REQUEST, "E012", "이미 삭제된 댓글입니다"),
     // RECORD EXCEPTION
-    RECORD_NOT_FOUND(HttpStatus.NOT_FOUND, "E013", "운동 기록을 찾을 수 없습니다");
-
+    RECORD_NOT_FOUND(HttpStatus.NOT_FOUND, "E013", "운동 기록을 찾을 수 없습니다"),
+    ALREADY_IN_CHAT_ROOM(HttpStatus.NOT_FOUND, "E014", "이미 채팅중인 회원입니다.");
     private final HttpStatus httpStatus;
     private final String code;
     private String message;

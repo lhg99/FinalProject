@@ -7,10 +7,16 @@ import {
    getPublicChatRoom,
    joinChatRoom,
    createChatRoom,
+   getMemberNickname,
+   leaveChatRoom
 } from "../api/chatApi";
 import { Stomp } from "@stomp/stompjs";
 import SockJS from "sockjs-client";
 import Modal from "react-modal";
+import chatIcon from "../../../image/Icon/chatIcon.png"
+import chatting from "../../../image/Icon/chatting.png"
+import openChatting from "../../../image/Icon/openchatting.png"
+import homeIcon from "../../../image/Icon/homeIcon.png"; // 홈 아이콘 추가
 
 Modal.setAppElement("#root");
 
@@ -29,6 +35,9 @@ const FloatingButtonWithChat: React.FC = () => {
    const [selectedChatRoom, setSelectedChatRoom] = useState<any>(null); //채팅방 입장 전 입장여부 확인하기 위한 변수
    const [isCreateModalOpen, setIsCreateModalOpen] = useState<boolean>(false);
    const [newChatRoomName, setNewChatRoomName] = useState<string>("");
+   const [currentUser, setCurrentUser] = useState<string>("");
+   const [isLeaveModalOpen, setIsLeaveModalOpen] = useState<boolean>(false); // 채팅방 나가기 모달 상태
+   const [leavingChatRoomId, setLeavingChatRoomId] = useState<number | null>(null); // 나가려는 채팅방 ID
 
    const config = {
       apiRequestUrl: process.env.REACT_APP_API_REQUEST_URL,
@@ -36,9 +45,10 @@ const FloatingButtonWithChat: React.FC = () => {
       pubUrl: process.env.REACT_APP_WEBSOCKET_PUB_URL,
    };
 
-   const toggleChat = () => {
+   const toggleChat = async () => {
       setIsChatOpen(!isChatOpen);
-      getPrivateChatRoomsByMember("user1");
+      const response = await getMemberNickname();
+      setCurrentUser(response.username);
       if (isChatOpen) {
          setInChatRoom(false); // 채팅창이 닫힐 때 채팅방 상태 초기화
       }
@@ -66,12 +76,47 @@ const FloatingButtonWithChat: React.FC = () => {
       setIsCreateModalOpen(false);
    };
 
+   // 나가기 모달 열기
+   const openLeaveModal = (chatRoomId: number) => {
+      setLeavingChatRoomId(chatRoomId);
+      setIsLeaveModalOpen(true);
+   };
+
+   // 나가기 모달 닫기
+   const closeLeaveModal = () => {
+      setLeavingChatRoomId(null);
+      setIsLeaveModalOpen(false);
+   };
+
+   // 채팅방 나가기 확정 함수
+   const confirmLeaveChatRoom = async () => {
+      if (leavingChatRoomId !== null) {
+         try {
+            await leaveChatRoom(leavingChatRoomId);
+            setChatRooms(chatRooms.filter(room => room.chatRoomId !== leavingChatRoomId)); // 리스트에서 제거
+            closeLeaveModal();
+         } catch (error) {
+            console.error("채팅방 나가기 오류");
+         }
+      }
+   };
+
+   //채팅방 나가기
+   const callLeaveChatRoom = async (chatRoomId: number) => {
+      try {
+         await leaveChatRoom(chatRoomId);
+         setChatRooms(chatRooms.filter(room => room.chatRoomId !== chatRoomId)); // 나간 채팅방을 리스트에서 제거
+      } catch (error) {
+         console.error("채팅방 나가기 오류");
+      }
+   };
+
    //메시지 발송
    const sendMessage = () => {
       if (clientRef.current && inputMessage.trim() !== "") {
          const message = {
             chatType: "MESSAGE",
-            sender: "구름이", // 사용자 이름 또는 ID
+            sender: currentUser, // 사용자 이름 또는 ID
             message: inputMessage,
          };
          clientRef.current.send(
@@ -86,7 +131,7 @@ const FloatingButtonWithChat: React.FC = () => {
    const sendJoinMessage = () => {
       const message = {
          chatType: "SYSTEM",
-         sender: "구름이",
+         sender: currentUser,
          message: "님이 입장하셨습니다.",
       };
       clientRef.current.send(
@@ -99,7 +144,7 @@ const FloatingButtonWithChat: React.FC = () => {
    const sendLeaveMessage = () => {
       const message = {
          chatType: "SYSTEM",
-         sender: "구름이",
+         sender: currentUser,
          message: "님이 퇴장하셨습니다.",
       };
       clientRef.current.send(
@@ -118,22 +163,20 @@ const FloatingButtonWithChat: React.FC = () => {
    };
 
    //입장 확인 후 채팅방 입장 함수
-   const confirmEnterChatRoom = () => {
+   const confirmEnterChatRoom = async () => {
       if (selectedChatRoom) {
-         callJoinChatRoom(selectedChatRoom);
+         await callJoinChatRoom(selectedChatRoom);
          setCurrentChatRoomName(selectedChatRoom.chatRoomName);
          setCurrentChatRoomId(selectedChatRoom.chatRoomId);
          setInChatRoom(true);
          setTimeout(sendJoinMessage, 100);
-
-         console.log("선택된 채팅방", selectedChatRoom);
+         await fetchChatRooms(); // 채팅방 리스트를 다시 가져옴
       }
       closeModal();
    };
 
    //채팅방 참여정보 전송 함수 (모달창에서 확인클릭 시 동작)
    const callJoinChatRoom = async (chatRoom: any) => {
-      console.log("callJoinChatRoom: ",chatRoom.chatRoomId)
       try {
          await joinChatRoom(chatRoom.chatRoomId);
       } catch (error) {
@@ -182,57 +225,26 @@ const FloatingButtonWithChat: React.FC = () => {
 
    //채팅방 목록 가져오는 useEffect()
    useEffect(() => {
-      console.log(activeTab); //현재 탭 출력
-      // 1:1 채팅방 목록 출력
-      if (activeTab === "chat") {
-         const fetchChatRooms = async () => {
-            try {
-               const data = await getPrivateChatRoomsByMember("user1"); // user1 임시데이터
-               setChatRooms(data);
-               console.log(data); //채팅방 리스트 콘솔에 출력
-            } catch (error) {
-               console.error("참여한 채팅방 불러오기 오류");
-            }
-         };
-
-         fetchChatRooms();
-         console.log(activeTab); //현재 탭 출력
-      }
-
-      if (activeTab === "openChat") {
-         const fetchChatRooms = async () => {
-            try {
-               const data = await getPublicChatRoomsByMember("user1"); // user1 임시데이터
-               setChatRooms(data);
-               console.log(data); //채팅방 리스트 콘솔에 출력
-               console.log(chatRooms);
-            } catch (error) {
-               console.error("참여한 채팅방 불러오기 오류");
-            }
-         };
-
-         fetchChatRooms();
-         console.log(activeTab); //현재 탭 출력
-      }
-
-      if (activeTab === "home") {
-         const fetchChatRooms = async () => {
-            try {
-               const data = await getPublicChatRoom("user1"); // user1 임시데이터
-               setChatRooms(data);
-               // console.log(data) //채팅방 리스트 콘솔에 출력
-            } catch (error) {
-               console.error("참여한 채팅방 불러오기 오류");
-            }
-         };
-
-         fetchChatRooms();
-         console.log(activeTab); //현재 탭 출력
-      }
+      fetchChatRooms();
    }, [activeTab]);
 
+   const fetchChatRooms = async () => {
+      try {
+         let data;
+         if (activeTab === "chat") {
+            data = await getPrivateChatRoomsByMember("user1"); // user1 임시데이터
+         } else if (activeTab === "openChat") {
+            data = await getPublicChatRoomsByMember("user1"); // user1 임시데이터
+         } else {
+            data = await getPublicChatRoom("user1"); // user1 임시데이터
+         }
+         setChatRooms(data);
+      } catch (error) {
+         console.error("참여한 채팅방 불러오기 오류");
+      }
+   };
+
    // 채팅 히스토리 가져오는 useEffect()
-   // inChatRoom 값이 true일때 웹소켓 연결 컴포넌트 언마운트 시 return문 실행
    useEffect(() => {
       if (inChatRoom === true) {
          const fetchChatHistory = async () => {
@@ -245,30 +257,19 @@ const FloatingButtonWithChat: React.FC = () => {
          };
 
          fetchChatHistory();
-         // console.log(inChatRoom) //채팅방 입장여부 출력
-         console.log("현재 입장한 채팅방: ", currentChatRoomId); //채팅방 입장여부 출력
-         console.log("채팅 히스토리: ", messages); //채팅 히스토리 목록 출력
 
-         //웹소켓 연결 설정
-         const socket = new SockJS("http://final-project-app-env.eba-xdjqmujd.ap-northeast-2.elasticbeanstalk.com/api/websocket", {
+         const socket = new SockJS("http://localhost:8080/api/websocket", {
             withCredentials: true,
          });
-         // console.log("apiRequestUrl 출력: ",config.apiRequestUrl);
-         // console.log("config 출력: ",config);
          const client = Stomp.over(socket);
 
          client.connect(
             {},
             () => {
-               console.log("config connect함수 안에서 출력: ", config);
-
-               //채팅구독
                client.subscribe(
                   `/api/sub/chat/${currentChatRoomId}`,
                   (message) => {
-                     // console.log('message:',message)
                      const newMessage = JSON.parse(message.body);
-                     console.log("newMessage:", newMessage.body);
                      setMessages((prevMessages) => [
                         ...prevMessages,
                         newMessage.body,
@@ -279,9 +280,7 @@ const FloatingButtonWithChat: React.FC = () => {
                client.subscribe(
                   `/api/sub/join/${currentChatRoomId}`,
                   (message) => {
-                     // console.log('message:',message)
                      const newMessage = JSON.parse(message.body);
-                     console.log("newJoinMessage:", newMessage.body);
                      setMessages((prevMessages) => [
                         ...prevMessages,
                         newMessage.body,
@@ -294,7 +293,6 @@ const FloatingButtonWithChat: React.FC = () => {
             }
          );
 
-         // STOMP 클라이언트 참조 유지
          clientRef.current = client;
 
          return () => {
@@ -306,45 +304,59 @@ const FloatingButtonWithChat: React.FC = () => {
       }
    }, [inChatRoom]);
 
-   //1:1 채팅방 리스트 렌더링
+   // 1:1 채팅방 리스트 렌더링
    const renderChatRoomList = () => (
       <ul className="chat-room-list">
          {chatRooms.map((chatRoom) => (
-            <li
-               key={chatRoom.chatRoomId}
-               onClick={() => enterChatRoom(chatRoom)}
-            >
+            <li key={chatRoom.chatRoomId}>
                <img
-                  src="https://via.placeholder.com/40"
+                  src={chatIcon}
                   alt="Chat Room"
                   className="chat-room-image"
+                  onClick={() => enterChatRoom(chatRoom)}
                />
-               <div className="chat-room-info">
+               <div
+                  className="chat-room-info"
+                  onClick={() => enterChatRoom(chatRoom)}
+               >
                   <div className="chat-room-name">{chatRoom.chatRoomName}</div>
-                  <div className="chat-room-last-message">샘플 메시지</div>
+                  <div className="chat-room-last-message"></div>
                </div>
+               <button
+                  className="leave-button"
+                  onClick={() => openLeaveModal(chatRoom.chatRoomId)}
+               >
+                  나가기
+               </button>
             </li>
          ))}
       </ul>
    );
 
-   //오픈 채팅방 리스트 렌더링
+   // 오픈 채팅방 리스트 렌더링
    const renderOpenChatRoomList = () => (
       <ul className="chat-room-list">
          {chatRooms.map((chatRoom) => (
-            <li
-               key={chatRoom.chatRoomId}
-               onClick={() => enterChatRoom(chatRoom)}
-            >
+            <li key={chatRoom.chatRoomId}>
                <img
-                  src="https://via.placeholder.com/40"
+                  src={chatIcon}
                   alt="Chat Room"
                   className="chat-room-image"
+                  onClick={() => enterChatRoom(chatRoom)}
                />
-               <div className="chat-room-info">
+               <div
+                  className="chat-room-info"
+                  onClick={() => enterChatRoom(chatRoom)}
+               >
                   <div className="chat-room-name">{chatRoom.chatRoomName}</div>
-                  <div className="chat-room-last-message">샘플 메시지</div>
+                  <div className="chat-room-last-message"></div>
                </div>
+               <button
+                  className="leave-button"
+                  onClick={() => openLeaveModal(chatRoom.chatRoomId)}
+               >
+                  나가기
+               </button>
             </li>
          ))}
       </ul>
@@ -356,13 +368,13 @@ const FloatingButtonWithChat: React.FC = () => {
          {chatRooms.map((chatRoom) => (
             <li key={chatRoom.chatRoomId} onClick={() => openModal(chatRoom)}>
                <img
-                  src="https://via.placeholder.com/40"
+                  src={chatIcon}
                   alt="Chat Room"
                   className="chat-room-image"
                />
                <div className="chat-room-info">
                   <div className="chat-room-name">{chatRoom.chatRoomName}</div>
-                  <div className="chat-room-last-message">샘플 메시지</div>
+                  <div className="chat-room-last-message"></div>
                </div>
             </li>
          ))}
@@ -385,11 +397,11 @@ const FloatingButtonWithChat: React.FC = () => {
             messagebox.push(
                <div
                   className={`chat-message ${
-                     message.sender === "구름이" ? "right" : "left"
+                     message.sender === currentUser ? "right" : "left"
                   }`}
                   key={message.id}
                >
-                  {message.sender === "구름이" && (
+                  {message.sender === currentUser && (
                      <div className="message-info">
                         <span className="unread-count">1</span>
                         <span className="message-time">
@@ -398,11 +410,11 @@ const FloatingButtonWithChat: React.FC = () => {
                      </div>
                   )}
 
-                  {message.sender === "구름이" && (
+                  {message.sender === currentUser && (
                      <div className="message-content">{message.message}</div>
                   )}
 
-                  {message.sender !== "구름이" && (
+                  {message.sender !== currentUser && (
                      <div className="others-message">
                         <div className="message-username">
                            <span className="sendername">{message.sender}</span>
@@ -411,7 +423,7 @@ const FloatingButtonWithChat: React.FC = () => {
                      </div>
                   )}
 
-                  {message.sender !== "구름이" && (
+                  {message.sender !== currentUser && (
                      <div className="message-info">
                         <span className="unread-count">0</span>
                         <span className="message-time">
@@ -459,6 +471,32 @@ const FloatingButtonWithChat: React.FC = () => {
             ×
          </button>
       </div>
+   );
+
+   const renderNavigation = () => (
+      <nav className="chat-nav">
+         <button
+            onClick={() => setActiveTab("home")}
+            className={activeTab === "home" ? "active" : ""}
+         >
+            <img src={homeIcon} alt="Home" className="nav-icon" />
+            <span>홈</span>
+         </button>
+         <button
+            onClick={() => setActiveTab("chat")}
+            className={activeTab === "chat" ? "active" : ""}
+         >
+            <img src={chatting} alt="Chat" className="nav-icon" />
+            <span>채팅</span>
+         </button>
+         <button
+            onClick={() => setActiveTab("openChat")}
+            className={activeTab === "openChat" ? "active" : ""}
+         >
+            <img src={openChatting} alt="Open Chat" className="nav-icon" />
+            <span>오픈채팅</span>
+         </button>
+      </nav>
    );
 
    //채팅방에 입장하면 채팅내용과 메시지 입력란을 렌더링하는 함수
@@ -510,36 +548,17 @@ const FloatingButtonWithChat: React.FC = () => {
    return (
       <div>
          <button className="floating-button" onClick={toggleChat}>
-            채팅
+            <img src={chatting} alt="Chat Icon" className="floating-button-icon"/>
          </button>
          {isChatOpen && (
             <div className="chat-window">
                {inChatRoom ? renderChatRoomHeader() : renderChatListHeader()}
                {renderContent()}
-               {!inChatRoom && (
-                  <nav className="chat-nav">
-                     <button
-                        onClick={() => setActiveTab("home")}
-                        className={activeTab === "home" ? "active" : ""}
-                     >
-                        홈
-                     </button>
-                     <button
-                        onClick={() => setActiveTab("chat")}
-                        className={activeTab === "chat" ? "active" : ""}
-                     >
-                        채팅
-                     </button>
-                     <button
-                        onClick={() => setActiveTab("openChat")}
-                        className={activeTab === "openChat" ? "active" : ""}
-                     >
-                        오픈채팅
-                     </button>
-                  </nav>
-               )}
+               {!inChatRoom && renderNavigation()}
             </div>
          )}
+
+         {/* 채팅방 입장 확인 모달 */}
          <Modal
             isOpen={isModalOpen}
             onRequestClose={closeModal}
@@ -568,6 +587,37 @@ const FloatingButtonWithChat: React.FC = () => {
                </div>
             </div>
          </Modal>
+
+         {/* 채팅방 나가기 확인 모달 */}
+         <Modal
+            isOpen={isLeaveModalOpen}
+            onRequestClose={closeLeaveModal}
+            className="modal"
+            overlayClassName="modal-overlay"
+            contentLabel="채팅방 나가기 확인"
+            parentSelector={() =>
+               document.querySelector(".chat-window") || document.body
+            }
+         >
+            <h2>알림</h2>
+            <div className="modal-content">
+               <p>채팅방에서 나가시겠습니까?</p>
+               <div className="modal-buttons">
+                  <button
+                     className="confirm-button"
+                     onClick={() => {
+                        confirmLeaveChatRoom();
+                     }}
+                  >
+                     확인
+                  </button>
+                  <button className="cancel-button" onClick={closeLeaveModal}>
+                     취소
+                  </button>
+               </div>
+            </div>
+         </Modal>
+
          <Modal
             isOpen={isCreateModalOpen}
             onRequestClose={closeCreateModal}
