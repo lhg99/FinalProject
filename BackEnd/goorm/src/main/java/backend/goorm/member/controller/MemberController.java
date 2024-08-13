@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.Optional;
+import java.util.TimeZone;
 
 @Slf4j
 @RestController
@@ -149,8 +150,9 @@ public class MemberController {
     @GetMapping("/testtime")
     public String testTime(){
         LocalDateTime time = LocalDateTime.now();
+        TimeZone tz = TimeZone.getDefault();
 
-        return time.toString();
+        return time.toString() + " / " + tz.getID();
     }
 
 }
