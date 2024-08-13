@@ -29,7 +29,7 @@ public class FoodDataApiService {
 
     public List<Food> fetchAndSaveFoodData() {
         List<Food> foodList = new ArrayList<>();
-        int pageNo = 1;
+        int pageNo = 2;
         int totalPageCount = 227; // 총 227페이지까지 데이터 수집
 
         try {
