@@ -16,6 +16,7 @@ export interface PostCardioRecordRequest {
     distance?: number;
     incline?: number;
     satisfaction: number;
+    exerciseDate: string;
 }
 
 export interface PostStrengthRecordRequest {
@@ -26,7 +27,7 @@ export interface PostStrengthRecordRequest {
     reps?: number;
     intensity: string;
     satisfaction: number;
-    date: Date;
+    exerciseDate: string;
 }
 
 export interface EditExerciseRecordRequest {

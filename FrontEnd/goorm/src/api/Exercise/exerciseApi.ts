@@ -68,6 +68,7 @@ export const postCardioRecord = async (request: PostCardioRecordRequest): Promis
     formData.append('intensity', request.intensity);
     formData.append('distance', request.distance?.toString() || '');
     formData.append('satisfaction', request.satisfaction.toString());
+    formData.append('exerciseDate', request.exerciseDate);
 
     try {
         const response = await axiosInstance.post(`/record/training/${request.trainingId}/add/cardio`, formData, {
@@ -90,7 +91,9 @@ export const postStrengthRecord = async (request: PostStrengthRecordRequest): Pr
     formData.append('reps', request.reps?.toString() || '');
     formData.append('intensity', request.intensity);
     formData.append('satisfaction', request.satisfaction.toString());
-    formData.append('date', request.date.toString());
+    formData.append('exerciseDate', request.exerciseDate);
+
+    console.log("exerciseDate: ", request.exerciseDate.toString());
 
     try {
         const response = await axiosInstance.post(`/record/training/${request.trainingId}/add/strength`, formData, {
@@ -105,9 +108,10 @@ export const postStrengthRecord = async (request: PostStrengthRecordRequest): Pr
     }
 }
 
-export const postExerciseMemo = async(memo: string) => {
+export const postExerciseMemo = async(memo: string, date: Date) => {
     const request = {
-        "content" : memo
+        "content" : memo,
+        "date": date
     }
     try {
         const response = await axiosInstance.post(`/memo`, request);
