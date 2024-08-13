@@ -22,9 +22,8 @@ import ExerciseCategoryTable from "./ExerciseCategoryTable";
 import { useExercise } from "../../contexts/exerciseContext";
 import { ExerciseData } from "./ExerciseTypes";
 import { EditExerciseRecord, postCardioRecord, postCustomExerciseData, postExerciseMemo, postStrengthRecord } from "../../api/Exercise/exerciseApi";
-import { formatDate, formatDateInfo } from "../../utils/DateUtils";
+import { formatDateInfo } from "../../utils/DateUtils";
 import { EditExerciseRecordRequest, PostCardioRecordRequest, PostStrengthRecordRequest } from "../../api/Exercise/dto/ExerciseRequest";
-import { ToastStore } from "../../store/store";
 import ToastComponent from "../../components/Toast/ToastComponent";
 import { getusereData } from "../../api/mypageApi";
 import { useNavigate } from "react-router-dom";
@@ -35,7 +34,6 @@ const Exercise: React.FC = () => {
   } | null>(null);
 
   const navigate = useNavigate();
-  const { showToast } = ToastStore();
 
   useEffect(() => {
     const checkUserInfo = async() => {
@@ -95,6 +93,8 @@ const Exercise: React.FC = () => {
         (ex) => ex.isAddingExercise
       );
 
+      console.log("date", dateInfo?.formattedDate);
+
       for (const customExercise of customExercises) {
         const customExercisePayload = {
           name: customExercise.name,
@@ -116,12 +116,19 @@ const Exercise: React.FC = () => {
           (record) => record.trainingId === exercise.id
         );
 
+        if(!dateInfo) {
+          console.warn("dateInfo 없음");
+          continue;
+        }
+        
         const recordData = {
           trainingId: exercise.id,
           durationMinutes: details.durationMinutes || 0,
           satisfaction: details.satisfaction || 0,
           intensity: details.intensity || "",
+          exerciseDate: dateInfo.formattedDate
         };
+
         if (!existingRecord) {
           if (exercise.categoryName === "유산소") {
             const cardioRecordData: PostCardioRecordRequest = {
@@ -136,17 +143,19 @@ const Exercise: React.FC = () => {
               sets: details.sets || 0,
               weight: details.weight || 0,
               reps: details.reps || 0,
-              date: new Date(details.exerciseDate)
             };
             await postStrengthRecord(strengthRecordData);
           }
         }
       }
-      await postExerciseMemo(memo.content);
+      if(!dateInfo) {
+        console.warn("dateInfo 없음");
+      } else {
+        await postExerciseMemo(memo.content, new Date(dateInfo.formattedDate));
+      }
 
       alert("운동 기록이 저장되었습니다.");
-      // showToast("saveToast", "운동 기록이 저장되었습니다.");
-      // window.location.reload();
+      window.location.reload();
     } catch (err) {
       console.error("운동기록 저장 실패", err);
     }
@@ -162,8 +171,7 @@ const Exercise: React.FC = () => {
       await EditExerciseRecord(editRequest);
       
       alert("운동 기록이 수정되었습니다.");
-      // showToast("editToast", "운동 기록이 수정되었습니다.");
-      // window.location.reload();
+      window.location.reload();
     } catch (err) {
       console.error("운동기록 수정 실패", err);
     }
