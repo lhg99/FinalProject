@@ -1,5 +1,6 @@
 import React, { useEffect, useRef } from 'react';
 import styles from './ChatBox.module.scss';
+import { inviteChat } from '../../Chat/api/chatApi';
 
 interface ChatBoxProps {
   x: number;
@@ -10,6 +11,16 @@ interface ChatBoxProps {
 
 const ChatBox: React.FC<ChatBoxProps> = ({ x, y, author, onClose }) => {
   const chatBoxRef = useRef<HTMLDivElement>(null);
+
+  const callInviteChat = async (receiver: string) => {
+
+    try {
+      const data = await inviteChat(receiver)
+      alert(data)
+    } catch (error) {
+      console.log (receiver ,"채팅신청오류")
+    }
+  }
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -25,6 +36,7 @@ const ChatBox: React.FC<ChatBoxProps> = ({ x, y, author, onClose }) => {
   }, [onClose]);
 
   const handleChatRequest = () => {
+    callInviteChat(author)
     console.log(`채팅 신청을 보냅니다: ${author}`);
     onClose();
   };
