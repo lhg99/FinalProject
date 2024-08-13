@@ -209,7 +209,7 @@ const FoodSearchContainer = styled.div`
     display: flex;
     flex-direction: column;
     padding: 0.625rem;
-    width: 17.5rem;
+    width: 280px;
     max-height: 36.25rem;
     overflow-y: auto;
     border-radius: 5px;
@@ -242,10 +242,10 @@ const CategoriesContainer = styled.div`
 `;
 
 const CategoryText = styled.label`
-    margin-right: 5px;
+    margin-right: 0.1875rem;
 
     input {
-        margin-right: 5px; /* 간격 조정 */
+        margin-right: 0.1875rem; /* 간격 조정 */
     }
 `
 
@@ -257,15 +257,15 @@ const SearchForm = styled.form`
 
 const SearchInput = styled.input`
     width: 72%;
-    padding: 8px;
+    padding: 0.5rem;
     display: flex;
 `;
 
 const SearchButton = styled.button`
-    padding: 10px;
+    padding: 0.625rem;
     border: 1px solid black;
     background-color: white;
-    border-radius: 5px;
+    border-radius: 0.3125rem;
     cursor: pointer;
     display: flex;
     align-items: center;

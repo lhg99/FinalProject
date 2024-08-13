@@ -11,14 +11,14 @@ export const EditorWrapper = styled.div`
   }
 
   .ck.ck-editor__editable_inline {
-    border-left: 1;
-    border-right: 1;
+    border-left: 1px solid transparent; // 불필요한 경계선 제거
+    border-right: 1px solid transparent; // 불필요한 경계선 제거
     height: 200px;
-    border-bottom: 1;
-  }
+    border-bottom: 1px solid transparent; // 불필요한 경계선 제거
+}
 
   .ck.ck-editor__main > .ck-editor__editable:not(.ck-focused) {
-    border-top-color: ${(props) => props.theme?.colors?.grayborder || '#ccc'};
+    border-top-color: #ccc };
   }
 
   // ck에디터 툴바 편집
@@ -79,7 +79,7 @@ export const EditorWrapper = styled.div`
       padding-top: 7px;
       padding-left: 20px;
       padding-right: 20px;
-      border-left: 10px solid ${(props) => props.theme?.colors?.graydark || '#999'};
+      border-left: 10px solid #999};
     }
     figure.table {
       margin: 0;

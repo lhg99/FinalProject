@@ -71,7 +71,7 @@ const MyPage: React.FC = () => {
   }, [location.state?.updated, navigate]);
 
   if (loading) {
-    return <div>로딩 중...</div>;
+    return <div></div>;
   }
 
   if (error) {
@@ -96,7 +96,7 @@ const MyPage: React.FC = () => {
           </div>
 
           <button
-            className={styles.button}
+            className={styles.button1}
             onClick={() => navigate('/edit')}
           >
             회원정보 수정

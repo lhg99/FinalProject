@@ -24,7 +24,6 @@ const MyPageEdit: React.FC<MyPageEditProps> = ({
     navigate('/mypage');
   };
 
-
   useEffect(() => {
     setUsername(initialUsername);
     setComment(initialComment);
@@ -50,36 +49,44 @@ const MyPageEdit: React.FC<MyPageEditProps> = ({
   return (
     <div className={styles.pageBackground}>
       <div className={styles.container}>
-      <h2 className={styles.title}>회원정보 수정</h2>
-      {error && <div className={styles.error}>{error}</div>}
-      <form onSubmit={handleUpdate} className={styles.editForm}>
-        <div className={styles['form-group']}>
-          <label htmlFor="username">닉네임</label>
-          <input
-            type="text"
-            id="username"
-            name="username"
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
-            required
-          />
-        </div>
+        <h2 className={styles.title}>회원정보 수정</h2>
+        {error && <div className={styles.error}>{error}</div>}
+        <form onSubmit={handleUpdate} className={styles.editForm}>
+          <div className={styles['form-group']}>
+            <label htmlFor="username">닉네임</label>
+            <input
+              type="text"
+              id="username"
+              name="username"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+              required
+            />
+          </div>
 
-        <div className={styles['form-group']}>
-          <label htmlFor="comment">소개</label>
-          <textarea
-            id="comment"
-            name="comment"
-            value={comment}
-            onChange={(e) => setComment(e.target.value)}
-            required
-          />
-        </div>
+          <div className={styles['form-group']}>
+            <label htmlFor="comment">소개</label>
+            <textarea
+              id="comment"
+              name="comment"
+              value={comment}
+              onChange={(e) => setComment(e.target.value)}
+              required
+            />
+          </div>
 
-          <button className={styles.button} type="submit">수정사항 저장</button>
-          <button className={styles.button} onClick={handleButtonClick}>취소</button>
-      </form>
-    </div>
+          <div className={styles.buttonContainer}>
+            <button className={styles.button1} type="submit">수정사항 저장</button>
+            <button
+              type="button"
+              className={styles.button2}
+              onClick={handleButtonClick}
+            >
+              취소
+            </button>
+          </div>
+        </form>
+      </div>
     </div>
   );
 };
