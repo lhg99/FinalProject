@@ -65,9 +65,9 @@ const Header: React.FC = () => {
             </button>
             {activeDropdown === 'diet' && (
               <ul className={styles.dropdownMenu}>
-                <li onClick={() => { navigate('/food'); closeDropdown(); }}>식단 기록 작성</li>
-                <li onClick={() => { navigate('/food/records/AUG'); closeDropdown(); }}>식단 기록</li>
-                <li onClick={() => { navigate('/food/chart/AUG'); closeDropdown(); }}>식단 통계</li>
+                <li onClick={() => { navigate('/diet'); closeDropdown(); }}>식단 기록 작성</li>
+                <li onClick={() => { navigate('/diet/records/AUG'); closeDropdown(); }}>식단 기록</li>
+                <li onClick={() => { navigate('/diet/chart/AUG'); closeDropdown(); }}>식단 통계</li>
                 <li onClick={() => { navigate('/main'); closeDropdown(); }}>식단 정보</li>
               </ul>
             )}
@@ -79,7 +79,7 @@ const Header: React.FC = () => {
             {activeDropdown === 'board' && (
               <ul className={styles.dropdownMenu}>
                 <li onClick={() => { navigate('/Board/free'); closeDropdown(); }}>자유게시판</li>
-                <li onClick={() => { navigate('/Board/exercise'); closeDropdown(); }}>운동게시판</li>
+                <li onClick={() => { navigate('/Board/workout'); closeDropdown(); }}>운동게시판</li>
                 <li onClick={() => { navigate('/Board/diet'); closeDropdown(); }}>식단게시판</li>
               </ul>
             )}

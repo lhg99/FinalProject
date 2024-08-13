@@ -64,7 +64,7 @@ const FreeBoardPage: React.FC = () => {
           {currentPosts.map((post, index) => (
             <tr key={post.boardId} className={styles.tableRow}>
               <td className={styles.tableCell}>
-              {totalPages - (currentPage - 1) * postsPerPage - index}
+              {index + 1 + (currentPage - 1) * postsPerPage}
               </td>              
               <td className={styles.tableCell}>{categoryMap[post.boardCategory] || post.boardCategory}</td>
               <td className={styles.titleCell} onClick={() => navigate(`/Board/free/post/${post.boardId}`)}>

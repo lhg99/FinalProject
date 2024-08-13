@@ -7,8 +7,9 @@ import CommentSection from '../../../Comment/CommentSection';
 import Tabs from '../../../../../components/Taps/BoardTap/BoardTabs';
 import { ReportModal, DeleteModal, DeleteCommentModal } from '../../../components/Modal';
 import LikeButton from '../../../components/LikeButton';
-import ExerciseRecordList from '../../ExerciseBoard/DetailList/ExerciseRecordList';
 import ChatBox from '../../../Chat/ChatBox';
+import ExerciseRecordList from '../../ExerciseBoard/DetailList/ExerciseRecordList';
+import DietRecordList from '../../DietBoard/DetailList/DietRecordList';
 
 
 const DetailPost: React.FC = () => {
@@ -53,7 +54,7 @@ const DetailPost: React.FC = () => {
     };
 
     fetchPost();
-  }, [id, navigate]);
+  }, [id, navigate, tab]);
 
   const handleTabChange = (newTab: BoardType) => {
     setSelectedTab(newTab);
@@ -167,7 +168,15 @@ const DetailPost: React.FC = () => {
         <div className={styles.PostContent}>
           <div dangerouslySetInnerHTML={{ __html: post.boardContent }} />
         </div>
-        <ExerciseRecordList records={post.trainingRecordItems} /> {/* 운동 기록 리스트 추가 */}
+
+        {/* 조건부 렌더링 추가 */}
+        {selectedTab === BoardType.WORKOUT && (
+          <ExerciseRecordList records={post.trainingRecordItems} />
+        )}
+        {selectedTab === BoardType.DIET && (
+          <DietRecordList records={post.dietRecordItems} />
+        )}
+
         <CommentSection postId={post.boardId} setShowDeleteCommentModal={setShowDeleteCommentModal} setModalMessage={setModalMessage} setModalAction={setModalAction} />
         <div className={styles.ButtonContainer}>
           <button className={styles.EditButton} onClick={handleEdit}>수정</button>

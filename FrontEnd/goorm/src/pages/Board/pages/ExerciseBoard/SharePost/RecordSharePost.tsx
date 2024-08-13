@@ -6,13 +6,13 @@ import { addPost } from '../../../api/boardAPI';
 import TextEditor from '../../../../../components/TextEditor/TextEditor';
 import { ExerciseRecords } from '../../../../Exercise/ExerciseTypes'; 
 import { FoodRecord } from '../../../../Food/FoodTypes'; 
-import FoodRecordsList from './FoodRecordsList'; // Import the new FoodRecordsList component
+import FoodRecordsList from './FoodRecordsList';
 
 const RecordSharePost: React.FC = () => {
   const navigate = useNavigate();
   const [title, setTitle] = useState<string>('');
   const [content, setContent] = useState<string>('');
-  const [boardType, setBoardType] = useState<string>('WORKOUT');
+  const [boardType, setBoardType] = useState<string>('FREE'); 
   const [boardCategory, setBoardCategory] = useState<string>('WORKOUT');
   const [exerciseRecords, setExerciseRecords] = useState<ExerciseRecords[]>([]);
   const [filteredRecords, setFilteredRecords] = useState<ExerciseRecords[]>([]);
@@ -40,6 +40,7 @@ const RecordSharePost: React.FC = () => {
         try {
           const records = await getExerciseRecords();
           setExerciseRecords(records);
+          console.log('Fetched exercise records:', records);
         } catch (error) {
           console.error('운동 기록을 불러오는 중 오류가 발생했습니다:', error);
         }
@@ -59,6 +60,7 @@ const RecordSharePost: React.FC = () => {
           })
           .sort((a, b) => new Date(b.exerciseDate).getTime() - new Date(a.exerciseDate).getTime());
         setFilteredRecords(filtered);
+        console.log(`Filtered exercise records for month ${selectedMonth}:`, filtered);
       };
 
       filterRecordsByMonth();
@@ -75,13 +77,14 @@ const RecordSharePost: React.FC = () => {
 
   const handleBoardTypeChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     setBoardType(e.target.value);
-    // 보드 타입이 바뀔 때 관련 상태 초기화
+    console.log('Board type changed to:', e.target.value);
     setBoardCategory('WORKOUT');
     setSelectedRecords([]);
   };
 
   const handleBoardCategoryChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     setBoardCategory(e.target.value);
+    console.log('Board category changed to:', e.target.value);
   };
 
   const handleRecordSelect = (recordId: number) => { 
@@ -91,26 +94,27 @@ const RecordSharePost: React.FC = () => {
         ? prevSelected.filter(id => id !== recordIdString)
         : [...prevSelected, recordIdString]
     );
+    console.log('Selected records:', selectedRecords);
   };
 
   const handleSave = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-
+  
     if (!title.trim() || !content.trim() || !boardCategory.trim()) {
       alert('모든 필수 입력 필드를 입력해주세요.');
       return;
     }
-
+  
     try {
       const postData = {
         boardTitle: title,
         boardContent: content,
-        boardType: boardType, // 'WORKOUT' 또는 'FOOD'에 따라 서버에서 구분
+        boardType: boardType, 
         boardCategory: boardCategory,
         trainingRecords: boardType === 'WORKOUT' ? selectedRecords : [], 
-        dietRecords: boardType === 'FOOD' ? selectedRecords.map(recordId => ({ dietId: Number(recordId) })) : [], 
+        dietRecords: boardType === 'DIET' ? selectedRecords : [], 
       };
-
+      console.log('Submitting post data:', postData);
       await addPost(postData);
       alert('게시글이 성공적으로 작성되었습니다.');
       navigate(`/Board/${boardType.toLowerCase()}`);
@@ -122,8 +126,24 @@ const RecordSharePost: React.FC = () => {
 
   const handleMonthChange = (month: string) => {
     setSelectedMonth(month);
+    console.log('Selected month changed to:', month);
   };
 
+  const getMealTimeLabel = (mealTime: string): string => {
+    switch (mealTime) {
+      case 'BREAKFAST':
+        return '아침';
+      case 'LUNCH':
+        return '점심';
+      case 'DINNER':
+        return '저녁';
+      case 'SNACK':
+        return '간식';
+      default:
+        return mealTime;
+    }
+  };
+  
   return (
     <div className={styles.Container}>
       <div className={styles.postContainer}>
@@ -132,7 +152,7 @@ const RecordSharePost: React.FC = () => {
           <select value={boardType} onChange={handleBoardTypeChange}>
             <option value="FREE">자유게시판</option>
             <option value="WORKOUT">운동 게시판</option>
-            <option value="FOOD">식단 게시판</option>
+            <option value="DIET">식단 게시판</option>
           </select>
           <select value={boardCategory} onChange={handleBoardCategoryChange}>
             <option value="WORKOUT">운동</option>
@@ -162,7 +182,7 @@ const RecordSharePost: React.FC = () => {
                     onClick={() => handleMonthChange(month)}
                     type="button"
                   >
-                    {`${monthMapping[month] + 1}월`}  {/* 월 번호 표시 */}
+                    {`${monthMapping[month] + 1}월`}  
                   </button>
                 ))}
               </div>
