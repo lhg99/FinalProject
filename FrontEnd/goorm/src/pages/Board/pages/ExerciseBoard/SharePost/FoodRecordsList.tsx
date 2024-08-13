@@ -58,6 +58,21 @@ const FoodRecordsList: React.FC<FoodRecordsListProps> = ({ selectedMonth, select
     filterRecordsByMonth();
   }, [selectedMonth, foodRecords]);
 
+  const getMealTimeLabel = (mealTime: string): string => {
+    switch (mealTime) {
+      case 'BREAKFAST':
+        return '아침';
+      case 'LUNCH':
+        return '점심';
+      case 'DINNER':
+        return '저녁';
+      case 'SNACK':
+        return '간식';
+      default:
+        return mealTime;
+    }
+  };
+
   return (
     <div className={styles.foodList}>
       <table>
@@ -68,7 +83,7 @@ const FoodRecordsList: React.FC<FoodRecordsListProps> = ({ selectedMonth, select
             <th>식사 종류</th>
             <th>음식</th>
             <th>칼로리</th>
-            <th>메모</th>
+            {/* <th>메모</th> */}
           </tr>
         </thead>
         <tbody>
@@ -82,10 +97,10 @@ const FoodRecordsList: React.FC<FoodRecordsListProps> = ({ selectedMonth, select
                 />
               </td>
               <td>{record.dietDate}</td>
-              <td>{record.mealTime}</td>
+              <td>{getMealTimeLabel(record.mealTime)}</td>
               <td>{record.foodRes.foodName}</td>
               <td>{record.totalCalories} kcal</td>
-              <td>{record.memo}</td>
+              {/* <td>{record.memo}</td> */}
             </tr>
           ))}
         </tbody>
