@@ -142,8 +142,10 @@ const Exercise: React.FC = () => {
         }
       }
       await postExerciseMemo(memo.content);
-      showToast("saveToast", "운동 기록이 저장되었습니다.");
-      window.location.reload();
+
+      alert("운동 기록이 저장되었습니다.");
+      // showToast("saveToast", "운동 기록이 저장되었습니다.");
+      // window.location.reload();
     } catch (err) {
       console.error("운동기록 저장 실패", err);
     }
@@ -158,8 +160,9 @@ const Exercise: React.FC = () => {
       
       await EditExerciseRecord(editRequest);
       
-      showToast("editToast", "운동 기록이 수정되었습니다.");
-      window.location.reload();
+      alert("운동 기록이 수정되었습니다.");
+      // showToast("editToast", "운동 기록이 수정되었습니다.");
+      // window.location.reload();
     } catch (err) {
       console.error("운동기록 수정 실패", err);
     }
@@ -178,6 +181,7 @@ const Exercise: React.FC = () => {
                 endDate={endDate}
                 onHandleStartDate={handleStartDate}
                 onHandleEndDate={handleEndDate}
+                dateInfo={dateInfo}
               />
             </div>
           </div>

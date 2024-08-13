@@ -313,7 +313,7 @@ const CategoryBadge = styled.span`
 const ExerciseTitle = styled.h3`
   font-size: 1.125rem;
   margin-left: 0.625rem;
-  margin-top: 0.3125rem;
+  margin-top: 0.9375rem;
 `;
 
 const ExerciseLabel = styled.label`
@@ -332,7 +332,7 @@ const InputContainer = styled.div`
 
 const ExerciseInput = styled.input`
   display: flex;
-  width: 100%;
+  width: 4.375rem;
   padding: 0.3125rem;
   margin-top: 1.25rem;
   border: 1px solid #afafaf;

@@ -89,7 +89,7 @@ const Food: React.FC = () => {
             await postFoodMemo(memo.content, new Date(dateInfo.formattedDate));
     
             showToast("foodSaveToast", "식단 기록이 저장되었습니다.");
-            window.location.reload();
+            // window.location.reload();
         } catch (error) {
             console.error("식단 기록 저장 실패:", error);
             alert("식단 기록이 저장되지 않았습니다.");
@@ -115,8 +115,9 @@ const Food: React.FC = () => {
             
             // EditFoodRecord 함수 호출
             await EditFoodRecord(editRequest);
-            showToast("foodEditToast", "식단 기록이 수정되었습니다.");
-            window.location.reload();
+            // showToast("foodEditToast", "식단 기록이 수정되었습니다.");
+            alert("식단 기록이 수정되었습니다.");
+            // window.location.reload();
         } catch (err) {
             console.error("식단 기록 수정 실패", err);
             alert("식단 기록 수정에 실패했습니다.");
