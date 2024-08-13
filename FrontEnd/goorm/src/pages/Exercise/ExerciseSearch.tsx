@@ -26,7 +26,6 @@ const ExerciseSearch = ({ onAddExercise, onAddCustomExercise }: ExerciseSearchPr
 
     const {modals, openModal, closeModal} = ModalStore();
 
-    // Fetch exercise data on initial render
     useEffect(() => {
         const fetchExerciseData = async () => {
             try {
@@ -101,7 +100,7 @@ const ExerciseSearch = ({ onAddExercise, onAddCustomExercise }: ExerciseSearchPr
     };
 
     const handleModalClose = () => {
-        closeModal("customExerciseModal"); // 수정: 모달 닫기
+        closeModal("customExerciseModal");
     };
 
     const handleModalSave = (exerciseName: string) => {
@@ -169,7 +168,7 @@ const ExerciseSearch = ({ onAddExercise, onAddCustomExercise }: ExerciseSearchPr
                 ))}
             </ExerciseListContainer>
             <CustomExerciseModal
-                isOpen={modals.customExerciseModal?.isOpen} // 수정: 모달 상태 접근
+                isOpen={modals.customExerciseModal?.isOpen}
                 onClose={handleModalClose}
                 onSave={handleModalSave}
             />

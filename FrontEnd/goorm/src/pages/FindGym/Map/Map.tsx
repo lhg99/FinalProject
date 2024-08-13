@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import './Map.scss';
 import { SearchIcon } from '../../../image/Icon/SearchIcon';
 
@@ -39,7 +39,7 @@ const Map = () => {
             window.kakao.maps.load(kakaoMapsLoaded);
         } else {
             const script = document.createElement('script');
-            script.src = `//dapi.kakao.com/v2/maps/sdk.js?appkey=6c9da3b498117d3fb633b93eac292808&libraries=services`;
+            script.src = `https://dapi.kakao.com/v2/maps/sdk.js?appkey=6c9da3b498117d3fb633b93eac292808&libraries=services`;
             script.onload = kakaoMapsLoaded;
             document.head.appendChild(script);
         }
@@ -55,7 +55,11 @@ const Map = () => {
             return false;
         }
 
-        psRef.current.keywordSearch(keyword, placesSearchCB);
+        if (psRef.current) {
+            psRef.current.keywordSearch(keyword, placesSearchCB);
+        } else {
+            console.error("psRef가 null, keyword 안됨");
+        }
     };
 
     useEffect(() => {
