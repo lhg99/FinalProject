@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import MyCalendar from '../Exercise/components/Date/Calendar';
 import styles from './Food.module.scss';
 import FoodSearch from './FoodSearch';
@@ -12,6 +12,8 @@ import FoodCategoryTable from './FoodCategoryTable';
 import { EditFoodRecordRequest, PostFoodRecordRequest } from '../../api/Food/dto/FoodRequest';
 import { ToastStore } from '../../store/store';
 import ToastComponent from '../../components/Toast/ToastComponent';
+import { getusereData } from '../../api/mypageApi';
+import { useNavigate } from 'react-router-dom';
 
 const Food: React.FC = () => {
 
@@ -19,10 +21,27 @@ const Food: React.FC = () => {
 
     const { showToast } = ToastStore();
 
+    const navigate = useNavigate();
+
+    useEffect(() => {
+        const checkUserInfo = async() => {
+          try {
+            const userInfo = await getusereData();
+            if(!userInfo.memberHeight) {
+              alert("유저 추가 정보가 없습니다. 마이페이지에서 추가정보를 입력하세요.");
+              navigate("/mypage");
+            }
+          } catch(err) {
+            console.error("유저 정보 가져오기 실패", err);
+          }
+        }
+        checkUserInfo();
+      }, []);
+
     const handleDateChange = useCallback(
         (info: { year: number; month: number; day: number; weekday: string }) => {
-          const formattedDate = formatDateInfo(info); // Format the date as a string
-          setDateInfo({ ...info, formattedDate }); // Store both the original info and formatted date
+          const formattedDate = formatDateInfo(info);
+          setDateInfo({ ...info, formattedDate });
         },[]
     );
 
@@ -70,6 +89,7 @@ const Food: React.FC = () => {
             await postFoodMemo(memo.content, new Date(dateInfo.formattedDate));
     
             showToast("foodSaveToast", "식단 기록이 저장되었습니다.");
+            window.location.reload();
         } catch (error) {
             console.error("식단 기록 저장 실패:", error);
             alert("식단 기록이 저장되지 않았습니다.");
@@ -96,6 +116,7 @@ const Food: React.FC = () => {
             // EditFoodRecord 함수 호출
             await EditFoodRecord(editRequest);
             showToast("foodEditToast", "식단 기록이 수정되었습니다.");
+            window.location.reload();
         } catch (err) {
             console.error("식단 기록 수정 실패", err);
             alert("식단 기록 수정에 실패했습니다.");

@@ -64,6 +64,7 @@ const MyPage: React.FC = () => {
     if (location.state?.updated) {
       fetchUserData();
       navigate('/mypage', { state: {} });
+      window.location.reload();
     } else {
       fetchUserData();
     }

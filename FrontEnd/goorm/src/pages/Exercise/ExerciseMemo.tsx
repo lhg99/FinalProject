@@ -31,31 +31,29 @@ const ExerciseMemo = ({dateInfo}:ExerciseMemoProps) => {
       const record = exerciseRecords.find(
         (record) => record.exerciseDate === formattedDate
       );
-      const memoContent = record?.memo || ""; // Default to empty if no memo is found
+      const memoContent = record?.memo || "";
       setEditorData(memoContent);
 
-      // Set memo on initial load
       setMemo({
         content: memoContent,
         date: formattedDate,
       });
     }
-  }, [dateInfo, exerciseRecords]); // Depend on dateInfo and exerciseRecords
+  }, [dateInfo, exerciseRecords]);
 
   return (
     <MemoContainer>
       <MemoDetails>
         <DetailsText>메모</DetailsText>
-        {!isAnyModalOpen() && ( // 다른 모달이 열려있지 않을 때 CKeditor 표시
+        {!isAnyModalOpen() && (
           <CKEditor
             editor={ClassicEditor}
             data={editorData}
             onChange={(event, editor) => {
               const data = editor.getData();
               setEditorData(data);
-              // 선택된 날짜에 대한 메모를 업데이트합니다
               if (dateInfo) {
-                const formattedDate = formatDateInfo(dateInfo); // 날짜 형식화
+                const formattedDate = formatDateInfo(dateInfo);
                 setMemo({
                   content: data,
                   date: formattedDate,
