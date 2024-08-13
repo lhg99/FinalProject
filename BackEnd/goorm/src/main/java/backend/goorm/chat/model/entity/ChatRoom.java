@@ -8,6 +8,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -31,6 +32,6 @@ public class ChatRoom {
     private ChatRoomStatus chatRoomStatus;
 
     @ManyToMany(mappedBy = "chatRooms")
-    private List<Member> members;
+    private List<Member> members = new ArrayList<>();
 
 }

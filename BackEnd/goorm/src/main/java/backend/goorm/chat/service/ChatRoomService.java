@@ -5,6 +5,7 @@ import backend.goorm.chat.model.entity.enums.ChatRoomStatus;
 import backend.goorm.chat.model.entity.enums.ChatRoomType;
 import backend.goorm.chat.model.request.ChatRoomInviteRequest;
 import backend.goorm.chat.model.request.ChatRoomJoinRequest;
+import backend.goorm.chat.model.request.ChatRoomLeaveRequest;
 import backend.goorm.chat.model.request.ChatRoomRequest;
 import backend.goorm.chat.model.response.ChatRoomResponse;
 import backend.goorm.chat.repository.ChatRoomRepository;
@@ -43,12 +44,15 @@ public class ChatRoomService {
         return ChatRoomResponse.changeResponse(saved);
     }
 
-    //loginId로 1:1 채팅방 목록 조회
-    public List<ChatRoomResponse> getPrivateChatRoomsByLoginId(String loginId) {
+    //1:1 채팅방 목록 조회
+    public List<ChatRoomResponse> getPrivateChatRoomsByLoginId(String loginId, Authentication authentication) {
+        PrincipalDetails principalDetails = (PrincipalDetails) authentication.getPrincipal();
+        Member findMember = principalDetails.member();
+
         Member member = memberRepository.findByLoginId(loginId)
                 .orElseThrow(() -> new CustomException(CustomExceptionType.CHAT_ROOM_NOT_FOUND));
 
-        return member.getChatRooms()
+        return findMember.getChatRooms()
                 .stream()
                 .filter(chatRoom -> chatRoom.getChatRoomType() == ChatRoomType.PRIVATE)
                 .map(ChatRoomResponse::changeResponse)
@@ -72,17 +76,22 @@ public class ChatRoomService {
     }
 
     //참여하지 않은 오픈채팅방 조회
-    public List<ChatRoomResponse> getPublicChatRooms(String loginId) {
+    public List<ChatRoomResponse> getPublicChatRooms(String loginId, Authentication authentication) {
         List<ChatRoom> findAllChatRooms = chatRoomRepository.findAll();
-        Member findMember = memberRepository.findByLoginId(loginId)
-                .orElseThrow(() -> new CustomException(CustomExceptionType.USER_NOT_FOUND));
+        PrincipalDetails principalDetails = (PrincipalDetails) authentication.getPrincipal();
+        Member findMember = principalDetails.member();
+
+//        Member member = memberRepository.findByLoginId(loginId)
+//                .orElseThrow(() -> new CustomException(CustomExceptionType.USER_NOT_FOUND));
 
         return findAllChatRooms
                 .stream()
                 .filter(chatRoom -> chatRoom.getChatRoomType() == ChatRoomType.PUBLIC)
-                .filter(chatRoom -> !chatRoom.getMembers().contains(findMember))
+                .filter(chatRoom -> chatRoom.getMembers().stream()
+                        .noneMatch(member -> member.getMemberId().equals(findMember.getMemberId()))) // or use loginId
                 .map(ChatRoomResponse::changeResponse)
                 .collect(Collectors.toList());
+
     }
 
     //채팅방 참여
@@ -114,27 +123,81 @@ public class ChatRoomService {
         PrincipalDetails principalDetails = (PrincipalDetails) authentication.getPrincipal();
         Member sender = principalDetails.member();
 
+        log.info("receiverNickname: {}", chatRoomInviteRequest.getReceiverName());
+
         Member receiver = memberRepository.findByMemberNickname(chatRoomInviteRequest.getReceiverName())
                 .orElseThrow(() -> new CustomException(CustomExceptionType.USER_NOT_FOUND));
 
-        //지연로딩 컬렉션 초기화
+        // 지연 로딩 컬렉션 초기화
         sender.getChatRooms().size();
         receiver.getChatRooms().size();
 
-        //채팅방 생성
+        // 채팅방 참여 여부 확인 (추가)
+        if (receiver.getChatRooms().stream()
+                .filter(room -> room.getChatRoomType() == ChatRoomType.PRIVATE)
+                .anyMatch(room -> room.getMembers().stream()
+                        .anyMatch(member -> member.getMemberId().equals(sender.getMemberId())))) {
+            throw new CustomException(CustomExceptionType.ALREADY_IN_CHAT_ROOM);
+        }
+
+        // Sender와 Receiver가 동일한 경우 오류 반환
+        if (sender.getMemberId().equals(receiver.getMemberId())) {
+            throw new CustomException(CustomExceptionType.ALREADY_IN_CHAT_ROOM);
+        }
+
+
+        // 채팅방 생성
         ChatRoom chatRoom = new ChatRoom();
-        chatRoom.setChatRoomName(sender.getMemberNickname());
+        chatRoom.setChatRoomName(receiver.getMemberNickname() + "님과의 채팅");
         chatRoom.setChatRoomType(ChatRoomType.PRIVATE);
         chatRoom.setChatRoomStatus(ChatRoomStatus.ACTIVE);
+        ChatRoom savedChatRoom = chatRoomRepository.save(chatRoom);
 
-        //채팅방 참여
-        chatRoom.getMembers().add(sender);
-        sender.getChatRooms().add(chatRoom);
-        chatRoom.getMembers().add(receiver);
-        receiver.getChatRooms().add(chatRoom);
+        // 채팅방 참여
+        savedChatRoom.getMembers().add(sender);
+        sender.getChatRooms().add(savedChatRoom);
+        savedChatRoom.getMembers().add(receiver);
+        receiver.getChatRooms().add(savedChatRoom);
 
+        // 변경 사항을 영속성 컨텍스트에 반영
+        chatRoomRepository.save(savedChatRoom);
         memberRepository.save(sender);
         memberRepository.save(receiver);
+
+        // 로그를 추가하여 문제를 추적
+        log.info("채팅방 생성 및 참여 완료 - 채팅방 ID: {}", savedChatRoom.getChatRoomId());
+        log.info("sender 채팅방 목록: {}", sender.getChatRooms().stream().map(ChatRoom::getChatRoomName).collect(Collectors.toList()));
+        log.info("receiver 채팅방 목록: {}", receiver.getChatRooms().stream().map(ChatRoom::getChatRoomName).collect(Collectors.toList()));
+    }
+
+
+    //채팅방 나가기
+    public void leaveChatRoom(ChatRoomLeaveRequest chatRoomLeaveRequest, Authentication authentication) {
+        PrincipalDetails principalDetails = (PrincipalDetails) authentication.getPrincipal();
+        Member sender = principalDetails.member();
+
+        ChatRoom chatRoom = chatRoomRepository.findById(chatRoomLeaveRequest.getChatRoomId())
+                .orElseThrow(() -> new CustomException(CustomExceptionType.CHAT_ROOM_NOT_FOUND));
+
+        boolean isMemberInChatRoom = chatRoom.getMembers().stream()
+                .anyMatch(member -> member.getMemberId().equals(sender.getMemberId()));
+
+        if (!isMemberInChatRoom) {
+            throw new RuntimeException("사용자가 이 채팅방에 속해있지 않습니다.");
+        }
+
+        // 채팅방에서 사용자 제거
+        chatRoom.getMembers().removeIf(member -> member.getMemberId().equals(sender.getMemberId()));
+        sender.getChatRooms().removeIf(room -> room.getChatRoomId().equals(chatRoom.getChatRoomId()));
+
+
+        // 변경된 상태 저장
         chatRoomRepository.save(chatRoom);
+        memberRepository.save(sender);
+
+//        // 만약 채팅방에 멤버가 더 이상 없다면 채팅방을 삭제하거나 상태를 업데이트
+//        if (chatRoom.getMembers().isEmpty()) {
+//            chatRoomRepository.delete(chatRoom);
+//        }
     }
 }
