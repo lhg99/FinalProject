@@ -82,7 +82,7 @@ const Food: React.FC = () => {
                 
             }
             await postFoodMemo(memo.content, new Date(dateInfo.formattedDate));
-    
+            alert("식단 기록이 저장되었습니다.");
             window.location.reload();
         } catch (error) {
             console.error("식단 기록 저장 실패:", error);

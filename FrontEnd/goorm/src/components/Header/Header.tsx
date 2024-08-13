@@ -79,7 +79,7 @@ const Header: React.FC = () => {
             {activeDropdown === 'board' && (
               <ul className={styles.dropdownMenu}>
                 <li onClick={() => { navigate('/Board/free'); closeDropdown(); }}>자유게시판</li>
-                <li onClick={() => { navigate('/Board/exercise'); closeDropdown(); }}>운동게시판</li>
+                <li onClick={() => { navigate('/Board/workout'); closeDropdown(); }}>운동게시판</li>
                 <li onClick={() => { navigate('/Board/diet'); closeDropdown(); }}>식단게시판</li>
               </ul>
             )}
