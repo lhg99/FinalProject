@@ -41,7 +41,7 @@ interface Props {
   toolbar?: string[];
 }
 
-const TextEditor  = ({ toolbar, defaultValue, onChange }: Props) => {
+const TextEditor = ({ toolbar, defaultValue, onChange }: Props) => {
   function MyCustomUploadAdapterPlugin(editor: any) {
     editor.plugins.get('FileRepository').createUploadAdapter = (loader: any) => {
       return new UploadAdapter(loader);
@@ -49,6 +49,7 @@ const TextEditor  = ({ toolbar, defaultValue, onChange }: Props) => {
   }
 
   const editorConfig: ComponentProps<typeof CKEditor>['config'] = {
+    placeholder: '내용을 입력해주세요.',
     extraPlugins: [MyCustomUploadAdapterPlugin],
     toolbar: toolbar || [
       'undo', 'redo', '|',
@@ -58,18 +59,18 @@ const TextEditor  = ({ toolbar, defaultValue, onChange }: Props) => {
       'bulletedList', 'numberedList', 'insertTable',
     ],
     image: {
-      styles:  {
+      styles: {
         options: [
           {
             name: 'default',
             title: 'Default',
             icon: 'default',
-            className: styles.defaultImageSize,
-            modelElements: ['imageBlock']
-          }
-        ]
+            className: 'defaultImageSize',
+            modelElements: ['imageBlock'],
+          },
+        ],
       },
-      toolbar: ['imageTextAlternative']
+      toolbar: ['imageTextAlternative'],
     },
   };
 
