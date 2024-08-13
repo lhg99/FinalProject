@@ -6,6 +6,7 @@ import { addPost } from '../../../api/boardAPI';
 import TextEditor from '../../../../../components/TextEditor/TextEditor';
 import { ExerciseRecords } from '../../../../Exercise/ExerciseTypes'; 
 import { FoodRecord } from '../../../../Food/FoodTypes'; 
+import FoodRecordsList from './FoodRecordsList'; // Import the new FoodRecordsList component
 
 const RecordSharePost: React.FC = () => {
   const navigate = useNavigate();
@@ -34,7 +35,7 @@ const RecordSharePost: React.FC = () => {
   };
 
   useEffect(() => {
-    if (boardType === 'WORKOUT' || boardType === 'FOOD') {
+    if (boardType === 'WORKOUT') {
       const fetchExerciseData = async () => {
         try {
           const records = await getExerciseRecords();
@@ -48,7 +49,7 @@ const RecordSharePost: React.FC = () => {
   }, [boardType]);
 
   useEffect(() => {
-    if (boardType === 'WORKOUT' || boardType === 'FOOD') {
+    if (boardType === 'WORKOUT') {
       const filterRecordsByMonth = () => {
         const monthIndex = monthMapping[selectedMonth];
         const filtered = exerciseRecords
@@ -56,7 +57,7 @@ const RecordSharePost: React.FC = () => {
             const recordMonth = new Date(record.exerciseDate).getMonth();
             return recordMonth === monthIndex;
           })
-          .sort((a, b) => new Date(b.exerciseDate).getTime() - new Date(a.exerciseDate).getTime()); // 최신순 정렬
+          .sort((a, b) => new Date(b.exerciseDate).getTime() - new Date(a.exerciseDate).getTime());
         setFilteredRecords(filtered);
       };
 
@@ -104,9 +105,10 @@ const RecordSharePost: React.FC = () => {
       const postData = {
         boardTitle: title,
         boardContent: content,
-        boardType: boardType,
+        boardType: boardType, // 'WORKOUT' 또는 'FOOD'에 따라 서버에서 구분
         boardCategory: boardCategory,
-        trainingRecords: selectedRecords, 
+        trainingRecords: boardType === 'WORKOUT' ? selectedRecords : [], 
+        dietRecords: boardType === 'FOOD' ? selectedRecords.map(recordId => ({ dietId: Number(recordId) })) : [], 
       };
 
       await addPost(postData);
@@ -151,7 +153,7 @@ const RecordSharePost: React.FC = () => {
 
           {boardType !== 'FREE' && (
             <>
-              <h5 className={styles.h5}>나의 운동 리스트</h5>
+              <h5 className={styles.h5}>나의 {boardType === 'WORKOUT' ? '운동' : '식단'} 리스트</h5>
               <div className={styles.monthTabs}>
                 {Object.keys(monthMapping).map((month) => (
                   <button
@@ -165,36 +167,44 @@ const RecordSharePost: React.FC = () => {
                 ))}
               </div>
 
-              <div className={styles.exerciseList}>
-                <table>
-                  <thead>
-                    <tr>
-                      <th>선택</th>
-                      <th>날짜</th>
-                      <th>운동</th>
-                      <th>시간</th>
-                      <th>칼로리</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {filteredRecords.map(record => (
-                      <tr key={record.recordId}>
-                        <td>
-                          <input 
-                            type="checkbox" 
-                            checked={selectedRecords.includes(record.recordId.toString())} 
-                            onChange={() => handleRecordSelect(record.recordId)} 
-                          />
-                        </td>
-                        <td>{record.exerciseDate}</td>
-                        <td>{record.trainingName}</td>
-                        <td>{record.durationMinutes} 분</td>
-                        <td>{record.caloriesBurned ? record.caloriesBurned + ' kcal' : ''}</td>
+              {boardType === 'WORKOUT' ? (
+                <div className={styles.exerciseList}>
+                  <table>
+                    <thead>
+                      <tr>
+                        <th>선택</th>
+                        <th>날짜</th>
+                        <th>운동</th>
+                        <th>시간</th>
+                        <th>칼로리</th>
                       </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
+                    </thead>
+                    <tbody>
+                      {filteredRecords.map(record => (
+                        <tr key={record.recordId}>
+                          <td>
+                            <input 
+                              type="checkbox" 
+                              checked={selectedRecords.includes(record.recordId.toString())} 
+                              onChange={() => handleRecordSelect(record.recordId)} 
+                            />
+                          </td>
+                          <td>{record.exerciseDate}</td>
+                          <td>{record.trainingName}</td>
+                          <td>{record.durationMinutes} 분</td>
+                          <td>{record.caloriesBurned ? record.caloriesBurned + ' kcal' : ''}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              ) : (
+                <FoodRecordsList
+                  selectedMonth={selectedMonth}
+                  selectedRecords={selectedRecords}
+                  handleRecordSelect={handleRecordSelect}
+                />
+              )}
             </>
           )}
 

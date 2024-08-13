@@ -81,7 +81,6 @@ const Header: React.FC = () => {
                 <li onClick={() => { navigate('/Board/free'); closeDropdown(); }}>자유게시판</li>
                 <li onClick={() => { navigate('/Board/exercise'); closeDropdown(); }}>운동게시판</li>
                 <li onClick={() => { navigate('/Board/diet'); closeDropdown(); }}>식단게시판</li>
-                <li onClick={() => { navigate('/Board/exercise'); closeDropdown(); }}>TEST</li>
               </ul>
             )}
           </li>
