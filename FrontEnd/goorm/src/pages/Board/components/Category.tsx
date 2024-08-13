@@ -1,9 +1,9 @@
 import React from 'react';
 
 interface CategoryProps {
-  boardType: string;
+  boardType?: string;
   boardCategory: string;
-  handleBoardTypeChange: (e: React.ChangeEvent<HTMLSelectElement>) => void;
+  handleBoardTypeChange?: (e: React.ChangeEvent<HTMLSelectElement>) => void;
   handleBoardCategoryChange: (e: React.ChangeEvent<HTMLSelectElement>) => void;
 }
 

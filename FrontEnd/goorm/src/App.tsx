@@ -13,7 +13,6 @@ import ProtectedRoute from './pages/Login/auth/ProtectedRoute';
 import Food from './pages/Food/Food';
 import FreeBoardPage from './pages/Board/pages/FreeBoard/FreeBoardPage';
 import UpdatePost from './pages/Board/pages/FreeBoard/Update/UpdatePost';
-import CreatePost from './pages/Board/pages/FreeBoard/Create/CreatePost';
 import ExerciseChartPage from './pages/Chart/ExerciseChart/ExerciseChartPage';
 import ExerciseRecordPage from './pages/Exercise/ExerciseRecordList/ExerciseRecordPage';
 import ExerciseVideo from './pages/HealthVideo/ExerciseVideo/ExerciseVideo';
@@ -67,15 +66,15 @@ const App: React.FC = () => {
 
             <Route path="/Board" element={<Outlet />}>
               <Route path="free" element={<FreeBoardPage />} />
-              <Route path="exercise" element={<ExerciseBoardPage />} />
-              <Route path="diet" element={<DietBoardPage />} />
-              <Route path="exercise/record" element={<RecordSharePost />} />
-              <Route path="diet/record" element={<RecordSharePost />} />
+              <Route path="free/record" element={<RecordSharePost />} />
               <Route path="free/post/:id" element={<DetailPost />} />
-              <Route path="exercise/post/:id" element={<DetailPost />} />
-              <Route path="diet/post/:id" element={<DetailPost />} />
               <Route path="free/post/edit/:id" element={<UpdatePost />} />
-              <Route path="free/createpost" element={<CreatePost />} />
+              <Route path="workout" element={<ExerciseBoardPage />} />
+              <Route path="workout/record" element={<RecordSharePost />} />
+              <Route path="workout/post/:id" element={<DetailPost />} />
+              <Route path="diet" element={<DietBoardPage />} />
+              <Route path="diet/record" element={<RecordSharePost />} />
+              <Route path="diet/post/:id" element={<DetailPost />} />
             </Route>
             <Route path="/exvideo" element={<ProtectedRoute><ExerciseVideo /></ProtectedRoute>} />
             <Route path="/edit" element={<ProtectedRoute><MyPageEdit

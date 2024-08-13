@@ -1,11 +1,14 @@
 .Container {
-  background-color: #FFDE95;
-  background-size: cover;
-  background-position: center;
-  height: 150vh;
+  display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
+  background-color: #FFDE95; // 배경 색상 지정
+  min-height: 100vh;
+  // height: 120vh;
   overflow: hidden;
+  padding-top: 30px;
+  padding-bottom: 30px;
 }
 
 .DetailContainer {

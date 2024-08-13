@@ -70,7 +70,7 @@ const ExerciseBoardPage: React.FC = () => {
               {totalPages - ((currentPage - 2) * postsPerPage + (index - 3)) }
               </td>
               <td className={styles.tableCell}>{categoryMap[post.boardCategory] || post.boardCategory}</td>
-              <td className={styles.titleCell} onClick={() => navigate(`/Board/exercise/post/${post.boardId}`)}>
+              <td className={styles.titleCell} onClick={() => navigate(`/Board/workout/post/${post.boardId}`)}>
                 {post.boardTitle}
               </td>
               <td className={styles.tableCell}>{post.writer}</td>
