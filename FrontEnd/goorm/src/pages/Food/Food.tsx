@@ -10,7 +10,6 @@ import { formatDateInfo } from '../../utils/DateUtils';
 import { EditFoodRecord, postFoodMemo, postFoodRecord } from '../../api/Food/foodApi';
 import FoodCategoryTable from './FoodCategoryTable';
 import { EditFoodRecordRequest, PostFoodRecordRequest } from '../../api/Food/dto/FoodRequest';
-import { ToastStore } from '../../store/store';
 import ToastComponent from '../../components/Toast/ToastComponent';
 import { getusereData } from '../../api/mypageApi';
 import { useNavigate } from 'react-router-dom';
@@ -18,8 +17,6 @@ import { useNavigate } from 'react-router-dom';
 const Food: React.FC = () => {
 
     const [dateInfo, setDateInfo] = useState<{ year: number; month: number; day: number; weekday: string; formattedDate: string } | null>(null);
-
-    const { showToast } = ToastStore();
 
     const navigate = useNavigate();
 
@@ -64,14 +61,12 @@ const Food: React.FC = () => {
             return;
         }
         try {
-            // selectedFood 배열을 순회하여 각 항목을 처리
             for (const food of selectedFood) {
                 const details = foodDetails[food.foodName] || {};
                 const existingRecord = foodRecords.find(
                     (record) => record.foodRes.foodId === food.foodId
                 );
     
-                // PostFoodRecordRequest 객체 생성
                 const foodRecordRequest: PostFoodRecordRequest = {
                     mealTime: existingRecord ? existingRecord.mealTime : food.mealTime || "",
                     dietDate: dateInfo.formattedDate,
@@ -88,8 +83,7 @@ const Food: React.FC = () => {
             }
             await postFoodMemo(memo.content, new Date(dateInfo.formattedDate));
     
-            showToast("foodSaveToast", "식단 기록이 저장되었습니다.");
-            // window.location.reload();
+            window.location.reload();
         } catch (error) {
             console.error("식단 기록 저장 실패:", error);
             alert("식단 기록이 저장되지 않았습니다.");
@@ -108,16 +102,15 @@ const Food: React.FC = () => {
                         quantity: record.quantity !== null ? record.quantity : undefined,
                         gram: record.gram !== null ? record.gram : undefined,
                     }],
-                    memo: memo.content,  // 메모 내용
+                    memo: memo.content,
                 })),
-                memos: memo,  // 메모 객체
+                memos: memo,
             };
             
             // EditFoodRecord 함수 호출
             await EditFoodRecord(editRequest);
-            // showToast("foodEditToast", "식단 기록이 수정되었습니다.");
             alert("식단 기록이 수정되었습니다.");
-            // window.location.reload();
+            window.location.reload();
         } catch (err) {
             console.error("식단 기록 수정 실패", err);
             alert("식단 기록 수정에 실패했습니다.");
