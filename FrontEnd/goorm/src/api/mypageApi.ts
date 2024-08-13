@@ -36,3 +36,21 @@ export const postChangeData = async (change: ChangeData): Promise<void> => {
         throw err;
     }
 }
+
+export interface UserDetailInfo {
+    memberAge: number;
+    memberHeight: number;
+    memberWeight: number;
+    memberGender: string;
+    comment: string;
+}
+
+export const postUserDetailInfo = async(request: UserDetailInfo) => {
+    try {
+        const response = await axiosInstance.post("/member/reg/info", request);
+        console.log("회원 추가정보 입력 성공", response.data);
+        return response.data;
+    } catch (error) {
+        console.error("회원 추가정보 입력 실패", error);
+    }
+}

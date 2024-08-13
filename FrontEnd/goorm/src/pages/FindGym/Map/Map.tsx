@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import './Map.scss';
 import { SearchIcon } from '../../../image/Icon/SearchIcon';
 
@@ -39,7 +39,7 @@ const Map = () => {
             window.kakao.maps.load(kakaoMapsLoaded);
         } else {
             const script = document.createElement('script');
-            script.src = `//dapi.kakao.com/v2/maps/sdk.js?appkey=YOUR_APP_KEY&libraries=services`;
+            script.src = `https://dapi.kakao.com/v2/maps/sdk.js?appkey=6c9da3b498117d3fb633b93eac292808&libraries=services`;
             script.onload = kakaoMapsLoaded;
             document.head.appendChild(script);
         }
@@ -55,7 +55,11 @@ const Map = () => {
             return false;
         }
 
-        psRef.current.keywordSearch(keyword, placesSearchCB);
+        if (psRef.current) {
+            psRef.current.keywordSearch(keyword, placesSearchCB);
+        } else {
+            console.error("psRef가 null, keyword 안됨");
+        }
     };
 
     useEffect(() => {
@@ -94,7 +98,15 @@ const Map = () => {
             bounds.extend(placePosition);
 
             if (itemEl) {
-                (function (marker, title, itemEl) {
+                (function (marker, title, itemEl, placeId) {
+                    window.kakao.maps.event.addListener(marker, 'click', function () {
+                        window.open(`https://place.map.kakao.com/${placeId}`, '_blank');
+                    });
+    
+                    itemEl.addEventListener('click', function () {
+                        window.open(`https://place.map.kakao.com/${placeId}`, '_blank');
+                    });
+
                     window.kakao.maps.event.addListener(marker, 'mouseover', function () {
                         displayInfowindow(marker, title);
                     });
@@ -110,7 +122,7 @@ const Map = () => {
                     itemEl.onmouseout = function () {
                         infowindowRef.current.close();
                     };
-                })(marker, places[i].place_name, itemEl);
+                })(marker, places[i].place_name, itemEl, places[i].id);
             }
 
             fragment.appendChild(itemEl);
@@ -213,32 +225,36 @@ const Map = () => {
     };
 
     return (
-        <div className='findGym'>
-            <p className='gymText'>헬스장 검색</p>
-            <div className="option">
-                <div>
-                    <form onSubmit={(e) => {
-                        e.preventDefault();
-                        if(inputRef.current) {
-                            setKeyword(inputRef.current.value);
-                            } else {
-                                console.error("검색어 로직 실패");
-                        }
-                    }}>
-                        키워드 : <input type="text" ref={inputRef} defaultValue={keyword} id="keyword" size={15} />
-                        <button type="submit" id="searchButton">
-                            <SearchIcon />
-                        </button>
-                    </form>
+        <div className='pageBackground'>
+            <div className='findGym'>
+                <div className='gymText'>
+                    <p className='gymText'>헬스장 검색</p>
                 </div>
-            </div>
-            <div className="map_wrap">
-                <div id="map" style={{  }}></div>
+                <div className="option">
+                    <div className='searchForm'>
+                        <form onSubmit={(e) => {
+                            e.preventDefault();
+                            if(inputRef.current) {
+                                setKeyword(inputRef.current.value);
+                                } else {
+                                    console.error("검색어 로직 실패");
+                            }
+                        }}>
+                            키워드 : <input type="text" ref={inputRef} defaultValue={keyword} id="keyword" size={15} />
+                            <button type="submit" id="searchButton">
+                                <SearchIcon />
+                            </button>
+                        </form>
+                    </div>
+                </div>
+                <div className="map_wrap">
+                    <div id="map" style={{  }}></div>
 
-                <div id="menu_wrap" className="bg_white">
-                    <hr />
-                    <ul id="placesList"></ul>
-                    <div id="pagination"></div>
+                    <div id="menu_wrap" className="bg_white">
+                        <hr />
+                        <ul id="placesList"></ul>
+                        <div id="pagination"></div>
+                    </div>
                 </div>
             </div>
         </div>

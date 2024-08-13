@@ -72,18 +72,18 @@ const DietRecordList: React.FC = () => {
     <div className={styles.container}>
       <RecodsTabs selectedTab={selectedTab} setSelectedTab={setSelectedTab} basePath="/food/records" />
       <div className={styles.tableContainer}>
-        <table className={styles.table}>
+        <table className={styles.diettable}>
           <thead>
             <tr>
-              {['번호', '날짜', '식사 종류', '음식', '칼로리', '탄수화물', '단백질', '지방'].map((header, index) => (
-                <th key={index} className={classNames(styles.tableHeader)} style={{ width: '60px' }}>{header}</th>
+              {['날짜', '식사 종류', '음식', '칼로리', '탄수화물', '단백질', '지방'].map((header, index) => (
+                <th key={index} className={classNames(styles.tableHeader)} style={{ width: '80px' }}>{header}</th>
               ))}
             </tr>
           </thead>
           <tbody>
             {currentRecords.slice((currentPage - 1) * recordsPerPage, currentPage * recordsPerPage).map((record) => {
               const values = [
-                record.dietId,
+                // record.dietId,
                 formatDate(record.dietDate),
                 record.mealTime,
                 record.foodRes.foodName,

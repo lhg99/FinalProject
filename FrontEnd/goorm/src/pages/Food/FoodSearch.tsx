@@ -39,10 +39,10 @@ const FoodSearch = ({ onAddFood, onAddCustomFood } : FoodSearchProps) => {
         const fetchdata = async () => {
             try {
                 const foodData = await getFoodData();
+                console.log("음식 가져오기", foodData);
                 setFood(foodData);
                 setFilteredData(foodData);
                 const categories: FoodCategory[] = [
-                    { categoryName: "전체" },
                     { categoryName: "아침" }, // mealTime: BREAKFAST
                     { categoryName: "점심" }, // mealTime: LUNCH
                     { categoryName: "저녁" }, // mealTime: DINNER
@@ -82,24 +82,16 @@ const FoodSearch = ({ onAddFood, onAddCustomFood } : FoodSearchProps) => {
 
     const handleCategoryChange = (categoryName: string) => {
         console.log("Selected category:", categoryName); // 선택된 카테고리 확인
-        if (categoryName === "전체") {
-            if (selectedCategories.includes("전체")) {
-                setSelectedCategories([]);
-            } else {
-                setSelectedCategories(["전체"]);
-            }
-        } else {
-            const newSelectedCategories = selectedCategories.includes(categoryName)
-                ? selectedCategories.filter(name => name !== categoryName)
-                : [...selectedCategories, categoryName];
+        const newSelectedCategories = selectedCategories.includes(categoryName)
+            ? selectedCategories.filter(name => name !== categoryName)
+            : [...selectedCategories, categoryName];
 
-            if (newSelectedCategories.length > 1) {
-                alert("카테고리는 하나만 선택하세요");
-                return;
-            }
-
-            setSelectedCategories(newSelectedCategories);
+        if (newSelectedCategories.length > 1) {
+            alert("카테고리는 하나만 선택하세요");
+            return;
         }
+            
+        setSelectedCategories(newSelectedCategories);
     };
 
     const handleSearchClick = async () => {
@@ -171,14 +163,14 @@ const FoodSearch = ({ onAddFood, onAddCustomFood } : FoodSearchProps) => {
         <FoodSearchContainer>
             <CategoriesContainer>
                 {foodCategories.map((option, index) => (
-                    <label key={index}>
+                    <CategoryText key={index}>
                         <input 
                             type='checkbox' 
                             checked={selectedCategories.includes(option.categoryName)}
                             onChange={() => handleCategoryChange(option.categoryName)} 
                         />
                         {option.categoryName}
-                    </label>
+                    </CategoryText>
                 ))}
             </CategoriesContainer>
             <SearchForm onSubmit={(e) => {
@@ -216,11 +208,10 @@ export default FoodSearch;
 const FoodSearchContainer = styled.div`
     display: flex;
     flex-direction: column;
-    padding: .625rem;
-    width: 28%;
-    max-height: 35rem;
+    padding: 0.625rem;
+    width: 17.5rem;
+    max-height: 36.25rem;
     overflow-y: auto;
-    border: 1px solid #AFAFAF;
     border-radius: 5px;
 
     &::-webkit-scrollbar {
@@ -236,7 +227,7 @@ const FoodSearchContainer = styled.div`
     &::-webkit-scrollbar-thumb {
         background: #888;
         border-radius: 0.9375rem;
-        border: 2px solid #f1f1f1;
+        border: 1px solid #f1f1f1;
     }
 
     &::-webkit-scrollbar-thumb:hover {
@@ -249,6 +240,14 @@ const CategoriesContainer = styled.div`
     font-size: 0.875rem;
     display: flex;
 `;
+
+const CategoryText = styled.label`
+    margin-right: 5px;
+
+    input {
+        margin-right: 5px; /* 간격 조정 */
+    }
+`
 
 const SearchForm = styled.form`
     margin-top: .625rem;
@@ -263,11 +262,23 @@ const SearchInput = styled.input`
 `;
 
 const SearchButton = styled.button`
-    margin-left: 0.625rem;
-    height: 35.2px;
+    padding: 10px;
+    border: 1px solid black;
+    background-color: white;
+    border-radius: 5px;
+    cursor: pointer;
     display: flex;
     align-items: center;
-    justify-content: center;
+    margin-left: 0.625rem;
+
+    svg {
+        width: 20px;
+        height: 20px;
+    }
+
+    &:hover {
+        background-color: #f0f0f0;
+    }
 `;
 
 const FoodListContainer = styled.div`

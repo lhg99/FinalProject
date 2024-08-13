@@ -21,7 +21,7 @@ const PaginationContainer = styled.div`
 `;
 
 const PageButton = styled.button<{ isActive: boolean }>`
-    background-color: ${({ isActive }) => (isActive ? '#699732' : '#699732')};
+    background-color: ${({ isActive }) => (isActive ? '#699732' : '#f9f9f9')};
     color: ${({ isActive }) => (isActive ? '000000' : '#000000')};
     border: 1px solid #000000;
     border-radius: 20px;

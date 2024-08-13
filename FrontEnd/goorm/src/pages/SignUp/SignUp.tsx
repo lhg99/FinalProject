@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import styles from './SignUp.module.scss';
-import { KakaoSignupData, SignUpData, postKakaoSignup, postSignUpData } from '../../api/signupApi';
+import { SignUpData, postKakaoSignup, postSignUpData } from '../../api/signupApi';
 
 const SignUp = () => {
   const [name, setName] = useState<string>('');

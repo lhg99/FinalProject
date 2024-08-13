@@ -31,31 +31,29 @@ const ExerciseMemo = ({dateInfo}:ExerciseMemoProps) => {
       const record = exerciseRecords.find(
         (record) => record.exerciseDate === formattedDate
       );
-      const memoContent = record?.memo || ""; // Default to empty if no memo is found
+      const memoContent = record?.memo || "";
       setEditorData(memoContent);
 
-      // Set memo on initial load
       setMemo({
         content: memoContent,
         date: formattedDate,
       });
     }
-  }, [dateInfo, exerciseRecords]); // Depend on dateInfo and exerciseRecords
+  }, [dateInfo, exerciseRecords]);
 
   return (
     <MemoContainer>
       <MemoDetails>
         <DetailsText>메모</DetailsText>
-        {!isAnyModalOpen() && ( // 다른 모달이 열려있지 않을 때 CKeditor 표시
+        {!isAnyModalOpen() && (
           <CKEditor
             editor={ClassicEditor}
             data={editorData}
             onChange={(event, editor) => {
               const data = editor.getData();
               setEditorData(data);
-              // 선택된 날짜에 대한 메모를 업데이트합니다
               if (dateInfo) {
-                const formattedDate = formatDateInfo(dateInfo); // 날짜 형식화
+                const formattedDate = formatDateInfo(dateInfo);
                 setMemo({
                   content: data,
                   date: formattedDate,
@@ -89,6 +87,7 @@ export default ExerciseMemo;
 
 const MemoContainer = styled.div`
   display: flex;
+  background-color: white;
   margin-top: 0.625rem;
   width: 76%;
   height: 470px;
@@ -101,7 +100,6 @@ const MemoDetails = styled.div`
   display: flex;
   width: 100%;
   margin-bottom: 10px;
-  border: 1px solid black;
   flex-direction: row; /* Stack items vertically */
   border-right: none;
   height: 100%;
@@ -111,7 +109,6 @@ const MemoDetails = styled.div`
     height: 430px;
     max-height: 430px;
     overflow-y: auto;
-    border: 1px solid black;
     font-size: 0.875rem;
   }
 `;
@@ -120,6 +117,8 @@ const DetailsText = styled.p`
   width: 5%;
   margin-left: 1.25rem;
   margin-right: 1.25rem;
+  margin-top: 0.625rem;
   flex-direction: row;
   font-size: 0.875rem;
+  text-align: center;
 `;

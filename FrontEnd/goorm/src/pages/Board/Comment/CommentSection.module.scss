@@ -35,6 +35,7 @@
   margin-right: 20px;
   margin-left: 10px;
   width: flex;
+  min-width: 100px;
   cursor: pointer; 
   transition: color 0.3s;
 }
@@ -51,7 +52,8 @@
 
 .commentContent {
   color: #555;
-  margin: 10px;
+  margin: 0px;
+  margin-top: 15px;
   flex: 1;
 }
 
@@ -139,7 +141,7 @@
       font-size: 16px;
       transition: background-color 0.3s ease;
       margin-right: 40px;
-      margin-bottom: 20px;
+      margin-bottom: 0px;
 
       // display: flex;
       // justify-content: center;

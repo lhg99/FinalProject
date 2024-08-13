@@ -90,19 +90,19 @@ export default FoodMemo;
 
 const MemoContainer = styled.div`
   display: flex;
-  margin-top: 0.625rem;
   width: 76%;
   height: 470px;
   margin-left: 23.75rem;
   flex-direction: column;
   margin-bottom: 20px;
+  background-color: white;
+  margin-top: 0.625rem;
 `;
 
 const MemoDetails = styled.div`
   display: flex;
   width: 100%;
   margin-bottom: 10px;
-  border: 1px solid black;
   flex-direction: row; /* Stack items vertically */
   border-right: none;
   height: 100%;
@@ -112,7 +112,6 @@ const MemoDetails = styled.div`
     height: 430px;
     max-height: 430px;
     overflow-y: auto;
-    border: 1px solid black;
     font-size: 0.875rem;
   }
 `;
@@ -121,6 +120,8 @@ const DetailsText = styled.p`
   width: 5%;
   margin-left: 1.25rem;
   margin-right: 1.25rem;
+  margin-top: 0.625rem;
   flex-direction: row;
   font-size: 0.875rem;
+  text-align: center;
 `;

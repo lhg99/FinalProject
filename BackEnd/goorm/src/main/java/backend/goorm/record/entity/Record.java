@@ -63,9 +63,6 @@ public class Record {
     @Column(name = "distance")
     private Float distance;
 
-    @Column(name = "incline")
-    private Float incline;
-
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "memo_id")
     private Memo memo;

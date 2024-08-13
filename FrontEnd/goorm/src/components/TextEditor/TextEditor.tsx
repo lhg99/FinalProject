@@ -2,7 +2,8 @@ import axiosInstance from '../../api/axiosInstance';
 import { CKEditor } from '@ckeditor/ckeditor5-react';
 import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 import React, { ComponentProps } from 'react';
-import styles from './TextEditor.module.scss';
+import { EditorWrapper } from './Style'; 
+
 
 class UploadAdapter {
   private loader: any;
@@ -41,7 +42,7 @@ interface Props {
   toolbar?: string[];
 }
 
-const TextEditor  = ({ toolbar, defaultValue, onChange }: Props) => {
+const TextEditor = ({ toolbar, defaultValue, onChange }: Props) => {
   function MyCustomUploadAdapterPlugin(editor: any) {
     editor.plugins.get('FileRepository').createUploadAdapter = (loader: any) => {
       return new UploadAdapter(loader);
@@ -49,6 +50,7 @@ const TextEditor  = ({ toolbar, defaultValue, onChange }: Props) => {
   }
 
   const editorConfig: ComponentProps<typeof CKEditor>['config'] = {
+    placeholder: '내용을 입력해주세요.',
     extraPlugins: [MyCustomUploadAdapterPlugin],
     toolbar: toolbar || [
       'undo', 'redo', '|',
@@ -58,23 +60,23 @@ const TextEditor  = ({ toolbar, defaultValue, onChange }: Props) => {
       'bulletedList', 'numberedList', 'insertTable',
     ],
     image: {
-      styles:  {
+      styles: {
         options: [
           {
             name: 'default',
             title: 'Default',
             icon: 'default',
-            className: styles.defaultImageSize,
-            modelElements: ['imageBlock']
-          }
-        ]
+            className: 'defaultImageSize',
+            modelElements: ['imageBlock'],
+          },
+        ],
       },
-      toolbar: ['imageTextAlternative']
+      toolbar: ['imageTextAlternative'],
     },
   };
 
   return (
-    <div className={styles.container}>
+    <EditorWrapper>
       <CKEditor
         editor={ClassicEditor}
         data={defaultValue}
@@ -84,8 +86,8 @@ const TextEditor  = ({ toolbar, defaultValue, onChange }: Props) => {
           onChange(data);
         }}
       />
-    </div>
+    </EditorWrapper>
   );
-}
+};
 
 export default TextEditor;

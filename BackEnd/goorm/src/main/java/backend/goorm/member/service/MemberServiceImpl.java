@@ -137,6 +137,8 @@ public class MemberServiceImpl implements  MemberService{
                 .memberHeight(regMemberInfoRequest.getMemberHeight())
                 .memberWeight(regMemberInfoRequest.getMemberWeight())
                 .comment(regMemberInfoRequest.getComment())
+                .memberAge(regMemberInfoRequest.getMemberAge())
+                .memberGender(regMemberInfoRequest.getMemberGender())
                 .build();
 
         memberInfoRepository.save(memberInfo);
@@ -159,6 +161,8 @@ public class MemberServiceImpl implements  MemberService{
                     .memberHeight(null)
                     .memberWeight(null)
                     .comment(null)
+                    .memberGender(null)
+                    .memberAge(null)
                     .memberType(member.getMemberType())
                     .build();
         }else{
@@ -170,6 +174,8 @@ public class MemberServiceImpl implements  MemberService{
                     .memberHeight(findInfo.get().getMemberHeight())
                     .memberWeight(findInfo.get().getMemberWeight())
                     .comment(findInfo.get().getComment())
+                    .memberAge(findInfo.get().getMemberAge())
+                    .memberGender(findInfo.get().getMemberGender())
                     .memberType(findMember.get().getMemberType())
                     .build();
         }

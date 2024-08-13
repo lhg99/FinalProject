@@ -8,7 +8,6 @@ import java.util.List;
 
 @Repository
 public interface TrainingRepository extends JpaRepository<Training, Long> {
-    boolean existsByTrainingName(String trainingName);
 
     List<Training> findByMember_MemberId(Long memberId);
 }

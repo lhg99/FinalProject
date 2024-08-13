@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import styles from './ExerciseBoardPage.module.scss';
+import styles from './DietBoardPage.module.scss';
 import { BoardDetails, BoardType } from '../../../types';
 import BoardTabs from '../../../../../components/Taps/BoardTap/BoardTabs';
 import Pagination from '../../../components/Pagination';
@@ -8,7 +8,7 @@ import Searchbar from '../../../components/SearchBar';
 import { fetchPosts } from '../../../api/boardAPI';  // fetchPosts 함수 사용
 
 const categoryMap: { [key: string]: string } = {
-  WORKOUT: '운동',
+  DIET: '식단',
   AD: '광고',
   CONCERN: '상담',
   HOBBY: '취미',
@@ -16,8 +16,8 @@ const categoryMap: { [key: string]: string } = {
   ETC: '기타',
 };
 
-const ExerciseBoardPage: React.FC = () => {
-  const [selectedTab, setSelectedTab] = useState<BoardType>(BoardType.WORKOUT); 
+const DietBoardPage: React.FC = () => {
+  const [selectedTab, setSelectedTab] = useState<BoardType>(BoardType.DIET); 
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [totalPages, setTotalPages] = useState<number>(0);
   const [currentPosts, setCurrentPosts] = useState<BoardDetails[]>([]);
@@ -41,7 +41,7 @@ const ExerciseBoardPage: React.FC = () => {
       }
     };
     fetchData();
-  }, []);  
+  }, [selectedTab, currentPage, searchQuery]);  
 
   const handleSearch = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -66,7 +66,7 @@ const ExerciseBoardPage: React.FC = () => {
             <tr key={post.boardId} className={styles.tableRow}>
               <td className={styles.tableCell}>{post.boardId}</td>
               <td className={styles.tableCell}>{categoryMap[post.boardCategory] || post.boardCategory}</td>
-              <td className={styles.titleCell} onClick={() => navigate(`/Board/exercise/post/${post.boardId}`)}>
+              <td className={styles.titleCell} onClick={() => navigate(`/Board/diet/post/${post.boardId}`)}>
                 {post.boardTitle}
               </td>
               <td className={styles.tableCell}>{post.writer}</td>
@@ -89,4 +89,4 @@ const ExerciseBoardPage: React.FC = () => {
   );
 };
 
-export default ExerciseBoardPage;
+export default DietBoardPage;
