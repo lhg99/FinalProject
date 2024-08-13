@@ -70,7 +70,7 @@ const DietRecordList: React.FC = () => {
 
   return (
     <div className={styles.container}>
-      <RecodsTabs selectedTab={selectedTab} setSelectedTab={setSelectedTab} basePath="/food/records" />
+      <RecodsTabs selectedTab={selectedTab} setSelectedTab={setSelectedTab} basePath="/diet/records" />
       <div className={styles.tableContainer}>
         <table className={styles.diettable}>
           <thead>
