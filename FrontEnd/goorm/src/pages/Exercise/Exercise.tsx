@@ -170,7 +170,8 @@ const Exercise: React.FC = () => {
 
   return (
     <div className={styles.pageBackground}>
-      <div className={styles.exercise}>
+      <div className={styles.Wrapper}>
+        <div className={styles.exercise}>
         <ToastComponent />
         <div className={styles.exerciseContainer}>
           <div className={styles.leftColumn}>
@@ -212,6 +213,7 @@ const Exercise: React.FC = () => {
           <button className={styles.saveButton} onClick={handleEdit}>수정하기</button>
           <button className={styles.saveButton} onClick={handleSave}>저장하기</button>
         </div>
+      </div>
       </div>
     </div>
   );
