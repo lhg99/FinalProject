@@ -1,9 +1,6 @@
 package backend.goorm.diet.service;
 
-import backend.goorm.diet.dto.DietCreateRequestDto;
-import backend.goorm.diet.dto.DietMemoDto;
-import backend.goorm.diet.dto.DietResponseDto;
-import backend.goorm.diet.dto.DietUpdateRequestDto;
+import backend.goorm.diet.dto.*;
 import backend.goorm.diet.entity.Diet;
 import backend.goorm.diet.entity.DietMemo;
 import backend.goorm.diet.entity.Food;
@@ -18,9 +15,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -64,8 +59,8 @@ public class DietService {
                     .member(member)
                     .build();
 
-            // 총 칼로리 계산 및 저장
-            diet.calculateTotalCalories();
+            // 총 칼로리, 총 그램 계산 및 저장
+            diet.calculateTotalCaloriesAndGram();
 
             Diet savedDiet = dietRepository.save(diet);
 
@@ -74,26 +69,6 @@ public class DietService {
         }).collect(Collectors.toList());
 
         return responses;
-    }
-
-    @Transactional
-    public DietResponseDto updateDiet(Long dietId, DietUpdateRequestDto dto, Member member) {
-        Diet diet = dietRepository.findById(dietId)
-                .orElseThrow(() -> new IllegalArgumentException("Diet not found with id: " + dietId));
-
-        // 권한 확인: 기록의 소유자가 현재 사용자와 일치하는지 확인
-        if (!diet.getMember().getMemberId().equals(member.getMemberId())) {
-            throw new IllegalArgumentException("You do not have permission to edit this diet.");
-        }
-
-        dto.updateEntity(diet, foodRepository);
-
-        // 총 칼로리 계산 및 저장
-        diet.calculateTotalCalories();
-
-        Diet saved = dietRepository.save(diet);
-
-        return DietResponseDto.fromEntity(saved);
     }
 
     @Transactional
@@ -199,5 +174,58 @@ public class DietService {
         return dietMemoRepository.findByMemberAndDate(member, date)
                 .map(DietMemo::getContent)
                 .orElse(null);
+    }
+
+    public Map<String, NutrientPercentage> getNutrientPercentageForDate(Member member, LocalDate date) {
+        Map<String, NutrientPercentage> macroPercentages = new HashMap<>();
+        double totalCaloriesForDay = 0.0;
+
+        double totalCarbs = 0.0;
+        double totalProtein = 0.0;
+        double totalFat = 0.0;
+
+        // 식단 기록 가져오기
+        List<Diet> diets = dietRepository.findByDietDateAndMember(date, member);
+
+        for (Diet diet : diets) {
+            double carbs = diet.getFood().getCarbohydrate();
+            double protein = diet.getFood().getProtein();
+            double fat = diet.getFood().getFat();
+            double calories = diet.getTotalCalories();
+
+            // 총 영양소와 칼로리 누적
+            totalCarbs += carbs;
+            totalProtein += protein;
+            totalFat += fat;
+            totalCaloriesForDay += calories;
+
+            NutrientPercentage nutrientPercentage = macroPercentages.computeIfAbsent(diet.getMealTime().toString(), k -> new NutrientPercentage());
+
+            nutrientPercentage.setCarbsPercentage(nutrientPercentage.getCarbsPercentage() + carbs);
+            nutrientPercentage.setProteinPercentage(nutrientPercentage.getProteinPercentage() + protein);
+            nutrientPercentage.setFatPercentage(nutrientPercentage.getFatPercentage() + fat);
+            nutrientPercentage.setTotalCalories(nutrientPercentage.getTotalCalories() + calories);
+        }
+
+        // 각 식사별 비율 계산
+        macroPercentages.forEach((mealTime, nutrient) -> {
+            double totalNutrients = nutrient.getCarbsPercentage() + nutrient.getProteinPercentage() + nutrient.getFatPercentage();
+            nutrient.setCarbsPercentage((int) Math.round((nutrient.getCarbsPercentage() / totalNutrients) * 100));
+            nutrient.setProteinPercentage((int) Math.round((nutrient.getProteinPercentage() / totalNutrients) * 100));
+            nutrient.setFatPercentage((int) Math.round((nutrient.getFatPercentage() / totalNutrients) * 100));
+        });
+
+        // 전체 비율 계산
+        double totalNutrients = totalCarbs + totalProtein + totalFat;
+
+        NutrientPercentage totalNutrientPercentage = new NutrientPercentage();
+        totalNutrientPercentage.setCarbsPercentage((int) Math.round((totalCarbs / totalNutrients) * 100));
+        totalNutrientPercentage.setProteinPercentage((int) Math.round((totalProtein / totalNutrients) * 100));
+        totalNutrientPercentage.setFatPercentage((int) Math.round((totalFat / totalNutrients) * 100));
+        totalNutrientPercentage.setTotalCalories(totalCaloriesForDay);
+
+        macroPercentages.put("TOTAL", totalNutrientPercentage);
+
+        return macroPercentages;
     }
 }

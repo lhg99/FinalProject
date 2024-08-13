@@ -42,6 +42,8 @@ public class QDiet extends EntityPathBase<Diet> {
 
     public final NumberPath<Float> totalCalories = createNumber("totalCalories", Float.class);
 
+    public final NumberPath<Float> totalGram = createNumber("totalGram", Float.class);
+
     public QDiet(String variable) {
         this(Diet.class, forVariable(variable), INITS);
     }

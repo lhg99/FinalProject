@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 
 
 import java.util.Collection;
+import java.util.List;
 
 @Slf4j
 @RestController
@@ -38,8 +39,10 @@ public class FoodController {
 
     // 모든 음식을 조회하는 엔드포인트
     @GetMapping("/all")
-    public ResponseEntity<Collection<FoodResponseDto>> getAllFoods() {
-        Collection<FoodResponseDto> response = foodService.getAllFoods();
+    public ResponseEntity<List<FoodResponseDto>> getAllFoods(
+            @RequestParam(name = "page", defaultValue = "0") int page,
+            @RequestParam(name = "size", defaultValue = "100") int size) {
+        List<FoodResponseDto> response = foodService.getAllFoods(page, size);
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 

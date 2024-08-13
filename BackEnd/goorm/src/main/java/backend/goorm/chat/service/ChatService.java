@@ -6,8 +6,11 @@ import backend.goorm.chat.model.request.ChatRequest;
 import backend.goorm.chat.model.response.ChatResponse;
 import backend.goorm.chat.repository.ChatRepository;
 import backend.goorm.chat.repository.ChatRoomRepository;
+import backend.goorm.member.model.entity.Member;
+import backend.goorm.member.oauth.PrincipalDetails;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -23,14 +26,17 @@ public class ChatService {
     private final ChatRoomRepository chatRoomRepository;
 
     //채팅 메시지 저장
-    public ChatResponse sendChat(Long roomId, ChatRequest chatRequest) {
+    public ChatResponse sendChat(Long roomId, ChatRequest chatRequest, Authentication authentication) {
 
         ChatRoom findChatRoom = chatRoomRepository.findById(roomId)
                 .orElseThrow(() ->new RuntimeException(roomId + "번 채팅방이 존재하지 않습니다."));
 
+        PrincipalDetails principalDetails = (PrincipalDetails) authentication.getPrincipal();
+        Member findMember = principalDetails.member();
+
         Chat newChat = new Chat();
         newChat.setChatRoom(findChatRoom);
-        newChat.setSender(chatRequest.getSender());
+        newChat.setSender(findMember.getMemberNickname());
         newChat.setMessage(chatRequest.getMessage());
         newChat.setSendDate(LocalDateTime.now());
         newChat.setChatType(chatRequest.getChatType());
