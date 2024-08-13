@@ -19,8 +19,8 @@ public class MemoService {
     private final MemoRepository memoRepository;
     private final RecordRepository recordRepository;
 
-    public MemoDto addOrUpdateMemo(MemoDto memoDto, Member member) {
-        LocalDate date = LocalDate.now(); // 오늘 날짜로 메모 관리
+  public MemoDto addOrUpdateMemo(MemoDto memoDto, Member member) {
+        LocalDate date = memoDto.getDate(); // 입력받은 날짜로 메모 관리
         List<Record> records = recordRepository.findAllByExerciseDateAndMember(date, member);
 
         Memo memo = memoRepository.findByMemberAndDate(member, date)
@@ -35,7 +35,6 @@ public class MemoService {
 
         return MemoDto.fromEntity(memo);
     }
-
     public MemoDto getMemoByDateAndMember(LocalDate date, Member member) {
         Memo memo = memoRepository.findByMemberAndDate(member, date)
                 .orElseThrow(() -> new IllegalArgumentException("해당 날짜의 메모를 찾지 못했습니다: " + date));
