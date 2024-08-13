@@ -45,7 +45,7 @@ export const addPost = async (postData: {
   boardCategory: string; 
   imageUrls?: string[]; 
   trainingRecords?: (number | string)[]; 
-  dietRecords?: (number | string)[]; // 식단 기록 추가
+  dietRecords?: string[]; // 식단 기록 추가
 }): Promise<any> => {
   try {
     console.log('Adding post with data:', postData);

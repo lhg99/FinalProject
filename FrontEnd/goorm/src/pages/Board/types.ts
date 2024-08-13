@@ -37,8 +37,36 @@ export interface BoardDetails {
         weight: number;
         distance: number;
         incline: number;
-    }[]; 
+    }[];
+    dietRecordItems?: {
+        dietId: number;   // 식단 기록 번호
+        mealTime: string;  // 식사종류 (예: "BREAKFAST")
+        dietDate: string;  // 식단 날짜 (예: "2024-01-05")
+        quantity: number | null;    // 개수
+        gram: number | null;   // 그램수 
+        foodRes: {     // 음식에 대한 정보
+          foodId: number;       
+          userName: string;  
+          foodName: string;  
+          gram: number;   
+          calories: number;
+          carbohydrate: number;  
+          protein: number;
+          fat: number; 
+          sugar: number | null;
+          salt: number; 
+          cholesterol: number | null;
+          saturatedFat: number | null;
+          transFat: number | null;
+          useCount: number;
+          userRegister: boolean;
+        };
+        totalCalories: number; // 총 칼로리
+        totalGram: number | null;  // 총 그램수
+        memo: string;  // 메모
+    }[];
 }
+
 
 export interface PostListProps {
     posts: BoardDetails[];
