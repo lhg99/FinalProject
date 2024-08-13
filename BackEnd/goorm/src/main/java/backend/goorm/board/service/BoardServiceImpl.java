@@ -6,10 +6,7 @@ import backend.goorm.board.model.dto.request.BoardSaveRequest;
 import backend.goorm.board.model.dto.request.BoardUpdateRequest;
 import backend.goorm.board.model.dto.response.BoardDetailResponse;
 import backend.goorm.board.model.dto.response.BoardListResponse;
-import backend.goorm.board.model.entity.Board;
-import backend.goorm.board.model.entity.BoardImages;
-import backend.goorm.board.model.entity.BoardLikes;
-import backend.goorm.board.model.entity.BoardTrainingRecord;
+import backend.goorm.board.model.entity.*;
 import backend.goorm.board.model.enums.BoardCategory;
 import backend.goorm.board.model.enums.BoardSortType;
 import backend.goorm.board.model.enums.BoardType;
@@ -17,10 +14,12 @@ import backend.goorm.board.repository.*;
 import backend.goorm.common.exception.CustomException;
 import backend.goorm.common.exception.CustomExceptionType;
 import backend.goorm.common.util.DateConvertUtil;
+import backend.goorm.diet.dto.DietResponseDto;
+import backend.goorm.diet.entity.Diet;
+import backend.goorm.diet.repository.DietRepository;
 import backend.goorm.member.model.entity.Member;
 import backend.goorm.member.repository.MemberRepository;
 import backend.goorm.record.entity.Record;
-import backend.goorm.record.entity.TrainingRecord;
 import backend.goorm.record.repository.RecordRepository;
 import backend.goorm.s3.service.S3ImageService;
 import lombok.RequiredArgsConstructor;
@@ -51,7 +50,9 @@ public class BoardServiceImpl implements BoardService {
     private final S3ImageService s3ImageService;
     private final MemberRepository memberRepository;
     private final BoardTrainingRecordRepository boardTrainingRecordRepository;
+    private final BoardDietRecordRepository boardDietRecordRepository;
     private final RecordRepository recordRepository;
+    private final DietRepository dietRepository;
 
     @Value("${board.page.size}")
     private int pageSize;
@@ -95,6 +96,18 @@ public class BoardServiceImpl implements BoardService {
 
 
                 boardTrainingRecordRepository.save(boardTrainingRecord);
+            }
+
+        }else if(saveBoard.getBoardType() == BoardType.DIET && saveRequest.getDietRecords() != null && !saveRequest.getDietRecords().isEmpty()){
+
+            for(Long id : saveRequest.getDietRecords()){
+
+                BoardDietRecord foodRecord = BoardDietRecord.builder()
+                        .boardId(saveBoard.getBoardId())
+                        .dietId(id)
+                        .build();
+
+                boardDietRecordRepository.save(foodRecord);
             }
 
         }
@@ -150,6 +163,8 @@ public class BoardServiceImpl implements BoardService {
 
         //List<String> imageUrls = boardImageRepository.findImageUrlsByBoardId(board.getBoardId());
         List<BoardTrainingRecordItem> trainingRecordItems = null;
+        List<DietResponseDto> dietResponseDtoList = null;
+
 
         if(findBoard.get().getBoardType() == BoardType.WORKOUT){
 
@@ -161,6 +176,19 @@ public class BoardServiceImpl implements BoardService {
                 trainingRecordItems = findRecords.stream()
                         .map(this::convertToBoardTrainingRecordItem)
                         .collect(Collectors.toList());
+
+            }
+        }else if(findBoard.get().getBoardType() == BoardType.DIET){
+
+            List<Long> dietIds = boardDietRecordRepository.findRecordIdsByBoardId(findBoard.get().getBoardId());
+
+            if(dietIds != null && !dietIds.isEmpty()){
+
+                List<Diet> findDiets = dietRepository.findDietWithFoodAndDietMemoByDietIds(dietIds);
+                dietResponseDtoList = findDiets.stream()
+                        .map(this::convertToDietResponseDto)
+                        .collect(Collectors.toList());
+
 
             }
         }
@@ -178,8 +206,8 @@ public class BoardServiceImpl implements BoardService {
                 .boardType(board.getBoardType())
                 .boardCategory(board.getBoardCategory())
                 .trainingRecordItems(trainingRecordItems)
+                .dietRecordItems(dietResponseDtoList)
                 .build();
-
 
         return detailResponse;
     }
@@ -281,6 +309,11 @@ public class BoardServiceImpl implements BoardService {
                 .viewCnt(board.getViewCnt())
                 .likeCnt(board.getLikesCnt())
                 .build();
+    }
+
+    private DietResponseDto convertToDietResponseDto(Diet diet) {
+
+        return DietResponseDto.fromEntity(diet);
     }
 
     private BoardTrainingRecordItem convertToBoardTrainingRecordItem(Record record) {
