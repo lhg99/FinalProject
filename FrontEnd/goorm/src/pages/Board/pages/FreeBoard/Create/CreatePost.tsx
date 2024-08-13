@@ -54,6 +54,7 @@ const CreatePost: React.FC = () => {
   };
 
   return (
+    <div className={styles.Container}>
     <div className={styles.postContainer}>
       <h2>게시글 작성</h2>
       <form onSubmit={handleSave}>
@@ -77,6 +78,7 @@ const CreatePost: React.FC = () => {
           <button type="submit" className={styles.submitButton}>작성 완료</button>
         </div>
       </form>
+    </div>
     </div>
   );
 };
