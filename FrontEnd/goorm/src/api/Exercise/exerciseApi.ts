@@ -37,6 +37,20 @@ export const getExercisePercentage = async (startDate: Date, endDate: Date) => {
     }
 }
 
+export const getTotalData = async(dateInfo: Date) => {
+    const params= {
+        date: formatDate(dateInfo)
+    }
+
+    try {
+        const response = await axiosInstance.get("/record/daily-summary", { params });
+        console.log("total 칼로리, 분 가져오기 성공", response.data);
+        return response.data;
+    } catch (error) {
+        console.error("total 칼로리, 분 가져오기 실패", error);
+    }
+}
+
 export const postCustomExerciseData = async (request: PostCustomExerciseRequest): Promise<number> => {
     try {
         const response = await axiosInstance.post<{id: number}>(`/user/custom-trainings`, request);

@@ -1,7 +1,5 @@
 import React, { useEffect, useState } from "react";
 import styled from "styled-components";
-import { useExercise } from "../../contexts/exerciseContext";
-import { getExercisePercentage } from "../../api/Exercise/exerciseApi";
 import { FoodCount } from "./FoodTypes";
 import { getFoodPercentage } from "../../api/Food/foodApi";
 import { mealTimeLabels } from "../../constants/Food/MealTime";

@@ -3,9 +3,7 @@ import ExerciseDetails from "./ExerciseDetails";
 import styled from "styled-components";
 import { useExercise } from "../../../../contexts/exerciseContext";
 import { ExerciseData, ExerciseRecords } from "../../ExerciseTypes";
-import {
-  getExerciseRecords,
-} from "../../../../api/Exercise/exerciseApi";
+import { getExerciseRecords } from "../../../../api/Exercise/exerciseApi";
 interface ExerciseListProps {
   exercises: ExerciseData[];
   dateInfo: {
@@ -17,7 +15,6 @@ interface ExerciseListProps {
   } | null;
 }
 
-// 운동을 나열하는 컴포넌트
 const ExerciseList = ({exercises,dateInfo}: ExerciseListProps) => {
     const {
       state: { selectedExercises, exerciseRecords, selectedExerciseRecords },
@@ -29,19 +26,18 @@ const ExerciseList = ({exercises,dateInfo}: ExerciseListProps) => {
       const fetchRecords = async () => {
         try {
           const records = await getExerciseRecords();
-          setExerciseRecords(records); // Set records as an array
+          setExerciseRecords(records);
         } catch (error) {
           console.error("Failed to fetch exercise records", error);
         }
       };
       fetchRecords();
-    }, [dateInfo]);
+    }, []);
 
-    // exerciseRecords.map() 호출 전에 exerciseRecords가 배열인지 확인
     useEffect(() => {
       if (!dateInfo) {
         console.log("No dateInfo provided");
-        setSelectedExerciseRecords([]); // 상태 초기화
+        setSelectedExerciseRecords([]);
         return;
       }
 
@@ -50,7 +46,7 @@ const ExerciseList = ({exercises,dateInfo}: ExerciseListProps) => {
 
       if (!Array.isArray(exerciseRecords)) {
         console.log("No exercise records found");
-        setSelectedExerciseRecords([]); // 상태 초기화
+        setSelectedExerciseRecords([]);
         return;
       }
 

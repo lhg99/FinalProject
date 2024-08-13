@@ -28,6 +28,7 @@ const FoodList = ({ food, dateInfo }: FoodListProps) => {
     const fetchRecords = async () => {
       try {
         const records = await getFoodRecord();
+        console.log("식단 기록 정보", records);
         setFoodRecord(records); // Set records as an array
       } catch (error) {
         console.error("fetchRecords 실패", error);

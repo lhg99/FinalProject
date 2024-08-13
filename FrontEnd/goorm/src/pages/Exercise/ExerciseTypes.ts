@@ -26,7 +26,7 @@ export interface Memo {
 export interface ExerciseRecords {
     recordId: number;
     trainingName: string;
-    exerciseDate: string; // Date 문자열로 나타내기 때문에 string 타입으로 변경
+    exerciseDate: string;
     sets?: number;
     weight?: number;
     distance?: number;
@@ -35,9 +35,14 @@ export interface ExerciseRecords {
     reps?: number;
     memo?: string;
     satisfaction: number;
-    intensity: string; // 운동 강도(high, middle, low)
+    intensity: string;
     categoryName: string;
     trainingId: number;
     isAddingExercise?: boolean;
     totalCaloriesBurned?: number;
+}
+
+export interface TotalExerciseData {
+    totalDurationMinutes: number;
+    totalCaloriesBurned: number;
 }

@@ -1,6 +1,6 @@
 import { Toast, ToastBody, ToastContainer, ToastHeader } from 'react-bootstrap';
 import { ToastStore } from '../../store/store';
-import 'bootstrap/dist/css/bootstrap.min.css';
+// import 'bootstrap/dist/css/bootstrap.min.css';
 import './Toast.scss';
 
 const ToastComponent = () => {
