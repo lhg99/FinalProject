@@ -8,7 +8,7 @@
 ## 사용법
 
 
-<www.eadyfit.com/>
+www.eadyfit.com/
 
 
 위 url을 클릭하시면 이디핏을 확인하실 수 있습니다.
