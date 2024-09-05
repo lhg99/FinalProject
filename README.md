@@ -8,10 +8,10 @@
 ## 사용법
 
 
-www.eadyfit.com
+[페이지](www.eadyfit.com)로 이동하시면 이디핏을 확인하실 수 있습니다.
 
 
-위 페이지로 이동하시면 이디핏을 확인하실 수 있습니다.
+---
 
 
 ### 로컬에서 실행하려고 할 때
@@ -23,6 +23,9 @@ www.eadyfit.com
 4. 설치가 다 되었으면 npm run start로 애플리케이션을 실행합니다.
 
 
+---
+
+
 ## 나의 역할
 
 
@@ -32,8 +35,10 @@ www.eadyfit.com
 그리고 모달을 사용하는 부분이 많이 보여서 zustand 라이브러리를 이용해 모달 상태를 관리하였고 사용하는 법을 팀원분들께 노션으로 알려드렸습니다.
 
 
-노션 링크: https://comely15.notion.site/zustand-6c4a653866274a10b9830787972b95b3?pvs=4
+[노션 링크]: (https://comely15.notion.site/zustand-6c4a653866274a10b9830787972b95b3?pvs=4)
 
+
+---
 
 
 ## 아쉬웠던 점, 개선 방안
