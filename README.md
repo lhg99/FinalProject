@@ -35,7 +35,7 @@
 그리고 모달을 사용하는 부분이 많이 보여서 zustand 라이브러리를 이용해 모달 상태를 관리하였고 사용하는 법을 팀원분들께 노션으로 알려드렸습니다.
 
 
-[노션 링크]: (https://comely15.notion.site/zustand-6c4a653866274a10b9830787972b95b3?pvs=4)
+노션 링크: <https://comely15.notion.site/zustand-6c4a653866274a10b9830787972b95b3?pvs=4>
 
 
 ---
