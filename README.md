@@ -19,13 +19,37 @@
 운동 기록과 식단 기록을 같이할 수 있는 공간을 만들면 좋겠다고 생각해서 이 프로젝트를 진행하였습니다.
 
 
-프로젝트 이름: 이디핏
+<br>
 
 
-프로젝트 진행 기간: 2024.06 ~ 2024.08
+<h4>프로젝트 이름: 이디핏</h4>
 
 
-기술 스택
+<h4>프로젝트 진행 기간: 2024.06 ~ 2024.08</h4>
+
+<br>
+
+
+<h4>기술 스택</h4>
+
+
+<div> 
+  <img src="https://img.shields.io/badge/html5-E34F26?style=for-the-badge&logo=html5&logoColor=white"> 
+  <img src="https://img.shields.io/badge/css-1572B6?style=for-the-badge&logo=css3&logoColor=white"> 
+  <img src="https://img.shields.io/badge/javascript-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black"> 
+  <img src="https://img.shields.io/badge/react-61DAFB?style=for-the-badge&logo=react&logoColor=black">
+  <img src="https://img.shields.io/badge/Typescript-3178C6?style=for-the-badge&logo=typescript&logoColor=black">
+  <img src="https://img.shields.io/badge/bootstrap-7952B3?style=for-the-badge&logo=bootstrap&logoColor=white">
+  <br>
+
+  <img src="https://img.shields.io/badge/mariaDB-003545?style=for-the-badge&logo=mariaDB&logoColor=white"> 
+  <img src="https://img.shields.io/badge/spring-6DB33F?style=for-the-badge&logo=spring&logoColor=white"> 
+  <img src="https://img.shields.io/badge/amazonaws-232F3E?style=for-the-badge&logo=amazonaws&logoColor=white">
+
+  <img src="https://img.shields.io/badge/github-181717?style=for-the-badge&logo=github&logoColor=white">
+  <img src="https://img.shields.io/badge/git-F05032?style=for-the-badge&logo=git&logoColor=white">
+  <br>
+</div>
 <br>
 
 
@@ -36,6 +60,9 @@ www.eadyfit.com/
 
 
 위 url을 클릭하시면 이디핏을 확인하실 수 있습니다.
+
+
+<br>
 
 
 ### 로컬에서 실행하려고 할 때
@@ -68,19 +95,23 @@ www.eadyfit.com/
 <br>
 
 
-## 아쉬웠던 점, 개선 방안
+## 아쉬운 점, 개선 방안
 
 
+### 아쉬운 점
 - 코드를 작성하면서 날짜 정보를 가져오는 경우나 기록들을 처리하는 부분에서 반복적으로 작성되는 부분이 있었는데
 
 
   효율적으로 처리하지 못해 코드의 길이가 길어진 점이 아쉬웠습니다.
 
 
-- 이를 개선하기 위해 반복적으로 작성하는 부분은 export function으로 만들어서 
+<br>
 
 
-  필요한 부분에서 함수명만 작성해서 사용할 수 있게 개선하고 싶습니다.
+### 개선방안
+
+
+- 반복적으로 작성하는 부분은 export function으로 만들어서 필요한 부분에서 함수명만 작성해서 사용할 수 있게 개선하고 싶습니다.
 
 
 - 폴더 정리와 파일명을 정리해서 다른 사람이 보기에도 이게 어떤 코드가 담겨져있는 파일인지 알 수 있도록 개선하고 싶습니다.
